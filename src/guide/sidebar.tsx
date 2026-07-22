@@ -16,6 +16,7 @@ type SidebarProps = {
   sections: NavigationSection[];
   query: string;
   onQueryChange: (query: string) => void;
+  className?: string;
 };
 
 function NavigationItem({
@@ -89,6 +90,7 @@ export function Sidebar({
   sections,
   query,
   onQueryChange,
+  className,
 }: SidebarProps) {
   const searchRef = useRef<HTMLInputElement>(null);
   const activeGroup =
@@ -124,7 +126,12 @@ export function Sidebar({
   }, []);
 
   return (
-    <UI.Sidebar className="p-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+    <UI.Sidebar
+      className={cn(
+        "p-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto",
+        className,
+      )}
+    >
       <UI.Stack gap="4" className="h-full p-5 lg:p-6">
         <UI.Link
           href={guideHref("/")}

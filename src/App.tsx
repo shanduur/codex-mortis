@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Code2, Moon, Sun } from "lucide-react";
+import { Code2, Menu, Moon, Sun } from "lucide-react";
 
 import * as UI from "@/components";
 import { ArticlePage } from "@/guide/article-page";
 import { ComponentPage } from "@/guide/component-page";
 import { FoundationPage } from "@/guide/foundation-page";
-import { guidePathname } from "@/guide/paths";
+import { guideHref, guidePathname } from "@/guide/paths";
 import {
   componentEntries,
   foundationEntries,
@@ -26,6 +26,7 @@ function getInitialPage() {
 function App() {
   const activeId = getInitialPage();
   const [query, setQuery] = useState("");
+  const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
   const [dark, setDark] = useState(
     () => localStorage.getItem("theme") === "dark",
   );
@@ -37,8 +38,11 @@ function App() {
 
   const filteredSections = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return navigationSections;
-    return navigationSections
+    const guideSections = navigationSections.filter(
+      (section) => section.label !== "Showcase",
+    );
+    if (!normalizedQuery) return guideSections;
+    return guideSections
       .map((section) => ({
         ...section,
         entries: section.entries.filter((entry) =>
@@ -72,11 +76,31 @@ function App() {
         sections={filteredSections}
         query={query}
         onQueryChange={setQuery}
+        className="hidden lg:block"
       />
 
       <UI.Stack gap="1" className="min-w-0">
-        <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-end px-5 py-0 sm:px-8">
+        <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-between px-5 py-0 sm:px-8">
+          <UI.Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Open guide navigation"
+            className="lg:hidden"
+            onClick={() => setMobileNavigationOpen(true)}
+          >
+            <Menu />
+          </UI.Button>
           <UI.Stack direction="horizontal" gap="1">
+            <UI.Button asChild variant="ghost" size="sm">
+              <UI.Link
+                href={guideHref("/showcase/")}
+                aria-current={activeId === "showcase" ? "page" : undefined}
+                className="no-underline"
+              >
+                Showcase
+              </UI.Link>
+            </UI.Button>
             <UI.Button asChild variant="ghost" size="sm">
               <UI.Link
                 href="https://github.com/shanduur/codex-mortis"
@@ -99,6 +123,27 @@ function App() {
             </UI.Button>
           </UI.Stack>
         </UI.Header>
+
+        <UI.Drawer
+          open={mobileNavigationOpen}
+          onOpenChange={setMobileNavigationOpen}
+        >
+          <UI.DrawerContent className="left-0 right-auto max-w-[20rem] border-l-0 border-r p-0">
+            <UI.DrawerHeader className="sr-only">
+              <UI.DrawerTitle>Guide navigation</UI.DrawerTitle>
+              <UI.DrawerDescription>
+                Search and browse Codex Mortis documentation.
+              </UI.DrawerDescription>
+            </UI.DrawerHeader>
+            <Sidebar
+              activeId={activeId}
+              sections={filteredSections}
+              query={query}
+              onQueryChange={setQuery}
+              className="h-full overflow-y-auto border-0"
+            />
+          </UI.DrawerContent>
+        </UI.Drawer>
 
         <UI.Main id="content" tabIndex={-1} className="py-0">
           <UI.Container

@@ -133,10 +133,8 @@ function IntroductionPage() {
   return (
     <UI.Stack gap="12">
       <PageHeader
-        chapter="Foundation / 00"
         title="Codex Mortis"
         description="A living codex for technical interfaces: measured, legible, enduring, and explicit about the structures beneath the surface."
-        eyebrow="Read time / 4 min"
       />
 
       <UI.Grid
@@ -292,7 +290,6 @@ function PrinciplesPage() {
   return (
     <UI.Stack gap="12">
       <PageHeader
-        chapter="Foundation / 01"
         title="Principles"
         description="Principles keep the system coherent when no exact component or pattern exists yet."
       />
@@ -326,7 +323,6 @@ function ColorsPage() {
   return (
     <UI.Stack gap="12">
       <PageHeader
-        chapter="Foundation / 02"
         title="Color"
         description="A warm paper-and-ink foundation with categorical saturated accents. Color carries meaning; it is never ambient decoration."
       />
@@ -410,7 +406,6 @@ function TypographyPage() {
   return (
     <UI.Stack gap="8">
       <PageHeader
-        chapter="Foundation / 03"
         title="Typography"
         description="Hierarchy comes from scale, weight, position, and space—not a collection of decorative typefaces."
       />
@@ -451,7 +446,6 @@ function SpacingPage() {
   return (
     <UI.Stack gap="12">
       <PageHeader
-        chapter="Foundation / 04"
         title="Spacing"
         description="Use a four-pixel base for local precision and large editorial jumps to separate chapters."
       />

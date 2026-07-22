@@ -46,12 +46,7 @@ export function ArticlePage({ id }: { id: string }) {
 
   return (
     <UI.Stack gap="12">
-      <PageHeader
-        chapter={entry.group}
-        title={entry.name}
-        description={entry.description}
-        eyebrow="Design system guidance"
-      />
+      <PageHeader title={entry.name} description={entry.description} />
 
       <UI.Grid className="items-start gap-10 xl:grid-cols-[minmax(0,1fr)_16rem]">
         <UI.Stack gap="12" className="min-w-0">

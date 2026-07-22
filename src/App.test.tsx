@@ -159,6 +159,52 @@ describe("Codex Mortis guide", () => {
     ).toHaveAttribute("href", "/accessibility/");
   });
 
+  it("promotes Showcase to the top bar instead of the guide sidebar", () => {
+    render(<App />);
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Guide navigation",
+    });
+    expect(
+      within(navigation).queryByRole("link", { name: "Showcase" }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole("banner")).getByRole("link", {
+        name: "Showcase",
+      }),
+    ).toHaveAttribute("href", "/showcase/");
+  });
+
+  it("collapses guide navigation into a mobile overlay", () => {
+    render(<App />);
+
+    const trigger = screen.getByRole("button", {
+      name: "Open guide navigation",
+    });
+    expect(trigger).toHaveClass("lg:hidden");
+
+    fireEvent.click(trigger);
+    const drawer = screen.getByRole("dialog", { name: "Guide navigation" });
+    expect(
+      within(drawer).getByRole("searchbox", {
+        name: "Search documentation",
+      }),
+    ).toBeInTheDocument();
+    expect(within(drawer).getByText("Foundations")).toBeInTheDocument();
+  });
+
+  it("uses a useful page summary instead of fake chapter metadata", () => {
+    render(<App />);
+
+    expect(screen.queryByText("Foundation / 00")).not.toBeInTheDocument();
+    expect(screen.queryByText("Read time / 4 min")).not.toBeInTheDocument();
+    expect(
+      screen
+        .getByText(/A living codex for technical interfaces/)
+        .closest("[data-slot='card']"),
+    ).not.toBeNull();
+  });
+
   it("opens with foundations and routes into the complete guide", () => {
     render(<App />);
 

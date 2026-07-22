@@ -890,10 +890,8 @@ export function ComponentPage({ id }: { id: string }) {
   return (
     <UI.Stack gap="12">
       <PageHeader
-        chapter="Component / Stable"
         title={entry.name}
         description={`${entry.description}. ${copy.guidance}`}
-        eyebrow="React / Shadcn"
       />
 
       <UI.Stack gap="6" className="py-6 sm:py-10">
