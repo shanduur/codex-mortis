@@ -196,6 +196,9 @@ describe("interactive and feedback components", () => {
       screen.getByRole("progressbar", { name: "Upload progress" }),
     ).toHaveAttribute("value", "40");
     expect(
+      screen.getByRole("progressbar", { name: "Upload progress" }),
+    ).toHaveClass("[&::-webkit-progress-value]:bg-primary");
+    expect(
       screen.getByRole("status", { name: "Loading systems" }),
     ).toBeInTheDocument();
     expect(

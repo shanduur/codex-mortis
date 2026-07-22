@@ -23,6 +23,18 @@ import {
 } from "../index";
 
 describe("form components", () => {
+  it("keeps switch geometry visible and supports keyboard activation", () => {
+    render(<Switch aria-label="Public endpoint" />);
+
+    const control = screen.getByRole("switch", { name: "Public endpoint" });
+    control.focus();
+    fireEvent.keyDown(control, { key: "Enter" });
+
+    expect(control).toBeChecked();
+    expect(control).toHaveClass("before:size-[18px]");
+    expect(control).toHaveClass("dark:before:bg-foreground");
+  });
+
   it("connects field labels, help, and errors to their controls", () => {
     render(
       <Form aria-label="System settings">

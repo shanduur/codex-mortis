@@ -210,7 +210,7 @@ function IntroductionPage() {
 
       <UI.Card className="border-0 bg-code px-2 py-10 text-code-foreground soft-shadow sm:px-4 sm:py-16">
         <UI.CardHeader>
-          <UI.Badge className="w-fit bg-signal-yellow text-foreground">
+          <UI.Badge className="w-fit bg-signal-yellow text-secondary-foreground">
             Core idea
           </UI.Badge>
         </UI.CardHeader>

@@ -182,6 +182,14 @@ describe("design language guide", () => {
     ).not.toBeNull();
   });
 
+  it("keeps the Core idea label readable on the dark editorial surface", () => {
+    render(<App />);
+
+    expect(screen.getByText("Core idea")).toHaveClass(
+      "text-secondary-foreground",
+    );
+  });
+
   it("documents the actual semantic color roles", () => {
     window.history.replaceState({}, "", "/foundations/color/");
     render(<App />);
