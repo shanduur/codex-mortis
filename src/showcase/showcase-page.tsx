@@ -1,4 +1,30 @@
-import type { ReactNode } from "react";
+import {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
+import {
+  BarChart as EChartsBarSeries,
+  CandlestickChart as EChartsCandlestickSeries,
+  LineChart as EChartsLineSeries,
+  PieChart as EChartsPieSeries,
+} from "echarts/charts";
+import {
+  AriaComponent,
+  GraphicComponent,
+  GridComponent,
+  TooltipComponent,
+} from "echarts/components";
+import {
+  init,
+  use as registerEChartsModules,
+  type EChartsCoreOption,
+} from "echarts/core";
+import { SVGRenderer } from "echarts/renderers";
 import {
   Activity,
   AlertTriangle,
@@ -37,6 +63,18 @@ import {
 import * as UI from "@/components";
 import { guideHref } from "@/guide/paths";
 import { cn } from "@/lib/utils";
+
+registerEChartsModules([
+  EChartsLineSeries,
+  EChartsBarSeries,
+  EChartsPieSeries,
+  EChartsCandlestickSeries,
+  GridComponent,
+  TooltipComponent,
+  GraphicComponent,
+  AriaComponent,
+  SVGRenderer,
+]);
 
 const demoLinks = [
   ["Landing", "/showcase/landing/"],
@@ -225,12 +263,20 @@ function AppLink({
   );
 }
 
-function FictionalNotice({ compact = false }: { compact?: boolean }) {
+function FictionalNotice({
+  compact = false,
+  banner = false,
+}: {
+  compact?: boolean;
+  banner?: boolean;
+}) {
   return (
     <div
+      role="note"
       className={cn(
         "border border-foreground bg-signal-yellow/20 px-4 py-3 font-mono text-xs",
         compact && "py-2",
+        banner && "border-x-0 border-t-0 bg-signal-yellow/35 py-2 text-center",
       )}
     >
       <strong>STATIC SHOWCASE</strong> — All organizations, infrastructure,
@@ -248,36 +294,39 @@ function ShowcaseBar({
   onThemeChange: () => void;
 }) {
   return (
-    <header className="sticky top-0 z-50 flex min-h-12 flex-wrap items-center justify-between gap-3 border-b border-foreground bg-background px-4 py-2 shadow-sm">
-      <AppLink
-        href="/showcase/"
-        className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.12em]"
-      >
-        <ArrowLeft className="size-4" /> Back to Codex Mortis
-      </AppLink>
-      <nav
-        aria-label="Showcase demos"
-        className="hidden items-center gap-1 xl:flex"
-      >
-        {demoLinks.map(([label, href]) => (
-          <AppLink
-            key={href}
-            href={href}
-            className="border border-transparent px-2 py-1 text-xs text-muted-foreground hover:border-foreground hover:bg-signal-yellow/20 hover:text-foreground"
-          >
-            {label}
-          </AppLink>
-        ))}
-      </nav>
-      <UI.Button
-        variant="outline"
-        size="icon"
-        aria-label={dark ? "Use light theme" : "Use dark theme"}
-        onClick={onThemeChange}
-      >
-        {dark ? <Sun /> : <Moon />}
-      </UI.Button>
-    </header>
+    <>
+      <FictionalNotice banner />
+      <header className="sticky top-0 z-50 flex min-h-12 flex-wrap items-center justify-between gap-3 border-b border-foreground bg-background px-4 py-2 shadow-sm">
+        <AppLink
+          href="/showcase/"
+          className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.12em]"
+        >
+          <ArrowLeft className="size-4" /> Back to Codex Mortis
+        </AppLink>
+        <nav
+          aria-label="Showcase demos"
+          className="hidden items-center gap-1 xl:flex"
+        >
+          {demoLinks.map(([label, href]) => (
+            <AppLink
+              key={href}
+              href={href}
+              className="border border-transparent px-2 py-1 text-xs text-muted-foreground hover:border-foreground hover:bg-signal-yellow/20 hover:text-foreground"
+            >
+              {label}
+            </AppLink>
+          ))}
+        </nav>
+        <UI.Button
+          variant="outline"
+          size="icon"
+          aria-label={dark ? "Use light theme" : "Use dark theme"}
+          onClick={onThemeChange}
+        >
+          {dark ? <Sun /> : <Moon />}
+        </UI.Button>
+      </header>
+    </>
   );
 }
 
@@ -391,9 +440,6 @@ function ConsoleShell({
                 actions={action}
               />
               {children}
-              <div className="mt-10">
-                <FictionalNotice />
-              </div>
             </div>
           </UI.Main>
         </div>
@@ -509,6 +555,420 @@ function SimpleTable({
   );
 }
 
+type DemoToast = {
+  tone: "info" | "warning" | "error";
+  title: string;
+  description: string;
+};
+
+type DemoToastEntry = DemoToast & { id: number };
+
+let nextDemoToastId = 0;
+
+function useDemoToasts() {
+  const [toasts, setToasts] = useState<DemoToastEntry[]>([]);
+  const pushToast = useCallback((toast: DemoToast) => {
+    const entry = { ...toast, id: ++nextDemoToastId };
+    setToasts((current) => [...current, entry].slice(-5));
+  }, []);
+  const dismissToast = useCallback((id: number) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }, []);
+
+  return { toasts, pushToast, dismissToast };
+}
+
+function ToastItem({
+  toast,
+  onDismiss,
+}: {
+  toast: DemoToastEntry;
+  onDismiss: () => void;
+}) {
+  const [remaining, setRemaining] = useState(100);
+  const dismissRef = useRef(onDismiss);
+  dismissRef.current = onDismiss;
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    setRemaining(100);
+    const interval = window.setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      setRemaining(Math.max(0, 100 - (elapsed / 4500) * 100));
+    }, 100);
+    const timeout = window.setTimeout(() => dismissRef.current(), 4500);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [toast]);
+
+  return (
+    <UI.Toast
+      title={`${toast.tone.toUpperCase()} · ${toast.title}`}
+      description={
+        <>
+          <span className="block">{toast.description}</span>
+          <UI.Progress
+            aria-label="Time remaining before notification closes"
+            value={remaining}
+            className="mt-3 h-1.5"
+          />
+        </>
+      }
+      role={toast.tone === "info" ? "status" : "alert"}
+      onDismiss={onDismiss}
+      className={cn(
+        "border-2 bg-card/95 shadow-lg backdrop-blur-xl",
+        toast.tone === "info" && "border-primary",
+        toast.tone === "warning" && "border-signal-yellow",
+        toast.tone === "error" && "border-alert-coral",
+      )}
+    />
+  );
+}
+
+function ToastRegion({
+  toasts,
+  onDismiss,
+}: {
+  toasts: DemoToastEntry[];
+  onDismiss: (id: number) => void;
+}) {
+  if (toasts.length === 0) return null;
+  return (
+    <div
+      aria-label="Resource notifications"
+      className="fixed bottom-5 right-5 z-[70] flex w-[calc(100%-2.5rem)] max-w-sm flex-col gap-3"
+    >
+      {toasts.map((toast) => (
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onDismiss={() => onDismiss(toast.id)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ShowcaseOverlayAction({
+  kind = "dialog",
+  title,
+  description,
+  trigger,
+  confirmLabel = "Continue",
+  children,
+  onConfirm,
+}: {
+  kind?: "dialog" | "drawer";
+  title: string;
+  description: string;
+  trigger: ReactElement<React.ComponentProps<"button">>;
+  confirmLabel?: string;
+  children?: ReactNode;
+  onConfirm?: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const Root = kind === "drawer" ? UI.Drawer : UI.Dialog;
+  const Content = kind === "drawer" ? UI.DrawerContent : UI.DialogContent;
+  const Header = kind === "drawer" ? UI.DrawerHeader : UI.DialogHeader;
+  const Title = kind === "drawer" ? UI.DrawerTitle : UI.DialogTitle;
+  const Description =
+    kind === "drawer" ? UI.DrawerDescription : UI.DialogDescription;
+  const Footer = kind === "drawer" ? UI.DrawerFooter : UI.DialogFooter;
+
+  return (
+    <Root open={open} onOpenChange={setOpen}>
+      {cloneElement(trigger, { onClick: () => setOpen(true) })}
+      <Content>
+        <Header>
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+        </Header>
+        {children}
+        <Footer>
+          <UI.Button
+            type="button"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
+            Cancel
+          </UI.Button>
+          <UI.Button
+            type="button"
+            onClick={() => {
+              onConfirm?.();
+              setOpen(false);
+            }}
+          >
+            {confirmLabel}
+          </UI.Button>
+        </Footer>
+      </Content>
+    </Root>
+  );
+}
+
+function CreateOverlay({
+  type,
+  trigger,
+  onComplete,
+}: {
+  type: "resource" | "virtual-machine" | "workload";
+  trigger: ReactElement<React.ComponentProps<"button">>;
+  onComplete?: () => void;
+}) {
+  const copy = {
+    resource: {
+      title: "Create cloud resource",
+      description:
+        "Choose the resource family and region for this fictional environment.",
+      name: "production-resource",
+      label: "Resource type",
+      value: "Virtual machine",
+    },
+    "virtual-machine": {
+      title: "Create virtual machine",
+      description:
+        "Configure a fictional machine before reviewing its monthly estimate.",
+      name: "atlas-prod-03",
+      label: "Machine image",
+      value: "Ubuntu 24.04 LTS",
+    },
+    workload: {
+      title: "Deploy container workload",
+      description:
+        "Define an image and replica target for the static platform-production namespace.",
+      name: "new-service",
+      label: "Container image",
+      value: "ghcr.io/axiom/service:1.0.0",
+    },
+  }[type];
+
+  return (
+    <ShowcaseOverlayAction
+      kind="drawer"
+      title={copy.title}
+      description={copy.description}
+      trigger={trigger}
+      confirmLabel="Review configuration"
+      onConfirm={onComplete}
+    >
+      <div className="space-y-5 border-y py-5">
+        <UI.FormField label="Name" id={`${type}-name`}>
+          <UI.Input id={`${type}-name`} defaultValue={copy.name} />
+        </UI.FormField>
+        <UI.FormField label={copy.label} id={`${type}-kind`}>
+          <UI.Input id={`${type}-kind`} defaultValue={copy.value} />
+        </UI.FormField>
+        <UI.FormField label="Region" id={`${type}-region`}>
+          <UI.Input id={`${type}-region`} defaultValue="fra-1" />
+        </UI.FormField>
+      </div>
+    </ShowcaseOverlayAction>
+  );
+}
+
+function FeedbackAction({
+  trigger,
+  toast,
+  onComplete,
+}: {
+  trigger: ReactElement<React.ComponentProps<"button">>;
+  toast: DemoToast;
+  onComplete: (toast: DemoToast) => void;
+}) {
+  return cloneElement(trigger, { onClick: () => onComplete(toast) });
+}
+
+function ResourceActionDialog({
+  resource,
+  action,
+  description,
+  tone,
+  trigger,
+  slider,
+  onComplete,
+}: {
+  resource: string;
+  action: string;
+  description: string;
+  tone: DemoToast["tone"];
+  trigger: ReactElement<React.ComponentProps<"button">>;
+  slider?: { min: number; max: number; initial: number };
+  onComplete: (toast: DemoToast) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [value, setValue] = useState(slider?.initial ?? 0);
+  const presentParticiple =
+    {
+      Stop: "Stopping",
+      Rebuild: "Rebuilding",
+      Delete: "Deleting",
+      Restart: "Restarting",
+      Scale: "Scaling",
+    }[action] ?? `${action}ing`;
+
+  function runAction() {
+    setPending(true);
+    window.setTimeout(() => {
+      const sliderDescription = slider ? ` Desired replicas: ${value}.` : "";
+      onComplete({
+        tone,
+        title: `${action} request for ${resource}`,
+        description:
+          tone === "error"
+            ? `The static environment rejected this ${action.toLowerCase()} request; no resource was changed.`
+            : `The fictional control plane accepted the request.${sliderDescription}`,
+      });
+      setPending(false);
+      setOpen(false);
+    }, 650);
+  }
+
+  return (
+    <UI.Dialog open={open} onOpenChange={setOpen}>
+      {cloneElement(trigger, { onClick: () => setOpen(true) })}
+      <UI.DialogContent>
+        <UI.DialogHeader>
+          <UI.DialogTitle>
+            {action} {resource}
+          </UI.DialogTitle>
+          <UI.DialogDescription>{description}</UI.DialogDescription>
+        </UI.DialogHeader>
+        <div className="border bg-muted/35 p-4">
+          <p className="font-mono text-xs text-muted-foreground">RESOURCE</p>
+          <p className="mt-1 font-semibold">{resource}</p>
+          {slider && (
+            <label className="mt-5 block text-sm font-medium">
+              Desired replicas: <strong>{value}</strong>
+              <UI.Slider
+                aria-label={`${resource} desired replicas`}
+                className="mt-3"
+                min={slider.min}
+                max={slider.max}
+                value={value}
+                onChange={(event) =>
+                  setValue(Number(event.currentTarget.value))
+                }
+              />
+            </label>
+          )}
+        </div>
+        <UI.DialogFooter>
+          <UI.DialogClose asChild>
+            <UI.Button type="button" variant="outline" disabled={pending}>
+              Cancel
+            </UI.Button>
+          </UI.DialogClose>
+          <UI.Button
+            type="button"
+            variant={tone === "error" ? "destructive" : "default"}
+            onClick={runAction}
+            disabled={pending}
+          >
+            {pending ? (
+              <>
+                <UI.Spinner label={`${presentParticiple} ${resource}`} />
+                {presentParticiple}…
+              </>
+            ) : (
+              `${action} ${resource}`
+            )}
+          </UI.Button>
+        </UI.DialogFooter>
+      </UI.DialogContent>
+    </UI.Dialog>
+  );
+}
+
+type ChartPalette = {
+  foreground: string;
+  border: string;
+  card: string;
+  positive: string;
+  negative: string;
+  primary: string;
+};
+
+function readChartPalette(): ChartPalette {
+  const styles = getComputedStyle(document.documentElement);
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const context = canvas.getContext("2d");
+  const color = (name: string, fallback: string) => {
+    const value = styles.getPropertyValue(name).trim() || fallback;
+    if (!context) return fallback;
+    context.clearRect(0, 0, 1, 1);
+    context.fillStyle = value;
+    context.fillRect(0, 0, 1, 1);
+    const [red, green, blue, alpha] = context.getImageData(0, 0, 1, 1).data;
+    return `rgba(${red}, ${green}, ${blue}, ${alpha / 255})`;
+  };
+  return {
+    foreground: color("--foreground", "#181716"),
+    border: color("--border", "#55514a"),
+    card: color("--card", "#f7f3ea"),
+    positive: color("--status-green", "#55b975"),
+    negative: color("--alert-coral", "#ff6857"),
+    primary: color("--primary", "#31afe4"),
+  };
+}
+
+function EChart({
+  label,
+  buildOption,
+  className,
+}: {
+  label: string;
+  buildOption: (palette: ChartPalette) => EChartsCoreOption;
+  className: string;
+}) {
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = chartRef.current;
+    if (!container) return;
+    let chart: ReturnType<typeof init> | undefined;
+    const renderWhenVisible = () => {
+      if (container.clientWidth === 0 || container.clientHeight === 0) return;
+      if (!chart) {
+        chart = init(container, undefined, { renderer: "svg" });
+        chart.setOption(buildOption(readChartPalette()));
+      } else {
+        chart.resize();
+      }
+    };
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(renderWhenVisible);
+    resizeObserver?.observe(container);
+    window.addEventListener("resize", renderWhenVisible);
+    const frame = requestAnimationFrame(renderWhenVisible);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", renderWhenVisible);
+      resizeObserver?.disconnect();
+      chart?.dispose();
+    };
+  }, [buildOption]);
+
+  return (
+    <div
+      ref={chartRef}
+      role="img"
+      aria-label={label}
+      data-chart-library="echarts"
+      className={className}
+    />
+  );
+}
+
 function MiniChart({
   positive = true,
   label = "Usage over the last 30 days",
@@ -516,30 +976,38 @@ function MiniChart({
   positive?: boolean;
   label?: string;
 }) {
-  const points = positive
-    ? "0,82 45,67 90,73 135,44 180,52 225,24 270,31 315,12 360,18"
-    : "0,21 45,33 90,28 135,47 180,40 225,61 270,55 315,78 360,70";
+  const values = positive
+    ? [18, 32, 27, 51, 44, 68, 61, 84, 78]
+    : [79, 67, 72, 53, 60, 39, 45, 22, 30];
   return (
-    <svg
-      role="img"
-      aria-label={label}
-      viewBox="0 0 360 100"
-      className="h-40 w-full border bg-muted/35 p-4"
-      preserveAspectRatio="none"
-    >
-      <path
-        d="M0 25H360M0 50H360M0 75H360"
-        stroke="currentColor"
-        strokeOpacity=".12"
-      />
-      <polyline
-        points={points}
-        fill="none"
-        stroke={positive ? "var(--status-green)" : "var(--alert-coral)"}
-        strokeWidth="4"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
+    <EChart
+      label={label}
+      className="h-40 w-full border bg-muted/35"
+      buildOption={(palette) => ({
+        animation: false,
+        aria: { enabled: true, decal: { show: true } },
+        grid: { left: 12, right: 12, top: 14, bottom: 14 },
+        tooltip: { trigger: "axis" },
+        xAxis: { type: "category", show: false, data: values.map((_, i) => i) },
+        yAxis: { type: "value", show: false, min: 0, max: 100 },
+        series: [
+          {
+            type: "line",
+            data: values,
+            showSymbol: false,
+            smooth: 0.2,
+            lineStyle: {
+              color: positive ? palette.positive : palette.negative,
+              width: 4,
+            },
+            areaStyle: {
+              color: positive ? palette.positive : palette.negative,
+              opacity: 0.12,
+            },
+          },
+        ],
+      })}
+    />
   );
 }
 
@@ -548,21 +1016,6 @@ type PieSegment = {
   value: number;
   color: string;
 };
-
-function pointOnCircle(angle: number, radius: number) {
-  const radians = ((angle - 90) * Math.PI) / 180;
-  return {
-    x: 100 + radius * Math.cos(radians),
-    y: 100 + radius * Math.sin(radians),
-  };
-}
-
-function pieSlicePath(start: number, end: number) {
-  const startPoint = pointOnCircle(start, 82);
-  const endPoint = pointOnCircle(end, 82);
-  const largeArc = end - start > 180 ? 1 : 0;
-  return `M 100 100 L ${startPoint.x} ${startPoint.y} A 82 82 0 ${largeArc} 1 ${endPoint.x} ${endPoint.y} Z`;
-}
 
 function PieChart({
   label,
@@ -573,7 +1026,6 @@ function PieChart({
   segments: PieSegment[];
   compact?: boolean;
 }) {
-  let cursor = 0;
   return (
     <div
       className={cn(
@@ -581,64 +1033,50 @@ function PieChart({
         compact ? "sm:grid-cols-[11rem_1fr]" : "sm:grid-cols-[14rem_1fr]",
       )}
     >
-      <svg
-        role="img"
-        aria-label={label}
-        viewBox="0 0 200 200"
+      <EChart
+        label={label}
         className={cn(
-          "mx-auto aspect-square w-full border bg-muted/35 p-3",
+          "mx-auto aspect-square w-full border bg-muted/35",
           compact ? "max-w-44" : "max-w-56",
         )}
-      >
-        <title>{label}</title>
-        <desc>
-          {segments
-            .map(({ label: name, value }) => `${name} ${value}%`)
-            .join(", ")}
-        </desc>
-        {segments.map((segment) => {
-          const start = cursor * 3.6;
-          cursor += segment.value;
-          const end = cursor * 3.6;
-          return (
-            <path
-              key={segment.label}
-              d={pieSlicePath(start, end)}
-              fill={segment.color}
-              stroke="var(--foreground)"
-              strokeWidth="2"
-            />
-          );
+        buildOption={(palette) => ({
+          animation: false,
+          aria: { enabled: true, decal: { show: true } },
+          tooltip: {
+            trigger: "item",
+            valueFormatter: (value: unknown) => `${String(value)}%`,
+          },
+          graphic: [
+            {
+              type: "text",
+              left: "center",
+              top: "43%",
+              style: {
+                text: "TOTAL\n100%",
+                fill: palette.foreground,
+                font: "700 12px monospace",
+                textAlign: "center",
+                lineHeight: 17,
+              },
+            },
+          ],
+          series: [
+            {
+              type: "pie",
+              radius: ["36%", "76%"],
+              center: ["50%", "50%"],
+              label: { show: false },
+              emphasis: { disabled: true, scale: false },
+              itemStyle: { borderColor: palette.foreground, borderWidth: 2 },
+              data: segments.map((segment) => ({
+                name: segment.label,
+                value: segment.value,
+                itemStyle: { color: segment.color },
+              })),
+            },
+          ],
         })}
-        <circle
-          cx="100"
-          cy="100"
-          r="31"
-          fill="var(--card)"
-          stroke="var(--foreground)"
-          strokeWidth="2"
-        />
-        <text
-          x="100"
-          y="96"
-          textAnchor="middle"
-          fill="currentColor"
-          fontSize="11"
-          fontFamily="var(--font-mono)"
-        >
-          TOTAL
-        </text>
-        <text
-          x="100"
-          y="113"
-          textAnchor="middle"
-          fill="currentColor"
-          fontSize="14"
-          fontWeight="700"
-        >
-          100%
-        </text>
-      </svg>
+      />
       <ul className="space-y-2 text-sm" aria-label={`${label} legend`}>
         {segments.map((segment) => (
           <li
@@ -680,133 +1118,117 @@ const marketCandles = [
   [184.2, 185.0, 183.7, 184.62, 41],
 ] as const;
 
-function CandlestickChart() {
-  const chartTop = 20;
-  const chartBottom = 222;
-  const volumeTop = 247;
-  const volumeBottom = 292;
-  const minPrice = 174;
-  const maxPrice = 188;
-  const xStep = 37;
-  const xStart = 73;
-  const candleWidth = 17;
-  const y = (price: number) =>
-    chartTop +
-    ((maxPrice - price) / (maxPrice - minPrice)) * (chartBottom - chartTop);
-  const maxVolume = Math.max(...marketCandles.map((candle) => candle[4]));
-  const gridPrices = [188, 184.5, 181, 177.5, 174];
-
+function CandlestickChart({ symbol = "NOVA" }: { symbol?: string }) {
+  const times = [
+    "13:30",
+    "13:45",
+    "14:00",
+    "14:15",
+    "14:30",
+    "14:45",
+    "15:00",
+    "15:15",
+    "15:30",
+    "15:45",
+    "16:00",
+    "16:15",
+    "16:30",
+    "16:45",
+    "17:00",
+    "17:15",
+    "17:30",
+    "17:45",
+  ];
   return (
-    <svg
-      role="img"
-      aria-label="NOVA candlestick chart"
-      viewBox="0 0 780 320"
-      className="h-auto min-h-64 w-full border bg-muted/35"
-    >
-      <title>NOVA candlestick chart</title>
-      <desc>
-        Eighteen intraday open, high, low, and close candles with volume. NOVA
-        rises from approximately 176 dollars to 184.62 dollars.
-      </desc>
-      {gridPrices.map((price) => (
-        <g key={price}>
-          <line
-            x1="56"
-            x2="750"
-            y1={y(price)}
-            y2={y(price)}
-            stroke="currentColor"
-            strokeOpacity=".14"
-          />
-          <text
-            x="49"
-            y={y(price) + 4}
-            textAnchor="end"
-            fill="currentColor"
-            opacity=".68"
-            fontSize="10"
-            fontFamily="var(--font-mono)"
-          >
-            {price.toFixed(price % 1 ? 1 : 0)}
-          </text>
-        </g>
-      ))}
-      <line
-        x1="56"
-        x2="750"
-        y1="235"
-        y2="235"
-        stroke="currentColor"
-        strokeOpacity=".35"
+    <>
+      <EChart
+        label={`${symbol} candlestick chart`}
+        className="h-80 w-full border bg-muted/35"
+        buildOption={(palette) => ({
+          animation: false,
+          aria: { enabled: true, decal: { show: true } },
+          tooltip: { trigger: "axis", axisPointer: { type: "cross" } },
+          axisPointer: { link: [{ xAxisIndex: "all" }] },
+          grid: [
+            { left: 58, right: 62, top: 18, height: "62%" },
+            { left: 58, right: 62, top: "76%", height: "15%" },
+          ],
+          xAxis: [
+            {
+              type: "category",
+              data: times,
+              boundaryGap: true,
+              axisLine: { lineStyle: { color: palette.foreground } },
+              axisLabel: { color: palette.foreground, interval: 3 },
+              splitLine: { show: true, lineStyle: { color: palette.border } },
+            },
+            {
+              type: "category",
+              gridIndex: 1,
+              data: times,
+              boundaryGap: true,
+              axisLine: { lineStyle: { color: palette.foreground } },
+              axisLabel: { show: false },
+            },
+          ],
+          yAxis: [
+            {
+              scale: true,
+              position: "right",
+              min: 172,
+              max: 188,
+              axisLabel: {
+                color: palette.foreground,
+                formatter: (value: number) => `$${value.toFixed(0)}`,
+              },
+              splitLine: { lineStyle: { color: palette.border } },
+            },
+            {
+              scale: true,
+              gridIndex: 1,
+              position: "right",
+              axisLabel: { show: false },
+              splitLine: { show: false },
+            },
+          ],
+          series: [
+            {
+              name: `${symbol} OHLC`,
+              type: "candlestick",
+              data: marketCandles.map(([open, high, low, close]) => [
+                open,
+                close,
+                low,
+                high,
+              ]),
+              itemStyle: {
+                color: palette.positive,
+                color0: palette.negative,
+                borderColor: palette.positive,
+                borderColor0: palette.negative,
+              },
+            },
+            {
+              name: "Volume",
+              type: "bar",
+              xAxisIndex: 1,
+              yAxisIndex: 1,
+              data: marketCandles.map(([open, , , close, volume]) => ({
+                value: volume,
+                itemStyle: {
+                  color: close >= open ? palette.positive : palette.negative,
+                },
+              })),
+            },
+          ],
+        })}
       />
-      {marketCandles.map(([open, high, low, close, volume], index) => {
-        const x = xStart + index * xStep;
-        const positive = close >= open;
-        const color = positive ? "var(--status-green)" : "var(--alert-coral)";
-        const bodyTop = y(Math.max(open, close));
-        const bodyHeight = Math.max(3, Math.abs(y(open) - y(close)));
-        const volumeHeight = (volume / maxVolume) * (volumeBottom - volumeTop);
-        return (
-          <g key={`${open}-${index}`}>
-            <line
-              x1={x}
-              x2={x}
-              y1={y(high)}
-              y2={y(low)}
-              stroke={color}
-              strokeWidth="2"
-            />
-            <rect
-              x={x - candleWidth / 2}
-              y={bodyTop}
-              width={candleWidth}
-              height={bodyHeight}
-              fill={positive ? color : "var(--card)"}
-              stroke={color}
-              strokeWidth="2"
-            />
-            <rect
-              x={x - candleWidth / 2}
-              y={volumeBottom - volumeHeight}
-              width={candleWidth}
-              height={volumeHeight}
-              fill={color}
-              opacity=".55"
-            />
-          </g>
-        );
-      })}
-      {[
-        [73, "09:30"],
-        [258, "11:00"],
-        [443, "12:30"],
-        [628, "14:00"],
-        [702, "14:45"],
-      ].map(([x, time]) => (
-        <text
-          key={time}
-          x={x}
-          y="310"
-          textAnchor="middle"
-          fill="currentColor"
-          opacity=".68"
-          fontSize="10"
-          fontFamily="var(--font-mono)"
-        >
-          {time}
-        </text>
-      ))}
-      <text
-        x="59"
-        y="243"
-        fill="currentColor"
-        opacity=".68"
-        fontSize="9"
-        fontFamily="var(--font-mono)"
-      >
-        VOLUME
-      </text>
-    </svg>
+      <p id={`${symbol.toLowerCase()}-chart-summary`} className="sr-only">
+        Interactive chart with eighteen 15-minute {symbol} open, high, low, and
+        close candles plus volume. The deterministic fictional fixture rises
+        from approximately 176 dollars to 184.62 dollars.
+      </p>
+    </>
   );
 }
 
@@ -955,12 +1377,42 @@ function LandingPage({
                 gap="3"
                 className="mt-8 flex-wrap"
               >
-                <UI.Button size="lg">
-                  Deploy in 60 seconds <ArrowUpRight />
-                </UI.Button>
-                <UI.Button variant="outline" size="lg">
-                  Read the architecture
-                </UI.Button>
+                <CreateOverlay
+                  type="virtual-machine"
+                  trigger={
+                    <UI.Button size="lg">
+                      Deploy in 60 seconds <ArrowUpRight />
+                    </UI.Button>
+                  }
+                />
+                <ShowcaseOverlayAction
+                  title="Axiom Cloud architecture"
+                  description="Inspect the fictional request path represented by this product landing page."
+                  confirmLabel="Understood"
+                  trigger={
+                    <UI.Button variant="outline" size="lg">
+                      Read the architecture
+                    </UI.Button>
+                  }
+                >
+                  <div className="grid gap-3 border-y py-5 sm:grid-cols-3">
+                    {[
+                      ["01", "Edge", "TLS termination and traffic policy"],
+                      ["02", "Control plane", "Desired state and identity"],
+                      ["03", "Runtime", "Regional compute and containers"],
+                    ].map(([step, title, detail]) => (
+                      <div key={step} className="border p-4">
+                        <span className="font-mono text-xs text-primary">
+                          {step}
+                        </span>
+                        <p className="mt-4 font-semibold">{title}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </ShowcaseOverlayAction>
               </UI.Stack>
             </div>
             <div className="border border-foreground bg-signal-yellow p-5 text-secondary-foreground shadow-xl">
@@ -1064,9 +1516,6 @@ function LandingPage({
             </div>
           </UI.Container>
         </section>
-        <UI.Container size="full" className="px-5 py-10">
-          <FictionalNotice />
-        </UI.Container>
       </UI.Main>
     </PublicShell>
   );
@@ -1153,17 +1602,53 @@ function LoginPage({
                       Forgot password?
                     </a>
                   </div>
-                  <UI.Button type="submit" className="w-full">
-                    Sign in <ArrowUpRight />
-                  </UI.Button>
+                  <ShowcaseOverlayAction
+                    title="Sign-in unavailable"
+                    description="This static showcase has no identity provider or user accounts. No credentials were submitted."
+                    confirmLabel="Return to sign in"
+                    trigger={
+                      <UI.Button type="submit" className="w-full">
+                        Sign in <ArrowUpRight />
+                      </UI.Button>
+                    }
+                  >
+                    <UI.Alert className="border-alert-coral">
+                      <AlertTriangle />
+                      <UI.AlertTitle>Authentication is disabled</UI.AlertTitle>
+                      <UI.AlertDescription>
+                        Connect a real identity provider in a production
+                        application.
+                      </UI.AlertDescription>
+                    </UI.Alert>
+                  </ShowcaseOverlayAction>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span className="h-px flex-1 bg-border" />
                     OR CONTINUE WITH
                     <span className="h-px flex-1 bg-border" />
                   </div>
-                  <UI.Button type="button" variant="outline" className="w-full">
-                    <ShieldCheck /> Organization SSO
-                  </UI.Button>
+                  <ShowcaseOverlayAction
+                    title="Organization SSO unavailable"
+                    description="Northstar Labs is fictional, so there is no configured OIDC identity provider."
+                    confirmLabel="Close"
+                    trigger={
+                      <UI.Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <ShieldCheck /> Organization SSO
+                      </UI.Button>
+                    }
+                  >
+                    <UI.Alert>
+                      <AlertTriangle />
+                      <UI.AlertTitle>No SSO connection</UI.AlertTitle>
+                      <UI.AlertDescription>
+                        This action intentionally stops before leaving the
+                        showcase.
+                      </UI.AlertDescription>
+                    </UI.Alert>
+                  </ShowcaseOverlayAction>
                 </form>
               </UI.CardContent>
               <UI.CardFooter className="border-t text-sm text-muted-foreground">
@@ -1173,9 +1658,6 @@ function LoginPage({
                 </a>
               </UI.CardFooter>
             </UI.Card>
-            <div className="mt-6">
-              <FictionalNotice compact />
-            </div>
           </div>
         </section>
       </UI.Main>
@@ -1188,15 +1670,21 @@ function DashboardPage(props: {
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const [range, setRange] = useState("30 days");
   return (
     <ConsoleShell
       {...props}
       eyebrow="Account overview"
       title="Operations dashboard"
       action={
-        <UI.Button>
-          <Plus /> Create resource
-        </UI.Button>
+        <CreateOverlay
+          type="resource"
+          trigger={
+            <UI.Button>
+              <Plus /> Create resource
+            </UI.Button>
+          }
+        />
       }
     >
       <MetricGrid
@@ -1217,12 +1705,25 @@ function DashboardPage(props: {
           title="Usage trend"
           description="Combined compute and container utilization"
           action={
-            <UI.Button variant="ghost" size="sm">
-              30 days
+            <UI.Button
+              variant="ghost"
+              size="sm"
+              aria-label={`Usage range: ${range}. Change range`}
+              onClick={() =>
+                setRange((current) =>
+                  current === "30 days"
+                    ? "90 days"
+                    : current === "90 days"
+                      ? "1 year"
+                      : "30 days",
+                )
+              }
+            >
+              {range}
             </UI.Button>
           }
         >
-          <MiniChart />
+          <MiniChart label={`Usage over ${range}`} />
           <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
             <div>
               <p className="text-muted-foreground">CPU average</p>
@@ -1324,9 +1825,14 @@ function CloudPage(props: {
       eyebrow="Infrastructure / Production"
       title="Cloud console"
       action={
-        <UI.Button>
-          <Plus /> Create resource
-        </UI.Button>
+        <CreateOverlay
+          type="resource"
+          trigger={
+            <UI.Button>
+              <Plus /> Create resource
+            </UI.Button>
+          }
+        />
       }
     >
       <MetricGrid
@@ -1421,12 +1927,270 @@ function CloudPage(props: {
               VMs.
             </UI.AlertDescription>
           </UI.Alert>
-          <UI.Button variant="outline" className="mt-4 w-full">
-            Review affected resources
-          </UI.Button>
+          <ShowcaseOverlayAction
+            title="Affected HEL-1 resources"
+            description="Six fictional machines are eligible for live migration during the maintenance window."
+            confirmLabel="Acknowledge maintenance"
+            trigger={
+              <UI.Button variant="outline" className="mt-4 w-full">
+                Review affected resources
+              </UI.Button>
+            }
+          >
+            <SimpleTable
+              caption="Resources affected by HEL-1 maintenance"
+              headers={["Resource", "Current state", "Migration"]}
+              rows={[
+                ["metrics-01", "Maintenance", "Scheduled"],
+                ["metrics-02", "Running", "Eligible"],
+                ["telemetry-03", "Running", "Eligible"],
+              ]}
+            />
+          </ShowcaseOverlayAction>
         </SectionCard>
       </UI.Grid>
     </ConsoleShell>
+  );
+}
+
+function MachineFleetAccordion({
+  onToast,
+}: {
+  onToast: (toast: DemoToast) => void;
+}) {
+  return (
+    <UI.Accordion
+      defaultOpen={[vmRows[0][0]]}
+      items={vmRows.map(
+        ([name, region, image, capacity, publicIp, state, estimate]) => ({
+          id: name,
+          title: (
+            <span className="grid flex-1 items-center gap-2 sm:grid-cols-[1fr_1fr_auto]">
+              <span>
+                <span className="block font-mono">{name}</span>
+                <span className="block text-xs font-normal text-muted-foreground">
+                  {region} · {image}
+                </span>
+              </span>
+              <span className="hidden text-sm font-normal text-muted-foreground sm:block">
+                {capacity} · {publicIp}
+              </span>
+              <Status>{state}</Status>
+            </span>
+          ),
+          content: (
+            <div className="space-y-5 text-foreground">
+              <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
+                <div>
+                  <MiniChart label={`${name} CPU utilization`} />
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    {[
+                      ["Capacity", capacity],
+                      ["Public IP", publicIp],
+                      ["Estimate", `${estimate} / month`],
+                    ].map(([label, value]) => (
+                      <div key={label} className="border p-3">
+                        <p className="text-xs text-muted-foreground">{label}</p>
+                        <p className="mt-1 font-medium">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border bg-muted/30 p-4">
+                  <h3 className="font-semibold">Machine configuration</h3>
+                  <dl className="mt-4 grid gap-3 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground">Image</dt>
+                      <dd>{image}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Network</dt>
+                      <dd>production-vpc · web-production</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Backups</dt>
+                      <dd>Daily · 14 retained</dd>
+                    </div>
+                  </dl>
+                  <ShowcaseOverlayAction
+                    kind="drawer"
+                    title={`Edit ${name}`}
+                    description="Review effective machine settings before applying a fictional configuration change."
+                    trigger={
+                      <UI.Button variant="outline" className="mt-4 w-full">
+                        Edit {name}
+                      </UI.Button>
+                    }
+                    confirmLabel="Save configuration"
+                    onConfirm={() =>
+                      onToast({
+                        tone: "info",
+                        title: `${name} configuration saved`,
+                        description:
+                          "The static showcase recorded the fictional configuration update.",
+                      })
+                    }
+                  >
+                    <div className="space-y-4 border-y py-5">
+                      <UI.FormField label="Machine image" id={`${name}-image`}>
+                        <UI.Input id={`${name}-image`} defaultValue={image} />
+                      </UI.FormField>
+                      <UI.FormField label="Capacity" id={`${name}-capacity`}>
+                        <UI.Input
+                          id={`${name}-capacity`}
+                          defaultValue={capacity}
+                        />
+                      </UI.FormField>
+                    </div>
+                  </ShowcaseOverlayAction>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3 border-t pt-4">
+                <ResourceActionDialog
+                  resource={name}
+                  action="Stop"
+                  description={`Stop ${name} and interrupt its traffic. Attached storage remains available.`}
+                  tone="warning"
+                  onComplete={onToast}
+                  trigger={
+                    <UI.Button variant="outline">
+                      <X /> Stop {name}
+                    </UI.Button>
+                  }
+                />
+                <ResourceActionDialog
+                  resource={name}
+                  action="Rebuild"
+                  description={`Reinstall ${image} on ${name}. Local disk changes will be discarded.`}
+                  tone="info"
+                  onComplete={onToast}
+                  trigger={
+                    <UI.Button variant="outline">
+                      <RefreshCw /> Rebuild {name}
+                    </UI.Button>
+                  }
+                />
+                <ResourceActionDialog
+                  resource={name}
+                  action="Delete"
+                  description={`Permanently remove ${name}. The static showcase will reject the final request.`}
+                  tone="error"
+                  onComplete={onToast}
+                  trigger={
+                    <UI.Button variant="destructive">
+                      <Trash2 /> Delete {name}
+                    </UI.Button>
+                  }
+                />
+              </div>
+            </div>
+          ),
+        }),
+      )}
+    />
+  );
+}
+
+function WorkloadAccordion({
+  onToast,
+}: {
+  onToast: (toast: DemoToast) => void;
+}) {
+  return (
+    <UI.Accordion
+      defaultOpen={[workloadRows[0][0]]}
+      items={workloadRows.map(
+        ([name, image, replicas, rollout, cpu, memory, restarts]) => ({
+          id: name,
+          title: (
+            <span className="grid flex-1 items-center gap-2 sm:grid-cols-[1fr_1fr_auto]">
+              <span>
+                <span className="block font-mono">{name}</span>
+                <span className="block truncate text-xs font-normal text-muted-foreground">
+                  {image}
+                </span>
+              </span>
+              <span className="hidden text-sm font-normal text-muted-foreground sm:block">
+                {replicas} replicas · CPU {cpu}
+              </span>
+              <Status>{rollout}</Status>
+            </span>
+          ),
+          content: (
+            <div className="space-y-5 text-foreground">
+              <div className="grid gap-3 sm:grid-cols-4">
+                {[
+                  ["Replicas", replicas],
+                  ["CPU", cpu],
+                  ["Memory", memory],
+                  ["Restarts", restarts],
+                ].map(([label, value]) => (
+                  <div key={label} className="border p-3">
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className="mt-1 font-semibold">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <UI.Progress
+                aria-label={`${name} rollout progress`}
+                value={
+                  rollout === "Healthy"
+                    ? 100
+                    : rollout === "Progressing"
+                      ? 92
+                      : 67
+                }
+              />
+              <div className="flex flex-wrap gap-3 border-t pt-4">
+                <ResourceActionDialog
+                  resource={name}
+                  action="Restart"
+                  description={`Restart ${name} one replica at a time while preserving availability.`}
+                  tone="warning"
+                  onComplete={onToast}
+                  trigger={
+                    <UI.Button variant="outline" size="sm">
+                      <RefreshCw /> Restart {name}
+                    </UI.Button>
+                  }
+                />
+                <ResourceActionDialog
+                  resource={name}
+                  action="Scale"
+                  description={`Choose a desired replica count for ${name}.`}
+                  tone="info"
+                  slider={{
+                    min: 1,
+                    max: 24,
+                    initial: Number(replicas.split(" ")[0]),
+                  }}
+                  onComplete={onToast}
+                  trigger={
+                    <UI.Button variant="outline" size="sm">
+                      Scale {name}
+                    </UI.Button>
+                  }
+                />
+                <FeedbackAction
+                  onComplete={onToast}
+                  toast={{
+                    tone: "info",
+                    title: `${name} logs exported`,
+                    description:
+                      "A fictional log bundle was prepared for this showcase workload.",
+                  }}
+                  trigger={
+                    <UI.Button variant="ghost" size="sm">
+                      <Download /> Export {name} logs
+                    </UI.Button>
+                  }
+                />
+              </div>
+            </div>
+          ),
+        }),
+      )}
+    />
   );
 }
 
@@ -1435,122 +2199,62 @@ function VirtualMachinesPage(props: {
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const { toasts, pushToast, dismissToast } = useDemoToasts();
   return (
-    <ConsoleShell
-      {...props}
-      eyebrow="Compute / Fleet"
-      title="Virtual machines"
-      action={
-        <UI.Button>
-          <Plus /> Create VM
-        </UI.Button>
-      }
-    >
-      <MetricGrid
-        items={[
-          ["Running", "39", "Across three regions", "border-status-green"],
-          ["Stopped", "2", "Billing for storage only"],
-          [
-            "Maintenance",
-            "1",
-            "Live migration scheduled",
-            "border-signal-yellow",
-          ],
-          ["Monthly estimate", "$3,844", "Compute and attached storage"],
-        ]}
-      />
-      <SectionCard
-        title="Compute fleet"
-        description="Search, inspect, and operate virtual machines"
+    <>
+      <ConsoleShell
+        {...props}
+        eyebrow="Compute / Fleet"
+        title="Virtual machines"
         action={
-          <UI.Button variant="outline" size="sm">
-            <RefreshCw /> Refresh
-          </UI.Button>
+          <CreateOverlay
+            type="virtual-machine"
+            trigger={
+              <UI.Button>
+                <Plus /> Create VM
+              </UI.Button>
+            }
+          />
         }
       >
-        <SimpleTable
-          caption="Virtual machine fleet"
-          headers={[
-            "Name",
-            "Region",
-            "Image",
-            "vCPU / RAM",
-            "Public IP",
-            "State",
-            "Estimate",
+        <MetricGrid
+          items={[
+            ["Running", "39", "Across three regions", "border-status-green"],
+            ["Stopped", "2", "Billing for storage only"],
+            [
+              "Maintenance",
+              "1",
+              "Live migration scheduled",
+              "border-signal-yellow",
+            ],
+            ["Monthly estimate", "$3,844", "Compute and attached storage"],
           ]}
-          rows={vmRows.map((row) =>
-            row.map((cell, index) =>
-              index === 5 ? <Status key={cell}>{cell}</Status> : cell,
-            ),
-          )}
         />
-      </SectionCard>
-      <UI.Grid columns={3} gap="6" className="mt-6">
         <SectionCard
-          title="atlas-prod-01"
-          description="vm-7f1c · running in fra-1"
-          className="lg:col-span-2"
-          action={<Status>Running</Status>}
+          title="Compute fleet"
+          description="Expand a machine to inspect its configuration and available operations."
+          action={
+            <FeedbackAction
+              onComplete={pushToast}
+              toast={{
+                tone: "info",
+                title: "Fleet refreshed",
+                description:
+                  "Fictional machine status was refreshed from the local fixture.",
+              }}
+              trigger={
+                <UI.Button variant="outline" size="sm">
+                  <RefreshCw /> Refresh
+                </UI.Button>
+              }
+            />
+          }
         >
-          <MiniChart label="atlas-prod-01 CPU utilization" />
-          <div className="mt-5 grid gap-4 sm:grid-cols-4">
-            {[
-              ["CPU", "58%"],
-              ["Memory", "11.2 / 16 GB"],
-              ["Disk", "84 / 160 GB"],
-              ["Network", "214 Mbps"],
-            ].map(([label, value]) => (
-              <div key={label} className="border p-3">
-                <p className="text-xs text-muted-foreground">{label}</p>
-                <p className="mt-1 font-semibold">{value}</p>
-              </div>
-            ))}
-          </div>
+          <MachineFleetAccordion onToast={pushToast} />
         </SectionCard>
-        <SectionCard
-          title="Machine configuration"
-          description="Effective configuration"
-        >
-          <dl className="space-y-4 text-sm">
-            {[
-              ["Machine type", "Axiom C4"],
-              ["Image", "Ubuntu 24.04 LTS"],
-              ["Boot disk", "160 GB NVMe"],
-              ["Network", "production-vpc"],
-              ["Firewall", "web-production"],
-              ["Backups", "Daily · 14 retained"],
-            ].map(([term, value]) => (
-              <div key={term} className="border-b pb-3">
-                <dt className="text-muted-foreground">{term}</dt>
-                <dd className="mt-1 font-medium">{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <UI.Button variant="outline" className="mt-5 w-full">
-            Edit configuration
-          </UI.Button>
-        </SectionCard>
-      </UI.Grid>
-      <SectionCard
-        title="Danger zone"
-        description="These operations can interrupt production traffic."
-        className="mt-6 border-destructive"
-        action={<AlertTriangle className="text-destructive" />}
-      >
-        <div className="flex flex-wrap gap-3">
-          <UI.Button variant="outline">
-            <X /> Stop VM
-          </UI.Button>
-          <UI.Button variant="outline">
-            <RefreshCw /> Rebuild VM
-          </UI.Button>
-          <UI.Button variant="destructive">
-            <Trash2 /> Delete VM
-          </UI.Button>
-        </div>
-      </SectionCard>
-    </ConsoleShell>
+      </ConsoleShell>
+      <ToastRegion toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
 }
 
@@ -1559,99 +2263,41 @@ function ContainersPage(props: {
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const { toasts, pushToast, dismissToast } = useDemoToasts();
   return (
-    <ConsoleShell
-      {...props}
-      eyebrow="Containers / platform-prod"
-      title="Container workloads"
-      action={
-        <UI.Button>
-          <Plus /> Deploy workload
-        </UI.Button>
-      }
-    >
-      <MetricGrid
-        items={[
-          ["Healthy", "27", "87% of workloads", "border-status-green"],
-          ["Progressing", "2", "Active rollouts", "border-signal-yellow"],
-          ["Degraded", "1", "search-index", "border-alert-coral"],
-          ["Running pods", "186", "11 nodes"],
-        ]}
-      />
-      <SectionCard
-        title="Workloads"
-        description="Namespace: platform-production"
+    <>
+      <ConsoleShell
+        {...props}
+        eyebrow="Containers / platform-prod"
+        title="Container workloads"
+        action={
+          <CreateOverlay
+            type="workload"
+            trigger={
+              <UI.Button>
+                <Plus /> Deploy workload
+              </UI.Button>
+            }
+          />
+        }
       >
-        <SimpleTable
-          caption="Container workload health"
-          headers={[
-            "Workload",
-            "Image",
-            "Replicas",
-            "Rollout",
-            "CPU",
-            "Memory",
-            "Restarts",
+        <MetricGrid
+          items={[
+            ["Healthy", "27", "87% of workloads", "border-status-green"],
+            ["Progressing", "2", "Active rollouts", "border-signal-yellow"],
+            ["Degraded", "1", "search-index", "border-alert-coral"],
+            ["Running pods", "186", "11 nodes"],
           ]}
-          rows={workloadRows.map((row) =>
-            row.map((cell, index) =>
-              index === 3 ? <Status key={cell}>{cell}</Status> : cell,
-            ),
-          )}
         />
-      </SectionCard>
-      <UI.Grid columns={2} gap="6" className="mt-6">
         <SectionCard
-          title="api-gateway rollout"
-          description="Revision 144 · ghcr.io/axiom/gateway:2.8.4"
-          action={<Status>Healthy</Status>}
+          title="Workloads"
+          description="Expand a workload to inspect rollout health and available operations."
         >
-          <div className="mb-5 flex items-center justify-between text-sm">
-            <span>8 of 8 replicas available</span>
-            <span className="font-mono">100%</span>
-          </div>
-          <UI.Progress aria-label="api-gateway rollout progress" value={100} />
-          <ol className="mt-6 space-y-3">
-            {[
-              ["14:22:08", "Replica set reached desired availability."],
-              ["14:21:42", "Traffic shifted to revision 144."],
-              ["14:20:11", "Image pull completed on all nodes."],
-            ].map(([time, text]) => (
-              <li
-                key={time}
-                className="grid grid-cols-[5rem_1fr] border-l-4 border-status-green pl-3 text-sm"
-              >
-                <span className="font-mono text-xs text-muted-foreground">
-                  {time}
-                </span>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ol>
+          <WorkloadAccordion onToast={pushToast} />
         </SectionCard>
-        <SectionCard
-          title="Live logs"
-          description="api-gateway-7ccf9 · last 60 seconds"
-          action={
-            <UI.Button variant="ghost" size="sm">
-              <Download /> Export
-            </UI.Button>
-          }
-        >
-          <pre className="max-h-64 overflow-auto border bg-code p-4 font-mono text-xs leading-6 text-code-foreground">
-            <code>{`20:42:11 INFO request completed status=200 latency=18ms\n20:42:12 INFO cache hit route=/v1/projects\n20:42:14 WARN upstream retry service=identity attempt=1\n20:42:14 INFO upstream recovered latency=92ms\n20:42:16 INFO request completed status=201 latency=44ms`}</code>
-          </pre>
-          <div className="mt-4 flex gap-3">
-            <UI.Button variant="outline" size="sm">
-              <RefreshCw /> Restart rollout
-            </UI.Button>
-            <UI.Button variant="outline" size="sm">
-              Scale
-            </UI.Button>
-          </div>
-        </SectionCard>
-      </UI.Grid>
-    </ConsoleShell>
+      </ConsoleShell>
+      <ToastRegion toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
 }
 
@@ -1660,116 +2306,166 @@ function BillingPage(props: {
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const { toasts, pushToast, dismissToast } = useDemoToasts();
   return (
-    <ConsoleShell
-      {...props}
-      eyebrow="Finance / July 2026"
-      title="Billing and usage"
-      action={
-        <UI.Button variant="outline">
-          <Download /> Export usage
-        </UI.Button>
-      }
-    >
-      <MetricGrid
-        items={[
-          ["Current spend", "$18,420", "July 1–22"],
-          ["Forecast", "$25,880", "+6.4% against June"],
-          ["Budget", "72%", "$36,000 monthly limit", "border-signal-yellow"],
-          [
-            "Savings",
-            "$4,218",
-            "Committed use this month",
-            "border-status-green",
-          ],
-        ]}
-      />
-      <UI.Grid columns={2} gap="6">
-        <SectionCard
-          title="Cost trend"
-          description="Daily gross usage after credits"
-        >
-          <MiniChart label="Cloud cost over the current month" />
-          <div className="mt-4 flex justify-between text-sm">
-            <span className="text-muted-foreground">Average daily cost</span>
-            <strong>$837.28</strong>
-          </div>
-        </SectionCard>
-        <SectionCard
-          title="Budget threshold"
-          description="$25,920 of $36,000 forecast"
-        >
-          <UI.Progress
-            aria-label="Monthly budget forecast"
-            value={72}
-            className="h-5 [&::-webkit-progress-value]:bg-signal-yellow"
+    <>
+      <ConsoleShell
+        {...props}
+        eyebrow="Finance / July 2026"
+        title="Billing and usage"
+        action={
+          <FeedbackAction
+            onComplete={pushToast}
+            toast={{
+              tone: "info",
+              title: "Usage export prepared",
+              description:
+                "A fictional July usage CSV is ready for this static showcase.",
+            }}
+            trigger={
+              <UI.Button variant="outline">
+                <Download /> Export usage
+              </UI.Button>
+            }
           />
-          <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
-            {[
-              ["50%", "Notice"],
-              ["80%", "Owners"],
-              ["100%", "Escalate"],
-            ].map(([value, label]) => (
-              <div key={value} className="border p-3">
-                <strong>{value}</strong>
-                <p className="text-muted-foreground">{label}</p>
-              </div>
-            ))}
-          </div>
-          <UI.Alert className="mt-5">
-            <AlertTriangle />
-            <UI.AlertTitle>Forecast increased 6.4%</UI.AlertTitle>
-            <UI.AlertDescription>
-              Compute growth in platform-production accounts for most of the
-              change.
-            </UI.AlertDescription>
-          </UI.Alert>
-        </SectionCard>
-        <SectionCard
-          title="Usage by service"
-          description="Current month before credits"
-        >
-          <PieChart
-            label="Cloud spend by service pie chart"
-            segments={[
-              { label: "Compute", value: 64, color: "var(--utility-blue)" },
-              { label: "Containers", value: 18, color: "var(--signal-yellow)" },
-              { label: "Storage", value: 11, color: "var(--play-lavender)" },
-              { label: "Network", value: 7, color: "var(--status-green)" },
-            ]}
-          />
-          <div className="mt-6">
-            <SimpleTable
-              caption="Cloud service charges"
-              headers={["Service", "Usage", "Cost", "Change"]}
-              rows={[
-                ["Compute", "91,402 vCPU hours", "$11,804", "+8.8%"],
-                ["Containers", "133,920 pod hours", "$3,402", "+4.2%"],
-                ["Storage", "18.4 TB month", "$1,944", "+1.1%"],
-                ["Network", "8.4 TB egress", "$1,270", "−2.3%"],
+        }
+      >
+        <MetricGrid
+          items={[
+            ["Current spend", "$18,420", "July 1–22"],
+            ["Forecast", "$25,880", "+6.4% against June"],
+            ["Budget", "72%", "$36,000 monthly limit", "border-signal-yellow"],
+            [
+              "Savings",
+              "$4,218",
+              "Committed use this month",
+              "border-status-green",
+            ],
+          ]}
+        />
+        <UI.Grid columns={2} gap="6">
+          <SectionCard
+            title="Cost trend"
+            description="Daily gross usage after credits"
+          >
+            <MiniChart label="Cloud cost over the current month" />
+            <div className="mt-4 flex justify-between text-sm">
+              <span className="text-muted-foreground">Average daily cost</span>
+              <strong>$837.28</strong>
+            </div>
+          </SectionCard>
+          <SectionCard
+            title="Budget threshold"
+            description="$25,920 of $36,000 forecast"
+          >
+            <UI.Progress
+              aria-label="Monthly budget forecast"
+              value={72}
+              className="h-5 [&::-webkit-progress-value]:bg-signal-yellow"
+            />
+            <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
+              {[
+                ["50%", "Notice"],
+                ["80%", "Owners"],
+                ["100%", "Escalate"],
+              ].map(([value, label]) => (
+                <div key={value} className="border p-3">
+                  <strong>{value}</strong>
+                  <p className="text-muted-foreground">{label}</p>
+                </div>
+              ))}
+            </div>
+            <UI.Alert className="mt-5">
+              <AlertTriangle />
+              <UI.AlertTitle>Forecast increased 6.4%</UI.AlertTitle>
+              <UI.AlertDescription>
+                Compute growth in platform-production accounts for most of the
+                change.
+              </UI.AlertDescription>
+            </UI.Alert>
+          </SectionCard>
+          <SectionCard
+            title="Usage by service"
+            description="Current month before credits"
+          >
+            <PieChart
+              label="Cloud spend by service pie chart"
+              segments={[
+                { label: "Compute", value: 64, color: "var(--utility-blue)" },
+                {
+                  label: "Containers",
+                  value: 18,
+                  color: "var(--signal-yellow)",
+                },
+                { label: "Storage", value: 11, color: "var(--play-lavender)" },
+                { label: "Network", value: 7, color: "var(--status-green)" },
               ]}
             />
-          </div>
-        </SectionCard>
-        <SectionCard
-          title="Invoices"
-          description="Northstar Labs · EUR billing"
-        >
-          <SimpleTable
-            caption="Invoice history"
-            headers={["Invoice", "Period", "Total", "State"]}
-            rows={invoices.map((row) =>
-              row.map((cell, index) =>
-                index === 3 ? <Status key={cell}>{cell}</Status> : cell,
-              ),
-            )}
-          />
-          <UI.Button variant="outline" className="mt-4">
-            <CreditCard /> Update payment method
-          </UI.Button>
-        </SectionCard>
-      </UI.Grid>
-    </ConsoleShell>
+            <div className="mt-6">
+              <SimpleTable
+                caption="Cloud service charges"
+                headers={["Service", "Usage", "Cost", "Change"]}
+                rows={[
+                  ["Compute", "91,402 vCPU hours", "$11,804", "+8.8%"],
+                  ["Containers", "133,920 pod hours", "$3,402", "+4.2%"],
+                  ["Storage", "18.4 TB month", "$1,944", "+1.1%"],
+                  ["Network", "8.4 TB egress", "$1,270", "−2.3%"],
+                ]}
+              />
+            </div>
+          </SectionCard>
+          <SectionCard
+            title="Invoices"
+            description="Northstar Labs · EUR billing"
+          >
+            <SimpleTable
+              caption="Invoice history"
+              headers={["Invoice", "Period", "Total", "State"]}
+              rows={invoices.map((row) =>
+                row.map((cell, index) =>
+                  index === 3 ? <Status key={cell}>{cell}</Status> : cell,
+                ),
+              )}
+            />
+            <ShowcaseOverlayAction
+              kind="drawer"
+              title="Update payment method"
+              description="Payment collection is disabled; these fictional details remain in the browser."
+              confirmLabel="Save payment method"
+              onConfirm={() =>
+                pushToast({
+                  tone: "warning",
+                  title: "Payment method not submitted",
+                  description:
+                    "The static showcase cannot contact a payment provider.",
+                })
+              }
+              trigger={
+                <UI.Button variant="outline" className="mt-4">
+                  <CreditCard /> Update payment method
+                </UI.Button>
+              }
+            >
+              <div className="space-y-4 border-y py-5">
+                <UI.FormField label="Cardholder" id="billing-cardholder">
+                  <UI.Input
+                    id="billing-cardholder"
+                    defaultValue="Northstar Labs"
+                  />
+                </UI.FormField>
+                <UI.FormField label="Billing email" id="billing-email">
+                  <UI.Input
+                    id="billing-email"
+                    defaultValue="finance@northstar.example"
+                  />
+                </UI.FormField>
+              </div>
+            </ShowcaseOverlayAction>
+          </SectionCard>
+        </UI.Grid>
+      </ConsoleShell>
+      <ToastRegion toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
 }
 
@@ -1778,160 +2474,212 @@ function SettingsPage(props: {
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const { toasts, pushToast, dismissToast } = useDemoToasts();
   return (
-    <ConsoleShell
-      {...props}
-      eyebrow="Organization / Administration"
-      title="Organization settings"
-      action={<UI.Button>Save changes</UI.Button>}
-    >
-      <UI.Grid columns={3} gap="6">
-        <nav
-          aria-label="Settings sections"
-          className="h-fit border bg-card p-3 shadow-sm"
-        >
-          <ul className="space-y-1">
-            {[
-              "General",
-              "Members and roles",
-              "Authentication",
-              "API tokens",
-              "Notifications",
-              "Audit log",
-              "Danger zone",
-            ].map((item, index) => (
-              <li key={item}>
-                <a
-                  href={`#settings-${index}`}
-                  className={cn(
-                    "block border px-3 py-2 text-sm",
-                    index === 0
-                      ? "border-foreground bg-signal-yellow text-secondary-foreground"
-                      : "border-transparent hover:border-foreground hover:bg-muted",
-                  )}
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="space-y-6 lg:col-span-2">
-          <SectionCard
-            title="General"
-            description="Organization identity and defaults"
+    <>
+      <ConsoleShell
+        {...props}
+        eyebrow="Organization / Administration"
+        title="Organization settings"
+        action={
+          <FeedbackAction
+            onComplete={pushToast}
+            toast={{
+              tone: "info",
+              title: "Organization settings saved",
+              description:
+                "The local showcase state now reflects the edited settings.",
+            }}
+            trigger={<UI.Button>Save changes</UI.Button>}
+          />
+        }
+      >
+        <UI.Grid columns={3} gap="6">
+          <nav
+            aria-label="Settings sections"
+            className="h-fit border bg-card p-3 shadow-sm"
           >
-            <form
-              className="grid gap-5 sm:grid-cols-2"
-              onSubmit={(event) => event.preventDefault()}
-            >
-              <UI.FormField label="Organization name" id="org-name">
-                <UI.Input id="org-name" defaultValue="Northstar Labs" />
-              </UI.FormField>
-              <UI.FormField label="Organization slug" id="org-slug">
-                <UI.Input id="org-slug" defaultValue="northstar-labs" />
-              </UI.FormField>
-              <UI.FormField label="Support contact" id="support-contact">
-                <UI.Input
-                  id="support-contact"
-                  type="email"
-                  defaultValue="platform@northstar.example"
-                />
-              </UI.FormField>
-              <UI.FormField label="Default region" id="default-region">
-                <UI.Input id="default-region" defaultValue="fra-1" />
-              </UI.FormField>
-            </form>
-          </SectionCard>
-          <SectionCard
-            title="Members and roles"
-            description="12 active members · 3 pending invitations"
-            action={
-              <UI.Button variant="outline" size="sm">
-                <Users /> Invite member
-              </UI.Button>
-            }
-          >
-            <SimpleTable
-              caption="Organization members"
-              headers={["Member", "Role", "MFA", "Last active"]}
-              rows={[
-                [
-                  "Mateusz Urbanek",
-                  "Owner",
-                  <Status key="mateusz-mfa">Healthy</Status>,
-                  "Now",
-                ],
-                [
-                  "Asha Singh",
-                  "Administrator",
-                  <Status key="asha-mfa">Healthy</Status>,
-                  "18 min",
-                ],
-                ["Release automation", "Service account", "Token", "6 min"],
-              ]}
-            />
-          </SectionCard>
-          <SectionCard
-            title="Authentication policy"
-            description="Controls that apply to every interactive member"
-          >
-            <div className="divide-y border">
+            <ul className="space-y-1">
               {[
-                [
-                  "Require multi-factor authentication",
-                  "All interactive accounts must enroll a second factor.",
-                  true,
-                ],
-                [
-                  "Enforce organization SSO",
-                  "Use the configured OIDC identity provider.",
-                  true,
-                ],
-                [
-                  "Allow password sign-in",
-                  "Keep password access available as a recovery path.",
-                  false,
-                ],
-              ].map(([label, description, checked]) => (
-                <div
-                  key={String(label)}
-                  className="flex items-center justify-between gap-5 p-4"
-                >
-                  <div>
-                    <p className="font-medium">{label as string}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {description as string}
-                    </p>
-                  </div>
-                  <UI.Switch
-                    aria-label={label as string}
-                    defaultChecked={checked as boolean}
-                  />
-                </div>
+                "General",
+                "Members and roles",
+                "Authentication",
+                "API tokens",
+                "Notifications",
+                "Audit log",
+                "Danger zone",
+              ].map((item, index) => (
+                <li key={item}>
+                  <a
+                    href={`#settings-${index}`}
+                    className={cn(
+                      "block border px-3 py-2 text-sm",
+                      index === 0
+                        ? "border-foreground bg-signal-yellow text-secondary-foreground"
+                        : "border-transparent hover:border-foreground hover:bg-muted",
+                    )}
+                  >
+                    {item}
+                  </a>
+                </li>
               ))}
-            </div>
-          </SectionCard>
-          <SectionCard
-            title="Danger zone"
-            description="Deleting an organization permanently removes access to all resources."
-            className="border-destructive"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="font-medium">Delete Northstar Labs</p>
-                <p className="text-sm text-muted-foreground">
-                  Export invoices and audit records before continuing.
-                </p>
+            </ul>
+          </nav>
+          <div className="space-y-6 lg:col-span-2">
+            <SectionCard
+              title="General"
+              description="Organization identity and defaults"
+            >
+              <form
+                className="grid gap-5 sm:grid-cols-2"
+                onSubmit={(event) => event.preventDefault()}
+              >
+                <UI.FormField label="Organization name" id="org-name">
+                  <UI.Input id="org-name" defaultValue="Northstar Labs" />
+                </UI.FormField>
+                <UI.FormField label="Organization slug" id="org-slug">
+                  <UI.Input id="org-slug" defaultValue="northstar-labs" />
+                </UI.FormField>
+                <UI.FormField label="Support contact" id="support-contact">
+                  <UI.Input
+                    id="support-contact"
+                    type="email"
+                    defaultValue="platform@northstar.example"
+                  />
+                </UI.FormField>
+                <UI.FormField label="Default region" id="default-region">
+                  <UI.Input id="default-region" defaultValue="fra-1" />
+                </UI.FormField>
+              </form>
+            </SectionCard>
+            <SectionCard
+              title="Members and roles"
+              description="12 active members · 3 pending invitations"
+              action={
+                <ShowcaseOverlayAction
+                  kind="drawer"
+                  title="Invite organization member"
+                  description="Compose a fictional invitation and choose the initial role."
+                  confirmLabel="Send invitation"
+                  onConfirm={() =>
+                    pushToast({
+                      tone: "info",
+                      title: "Invitation prepared",
+                      description:
+                        "No email was sent from this static showcase.",
+                    })
+                  }
+                  trigger={
+                    <UI.Button variant="outline" size="sm">
+                      <Users /> Invite member
+                    </UI.Button>
+                  }
+                >
+                  <div className="space-y-4 border-y py-5">
+                    <UI.FormField label="Member email" id="invite-email">
+                      <UI.Input
+                        id="invite-email"
+                        placeholder="member@example.com"
+                      />
+                    </UI.FormField>
+                    <UI.FormField label="Initial role" id="invite-role">
+                      <UI.Input id="invite-role" defaultValue="Developer" />
+                    </UI.FormField>
+                  </div>
+                </ShowcaseOverlayAction>
+              }
+            >
+              <SimpleTable
+                caption="Organization members"
+                headers={["Member", "Role", "MFA", "Last active"]}
+                rows={[
+                  [
+                    "Mateusz Urbanek",
+                    "Owner",
+                    <Status key="mateusz-mfa">Healthy</Status>,
+                    "Now",
+                  ],
+                  [
+                    "Asha Singh",
+                    "Administrator",
+                    <Status key="asha-mfa">Healthy</Status>,
+                    "18 min",
+                  ],
+                  ["Release automation", "Service account", "Token", "6 min"],
+                ]}
+              />
+            </SectionCard>
+            <SectionCard
+              title="Authentication policy"
+              description="Controls that apply to every interactive member"
+            >
+              <div className="divide-y border">
+                {[
+                  [
+                    "Require multi-factor authentication",
+                    "All interactive accounts must enroll a second factor.",
+                    true,
+                  ],
+                  [
+                    "Enforce organization SSO",
+                    "Use the configured OIDC identity provider.",
+                    true,
+                  ],
+                  [
+                    "Allow password sign-in",
+                    "Keep password access available as a recovery path.",
+                    false,
+                  ],
+                ].map(([label, description, checked]) => (
+                  <div
+                    key={String(label)}
+                    className="flex items-center justify-between gap-5 p-4"
+                  >
+                    <div>
+                      <p className="font-medium">{label as string}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {description as string}
+                      </p>
+                    </div>
+                    <UI.Switch
+                      aria-label={label as string}
+                      defaultChecked={checked as boolean}
+                    />
+                  </div>
+                ))}
               </div>
-              <UI.Button variant="destructive">
-                <Trash2 /> Delete organization
-              </UI.Button>
-            </div>
-          </SectionCard>
-        </div>
-      </UI.Grid>
-    </ConsoleShell>
+            </SectionCard>
+            <SectionCard
+              title="Danger zone"
+              description="Deleting an organization permanently removes access to all resources."
+              className="border-destructive"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium">Delete Northstar Labs</p>
+                  <p className="text-sm text-muted-foreground">
+                    Export invoices and audit records before continuing.
+                  </p>
+                </div>
+                <ResourceActionDialog
+                  resource="Northstar Labs"
+                  action="Delete"
+                  description="Permanently delete the organization and all fictional resources. This static showcase will reject the request."
+                  tone="error"
+                  onComplete={pushToast}
+                  trigger={
+                    <UI.Button variant="destructive">
+                      <Trash2 /> Delete organization
+                    </UI.Button>
+                  }
+                />
+              </div>
+            </SectionCard>
+          </div>
+        </UI.Grid>
+      </ConsoleShell>
+      <ToastRegion toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
 }
 
@@ -1942,228 +2690,308 @@ function MarketsPage({
   dark: boolean;
   onThemeChange: () => void;
 }) {
+  const [selectedSymbol, setSelectedSymbol] = useState("NOVA");
+  const [selectedRange, setSelectedRange] = useState("1D");
+  const [orderSide, setOrderSide] = useState<"Buy" | "Sell">("Buy");
+  const { toasts, pushToast, dismissToast } = useDemoToasts();
+  const selectedMarket =
+    marketRows.find(([symbol]) => symbol === selectedSymbol) ?? marketRows[0];
+  const [, selectedName, selectedPrice, selectedMove] = selectedMarket;
+
   return (
-    <UI.Page className="min-h-screen bg-transparent">
-      <UI.SkipLink href="#showcase-content">
-        Skip to market workspace
-      </UI.SkipLink>
-      <ShowcaseBar dark={dark} onThemeChange={onThemeChange} />
-      <header className="flex min-h-14 items-center justify-between gap-4 border-b bg-card px-4">
-        <div className="flex items-center gap-3 font-semibold">
-          <span className="border border-foreground bg-primary p-2 text-primary-foreground shadow-sm">
-            <TrendingUp className="size-4" />
-          </span>
-          Vector Markets
-        </div>
-        <div className="hidden font-mono text-xs text-muted-foreground sm:block">
-          MARKET OPEN · CLOSES 17:30 CET
-        </div>
-        <UI.Button size="sm">
-          <WalletCards /> Portfolio
-        </UI.Button>
-      </header>
-      <UI.Main id="showcase-content" tabIndex={-1} className="p-3 lg:p-4">
-        <div className="grid gap-4 xl:grid-cols-[15rem_minmax(0,1fr)_20rem]">
-          <SectionCard
-            title="Watchlist"
-            description="Core holdings"
-            className="h-fit"
+    <>
+      <UI.Page className="min-h-screen bg-transparent">
+        <UI.SkipLink href="#showcase-content">
+          Skip to market workspace
+        </UI.SkipLink>
+        <ShowcaseBar dark={dark} onThemeChange={onThemeChange} />
+        <header className="flex min-h-14 items-center justify-between gap-4 border-b bg-card px-4">
+          <div className="flex items-center gap-3 font-semibold">
+            <span className="border border-foreground bg-primary p-2 text-primary-foreground shadow-sm">
+              <TrendingUp className="size-4" />
+            </span>
+            Vector Markets
+          </div>
+          <div className="hidden font-mono text-xs text-muted-foreground sm:block">
+            MARKET OPEN · CLOSES 17:30 CET
+          </div>
+          <ShowcaseOverlayAction
+            kind="drawer"
+            title="Paper portfolio"
+            description="Review the fictional holdings and available cash in this static account."
+            confirmLabel="Done"
+            trigger={
+              <UI.Button size="sm">
+                <WalletCards /> Portfolio
+              </UI.Button>
+            }
           >
-            <div className="space-y-1">
-              {marketRows.map(([symbol, name, price, move]) => (
-                <button
-                  key={symbol}
-                  type="button"
-                  className={cn(
-                    "grid w-full grid-cols-[1fr_auto] border p-3 text-left hover:border-foreground hover:bg-muted",
-                    symbol === "NOVA" &&
-                      "border-foreground bg-signal-yellow/25 shadow-sm",
-                  )}
-                >
-                  <span>
-                    <strong className="font-mono">{symbol}</strong>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {name}
+            <SimpleTable
+              caption="Paper portfolio summary"
+              headers={["Holding", "Market value", "Return"]}
+              rows={[
+                ["NOVA", "$33,231.60", "+30.75%"],
+                ["ORBT", "$22,784.00", "+4.03%"],
+                ["AXIS", "$43,647.80", "+4.59%"],
+                ["Cash", "$18,204.18", "—"],
+              ]}
+            />
+          </ShowcaseOverlayAction>
+        </header>
+        <UI.Main id="showcase-content" tabIndex={-1} className="p-3 lg:p-4">
+          <div className="grid gap-4 xl:grid-cols-[15rem_minmax(0,1fr)_20rem]">
+            <SectionCard
+              title="Watchlist"
+              description="Core holdings"
+              className="h-fit"
+            >
+              <div className="space-y-1">
+                {marketRows.map(([symbol, name, price, move]) => (
+                  <button
+                    key={symbol}
+                    type="button"
+                    aria-pressed={symbol === selectedSymbol}
+                    onClick={() => setSelectedSymbol(symbol)}
+                    className={cn(
+                      "grid w-full grid-cols-[1fr_auto] border p-3 text-left hover:border-foreground hover:bg-muted",
+                      symbol === selectedSymbol &&
+                        "border-foreground bg-signal-yellow/25 shadow-sm",
+                    )}
+                  >
+                    <span>
+                      <strong className="font-mono">{symbol}</strong>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {name}
+                      </span>
                     </span>
-                  </span>
-                  <span className="text-right text-sm">
-                    <strong>{price}</strong>
-                    <span
+                    <span className="text-right text-sm">
+                      <strong>{price}</strong>
+                      <span
+                        className={cn(
+                          "block text-xs",
+                          move.startsWith("+")
+                            ? "text-status-green"
+                            : "text-alert-coral",
+                        )}
+                      >
+                        {move}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </SectionCard>
+            <div className="min-w-0 space-y-4">
+              <SectionCard
+                title={selectedSymbol}
+                description={`${selectedName} · Fictional instrument · XNYS`}
+                action={
+                  <div className="text-right">
+                    <p className="text-3xl font-semibold">{selectedPrice}</p>
+                    <p
                       className={cn(
-                        "block text-xs",
-                        move.startsWith("+")
+                        "font-mono text-sm",
+                        selectedMove.startsWith("+")
                           ? "text-status-green"
                           : "text-alert-coral",
                       )}
                     >
-                      {move}
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </SectionCard>
-          <div className="min-w-0 space-y-4">
-            <SectionCard
-              title="NOVA"
-              description="Nova Systems · Technology · XNYS"
-              action={
-                <div className="text-right">
-                  <p className="text-3xl font-semibold">$184.62</p>
-                  <p className="font-mono text-sm text-status-green">
-                    +8.34 · +4.72%
-                  </p>
-                </div>
-              }
-            >
-              <UI.Heading level={1} className="sr-only">
-                NOVA
-              </UI.Heading>
-              <div className="mb-4 flex flex-wrap gap-2">
-                {["1D", "5D", "1M", "6M", "YTD", "1Y"].map((range) => (
-                  <UI.Button
-                    key={range}
-                    variant={range === "1D" ? "default" : "outline"}
-                    size="sm"
-                  >
-                    {range}
-                  </UI.Button>
-                ))}
-              </div>
-              <CandlestickChart />
-              <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-                {[
-                  ["Open", "$176.42"],
-                  ["High", "$186.11"],
-                  ["Low", "$174.98"],
-                  ["Volume", "8.42M"],
-                  ["Mkt cap", "$42.8B"],
-                  ["P/E", "31.4"],
-                ].map(([label, value]) => (
-                  <div key={label} className="border p-3 text-sm">
-                    <p className="text-muted-foreground">{label}</p>
-                    <p className="font-semibold">{value}</p>
+                      {selectedMove}
+                    </p>
                   </div>
-                ))}
-              </div>
-            </SectionCard>
-            <UI.Grid columns={2} gap="4">
-              <SectionCard
-                title="Market depth"
-                description="Level II · delayed 15 minutes"
+                }
               >
-                <SimpleTable
-                  caption="NOVA bid and ask depth"
-                  headers={["Bid", "Size", "Ask", "Size"]}
-                  rows={[
-                    ["184.58", "1,240", "184.64", "980"],
-                    ["184.54", "2,180", "184.68", "1,620"],
-                    ["184.50", "3,440", "184.72", "2,240"],
-                  ]}
-                  firstColumnHeader={false}
-                />
+                <UI.Heading level={1} className="sr-only">
+                  {selectedSymbol}
+                </UI.Heading>
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {["1D", "5D", "1M", "6M", "YTD", "1Y"].map((range) => (
+                    <UI.Button
+                      key={range}
+                      variant={range === selectedRange ? "default" : "outline"}
+                      size="sm"
+                      aria-pressed={range === selectedRange}
+                      onClick={() => setSelectedRange(range)}
+                    >
+                      {range}
+                    </UI.Button>
+                  ))}
+                </div>
+                <CandlestickChart symbol={selectedSymbol} />
+                <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
+                  {[
+                    ["Open", "$176.42"],
+                    ["High", "$186.11"],
+                    ["Low", "$174.98"],
+                    ["Volume", "8.42M"],
+                    ["Mkt cap", "$42.8B"],
+                    ["P/E", "31.4"],
+                  ].map(([label, value]) => (
+                    <div key={label} className="border p-3 text-sm">
+                      <p className="text-muted-foreground">{label}</p>
+                      <p className="font-semibold">{value}</p>
+                    </div>
+                  ))}
+                </div>
               </SectionCard>
-              <SectionCard
-                title="Recent trades"
-                description="Consolidated tape"
-              >
-                <SimpleTable
-                  caption="NOVA recent trades"
-                  headers={["Time", "Price", "Size"]}
-                  rows={[
-                    ["14:42:18", "$184.62", "420"],
-                    ["14:42:17", "$184.60", "180"],
-                    ["14:42:14", "$184.58", "2,100"],
-                    ["14:42:11", "$184.61", "640"],
-                  ]}
-                />
-              </SectionCard>
-            </UI.Grid>
-            <SectionCard
-              title="Portfolio positions"
-              description="Fictional paper account · $124,882 total"
-            >
-              <PieChart
-                compact
-                label="Portfolio allocation pie chart"
-                segments={[
-                  { label: "NOVA", value: 32, color: "var(--utility-blue)" },
-                  { label: "ORBT", value: 22, color: "var(--status-green)" },
-                  { label: "AXIS", value: 36, color: "var(--play-lavender)" },
-                  { label: "Cash", value: 10, color: "var(--signal-yellow)" },
-                ]}
-              />
-              <div className="mt-6">
-                <SimpleTable
-                  caption="Paper portfolio positions"
-                  headers={[
-                    "Symbol",
-                    "Quantity",
-                    "Average",
-                    "Market value",
-                    "Return",
-                  ]}
-                  rows={[
-                    ["NOVA", "180", "$141.20", "$33,231.60", "+30.75%"],
-                    ["ORBT", "320", "$68.44", "$22,784.00", "+4.03%"],
-                    ["AXIS", "140", "$298.10", "$43,647.80", "+4.59%"],
-                  ]}
-                />
-              </div>
-            </SectionCard>
-          </div>
-          <div className="space-y-4">
-            <SectionCard
-              title="Order ticket"
-              description="NOVA · paper account"
-            >
-              <div className="grid grid-cols-2 gap-2">
-                <UI.Button className="bg-status-green text-secondary-foreground">
-                  Buy
-                </UI.Button>
-                <UI.Button variant="outline">Sell</UI.Button>
-              </div>
-              <form
-                className="mt-5 space-y-4"
-                onSubmit={(event) => event.preventDefault()}
-              >
-                <UI.FormField label="Order type" id="order-type">
-                  <UI.Input id="order-type" defaultValue="Limit" />
-                </UI.FormField>
-                <UI.FormField label="Quantity" id="order-quantity">
-                  <UI.Input
-                    id="order-quantity"
-                    type="number"
-                    defaultValue="25"
+              <UI.Grid columns={2} gap="4">
+                <SectionCard
+                  title="Market depth"
+                  description="Level II · delayed 15 minutes"
+                >
+                  <SimpleTable
+                    caption="NOVA bid and ask depth"
+                    headers={["Bid", "Size", "Ask", "Size"]}
+                    rows={[
+                      ["184.58", "1,240", "184.64", "980"],
+                      ["184.54", "2,180", "184.68", "1,620"],
+                      ["184.50", "3,440", "184.72", "2,240"],
+                    ]}
+                    firstColumnHeader={false}
                   />
-                </UI.FormField>
-                <UI.FormField label="Limit price" id="limit-price">
-                  <UI.Input id="limit-price" defaultValue="$184.50" />
-                </UI.FormField>
-                <div className="border-y py-4 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Estimated value
-                    </span>
-                    <strong>$4,612.50</strong>
-                  </div>
-                  <div className="mt-2 flex justify-between">
-                    <span className="text-muted-foreground">
-                      Available cash
-                    </span>
-                    <span>$18,204.18</span>
-                  </div>
+                </SectionCard>
+                <SectionCard
+                  title="Recent trades"
+                  description="Consolidated tape"
+                >
+                  <SimpleTable
+                    caption="NOVA recent trades"
+                    headers={["Time", "Price", "Size"]}
+                    rows={[
+                      ["14:42:18", "$184.62", "420"],
+                      ["14:42:17", "$184.60", "180"],
+                      ["14:42:14", "$184.58", "2,100"],
+                      ["14:42:11", "$184.61", "640"],
+                    ]}
+                  />
+                </SectionCard>
+              </UI.Grid>
+              <SectionCard
+                title="Portfolio positions"
+                description="Fictional paper account · $124,882 total"
+              >
+                <PieChart
+                  compact
+                  label="Portfolio allocation pie chart"
+                  segments={[
+                    { label: "NOVA", value: 32, color: "var(--utility-blue)" },
+                    { label: "ORBT", value: 22, color: "var(--status-green)" },
+                    { label: "AXIS", value: 36, color: "var(--play-lavender)" },
+                    { label: "Cash", value: 10, color: "var(--signal-yellow)" },
+                  ]}
+                />
+                <div className="mt-6">
+                  <SimpleTable
+                    caption="Paper portfolio positions"
+                    headers={[
+                      "Symbol",
+                      "Quantity",
+                      "Average",
+                      "Market value",
+                      "Return",
+                    ]}
+                    rows={[
+                      ["NOVA", "180", "$141.20", "$33,231.60", "+30.75%"],
+                      ["ORBT", "320", "$68.44", "$22,784.00", "+4.03%"],
+                      ["AXIS", "140", "$298.10", "$43,647.80", "+4.59%"],
+                    ]}
+                  />
                 </div>
-                <UI.Button type="submit" className="w-full">
-                  <Check /> Review order
-                </UI.Button>
-              </form>
-            </SectionCard>
-            <FictionalNotice compact />
+              </SectionCard>
+            </div>
+            <div className="space-y-4">
+              <SectionCard
+                title="Order ticket"
+                description={`${selectedSymbol} · paper account`}
+              >
+                <div className="grid grid-cols-2 gap-2">
+                  <UI.Button
+                    aria-pressed={orderSide === "Buy"}
+                    variant={orderSide === "Buy" ? "default" : "outline"}
+                    className={cn(
+                      orderSide === "Buy" &&
+                        "bg-status-green text-secondary-foreground",
+                    )}
+                    onClick={() => setOrderSide("Buy")}
+                  >
+                    Buy
+                  </UI.Button>
+                  <UI.Button
+                    aria-pressed={orderSide === "Sell"}
+                    variant={orderSide === "Sell" ? "destructive" : "outline"}
+                    onClick={() => setOrderSide("Sell")}
+                  >
+                    Sell
+                  </UI.Button>
+                </div>
+                <form
+                  className="mt-5 space-y-4"
+                  onSubmit={(event) => event.preventDefault()}
+                >
+                  <UI.FormField label="Order type" id="order-type">
+                    <UI.Input id="order-type" defaultValue="Limit" />
+                  </UI.FormField>
+                  <UI.FormField label="Quantity" id="order-quantity">
+                    <UI.Input
+                      id="order-quantity"
+                      type="number"
+                      defaultValue="25"
+                    />
+                  </UI.FormField>
+                  <UI.FormField label="Limit price" id="limit-price">
+                    <UI.Input id="limit-price" defaultValue="$184.50" />
+                  </UI.FormField>
+                  <div className="border-y py-4 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Estimated value
+                      </span>
+                      <strong>$4,612.50</strong>
+                    </div>
+                    <div className="mt-2 flex justify-between">
+                      <span className="text-muted-foreground">
+                        Available cash
+                      </span>
+                      <span>$18,204.18</span>
+                    </div>
+                  </div>
+                  <ShowcaseOverlayAction
+                    title={`Review ${orderSide.toLowerCase()} order`}
+                    description={`${orderSide} 25 ${selectedSymbol} at a fictional limit price of $184.50.`}
+                    confirmLabel="Submit paper order"
+                    onConfirm={() =>
+                      pushToast({
+                        tone: "warning",
+                        title: "Paper order not transmitted",
+                        description:
+                          "No brokerage is connected and no transaction occurred.",
+                      })
+                    }
+                    trigger={
+                      <UI.Button type="submit" className="w-full">
+                        <Check /> Review order
+                      </UI.Button>
+                    }
+                  >
+                    <UI.Alert className="border-signal-yellow">
+                      <AlertTriangle />
+                      <UI.AlertTitle>
+                        Static paper-trading preview
+                      </UI.AlertTitle>
+                      <UI.AlertDescription>
+                        Confirming only demonstrates feedback and never places
+                        an order.
+                      </UI.AlertDescription>
+                    </UI.Alert>
+                  </ShowcaseOverlayAction>
+                </form>
+              </SectionCard>
+            </div>
           </div>
-        </div>
-      </UI.Main>
-    </UI.Page>
+        </UI.Main>
+      </UI.Page>
+      <ToastRegion toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
 }
 

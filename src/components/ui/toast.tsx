@@ -27,7 +27,7 @@ export function Toast({
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium">{title}</p>
         {description && (
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          <div className="mt-1 text-sm text-muted-foreground">{description}</div>
         )}
       </div>
       {onDismiss && (
