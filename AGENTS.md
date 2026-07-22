@@ -6,6 +6,8 @@ This repository contains a React component library and its design-language guide
 
 The visual direction is **editorial neo-industrialism**: technical-catalogue clarity, editorial pacing, restrained color, strong alignment, and visible engineering detail.
 
+The guide must dogfood the public library. Compose its shell, navigation, pages, typography, surfaces, and examples from components exported by `src/components/index.ts`; do not maintain parallel raw-HTML replicas.
+
 ## Core technologies
 
 Keep the core deliberately small:
@@ -134,9 +136,10 @@ A component is not complete if it exists in the package but cannot be discovered
 ## Visual standards
 
 - Use hierarchy through scale, space, alignment, and contrast before adding containers.
+- Only large display and section headings may sit directly on the drafting-grid canvas. Put metadata, descriptions, body copy, lists, and guidance on an owned surface such as Card, Header, Sidebar, Badge, or CodeBlock.
 - Keep radii small and surfaces material.
 - Keep the drafting grid on the page canvas; add local grids only when they explain or frame technical content.
-- Keep most surfaces neutral. Use utility blue for navigation and primary action, yellow for selected or high-attention moments, coral for urgency, green for healthy state, and lavender sparingly.
+- Keep most surfaces neutral. Use utility blue for primary actions, active navigation, information, and links; yellow for selected or high-attention moments; coral for warnings, destructive actions, and errors; green for success and healthy state; and lavender only for rare expressive moments.
 - Prefer quiet one-pixel borders and soft elevation. Hard offset shadows are exceptional emphasis, not a component default.
 - Use monospace for metadata, code, identifiers, and technical labels—not body copy.
 - Prefer asymmetrical editorial layouts to repeated equal card grids.

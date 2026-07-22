@@ -71,7 +71,22 @@ describe("design language guide", () => {
     expect(screen.getByText(/import \{ Accordion \}/)).toBeInTheDocument();
   });
 
-  it("documents the categorical accent palette", () => {
+  it("keeps supporting copy on owned surfaces", () => {
+    render(<App />);
+
+    expect(
+      screen
+        .getByText(/An editorial neo-industrial system for technical products/)
+        .closest("[data-slot='card']"),
+    ).not.toBeNull();
+    expect(
+      screen
+        .getByText(/Technical-catalogue clarity, disciplined alignment/)
+        .closest("[data-slot='card']"),
+    ).not.toBeNull();
+  });
+
+  it("documents the actual semantic color roles", () => {
     render(<App />);
 
     fireEvent.click(screen.getAllByRole("link", { name: /Color/ })[0]);
@@ -80,14 +95,27 @@ describe("design language guide", () => {
       screen.getByText("Color is categorical, not ambient."),
     ).toBeInTheDocument();
     expect(
+      screen
+        .getByText(/Most of the interface stays paper, ink, and muted neutral/)
+        .closest("[data-slot='card']"),
+    ).not.toBeNull();
+    expect(
+      screen.getByText("Selected and high-attention moments"),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(
-        /Most of the interface stays paper, ink, and muted neutral/,
+        "Primary actions, active navigation, information, and links",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText("Signal yellow")).toBeInTheDocument();
-    expect(screen.getByText("Utility blue")).toBeInTheDocument();
-    expect(screen.getByText("Alert coral")).toBeInTheDocument();
-    expect(screen.getByText("Status green")).toBeInTheDocument();
+    expect(
+      screen.getByText("Warnings, destructive actions, and error states"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Success, operational, and healthy system states"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Rare expressive or experimental moments"),
+    ).toBeInTheDocument();
   });
 
   it("filters the component catalogue by name", () => {

@@ -254,7 +254,7 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "alert":
       return (
-        <div className="grid max-w-2xl gap-4">
+        <UI.Stack className="max-w-2xl">
           <UI.Alert>
             <Info />
             <UI.AlertTitle>Restart required</UI.AlertTitle>
@@ -269,23 +269,23 @@ function ComponentExample({ id }: { id: string }) {
               Inspect the build log before trying again.
             </UI.AlertDescription>
           </UI.Alert>
-        </div>
+        </UI.Stack>
       );
     case "avatar":
       return (
-        <div className="flex items-center gap-3">
+        <UI.Stack direction="horizontal" gap="3">
           <UI.Avatar alt="Ada Lovelace" fallback="AL" />
           <UI.Avatar alt="Grace Hopper" fallback="GH" size="lg" />
-        </div>
+        </UI.Stack>
       );
     case "badge":
       return (
-        <div className="flex flex-wrap gap-3">
+        <UI.Stack direction="horizontal" gap="3" className="flex-wrap">
           <UI.Badge>Active</UI.Badge>
           <UI.Badge variant="secondary">In review</UI.Badge>
           <UI.Badge variant="outline">Queued</UI.Badge>
           <UI.Badge variant="destructive">Failed</UI.Badge>
-        </div>
+        </UI.Stack>
       );
     case "banner":
       return (
@@ -305,14 +305,14 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "button":
       return (
-        <div className="flex flex-wrap items-center gap-3">
+        <UI.Stack direction="horizontal" gap="3" className="flex-wrap">
           <UI.Button>Deploy system</UI.Button>
           <UI.Button variant="secondary">Save draft</UI.Button>
           <UI.Button variant="outline">Inspect</UI.Button>
           <UI.Button variant="ghost">Cancel</UI.Button>
           <UI.Button variant="destructive">Delete</UI.Button>
           <UI.Button disabled>Unavailable</UI.Button>
-        </div>
+        </UI.Stack>
       );
     case "button-group":
       return (
@@ -323,7 +323,7 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "card":
       return (
-        <div className="grid gap-6 sm:grid-cols-2">
+        <UI.Grid columns={2} gap="6">
           <UI.Card className="border-t-4 border-t-status-green">
             <UI.CardHeader>
               <Server className="size-5 text-status-green" />
@@ -346,17 +346,18 @@ function ComponentExample({ id }: { id: string }) {
               <UI.CardDescription>Toolchain / release</UI.CardDescription>
             </UI.CardHeader>
             <UI.CardContent>
-              <code className="font-mono text-sm">forge --version 0.4.1</code>
+              <UI.Text as="span" className="font-mono">
+                forge --version 0.4.1
+              </UI.Text>
             </UI.CardContent>
           </UI.Card>
-        </div>
+        </UI.Grid>
       );
     case "checkbox":
       return (
-        <label className="flex items-center gap-3 text-sm">
+        <UI.FormField id="autoscaling" label="Enable autoscaling">
           <UI.Checkbox defaultChecked />
-          Enable autoscaling
-        </label>
+        </UI.FormField>
       );
     case "collapsible":
       return (
@@ -425,11 +426,11 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "divider":
       return (
-        <div className="grid gap-4">
-          <span>Before</span>
+        <UI.Stack>
+          <UI.Text>Before</UI.Text>
           <UI.Divider />
-          <span>After</span>
-        </div>
+          <UI.Text>After</UI.Text>
+        </UI.Stack>
       );
     case "drawer":
       return (
@@ -457,10 +458,9 @@ function ComponentExample({ id }: { id: string }) {
     case "fieldset":
       return (
         <UI.Fieldset className="max-w-md" legend="Deployment">
-          <label className="flex items-center gap-3 text-sm">
+          <UI.FormField id="fieldset-autoscaling" label="Enable autoscaling">
             <UI.Checkbox />
-            Enable autoscaling
-          </label>
+          </UI.FormField>
         </UI.Fieldset>
       );
     case "file-upload":
@@ -512,19 +512,18 @@ function ComponentExample({ id }: { id: string }) {
       return (
         <UI.Grid columns={3}>
           {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="rounded-md border bg-card p-6 text-center text-sm"
-            >
-              Column {item}
-            </div>
+            <UI.Card key={item} className="p-6 text-center shadow-none">
+              <UI.Text>Column {item}</UI.Text>
+            </UI.Card>
           ))}
         </UI.Grid>
       );
     case "header":
       return (
         <UI.Header className="flex items-center justify-between">
-          <strong>Product</strong>
+          <UI.Text as="span" className="font-semibold">
+            Product
+          </UI.Text>
           <UI.NavigationMenu items={[{ label: "Docs", href: "#" }]} />
         </UI.Header>
       );
@@ -538,14 +537,14 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "icon":
       return (
-        <div className="flex gap-4">
+        <UI.Stack direction="horizontal">
           <UI.Icon label="Compute" className="size-8">
             <Cpu />
           </UI.Icon>
           <UI.Icon label="Information" className="size-8">
             <Info />
           </UI.Icon>
-        </div>
+        </UI.Stack>
       );
     case "image":
       return (
@@ -557,13 +556,13 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "input":
       return (
-        <div className="grid max-w-md gap-6">
+        <UI.Stack gap="6" className="max-w-md">
           <UI.FormField id="input-name" label="System name">
             <UI.Input placeholder="compute-01" />
           </UI.FormField>
           <UI.Input value="mesh-4x4" readOnly aria-label="Read-only value" />
           <UI.Input placeholder="No access" disabled aria-label="Unavailable" />
-        </div>
+        </UI.Stack>
       );
     case "input-group":
       return (
@@ -649,22 +648,24 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "progress":
       return (
-        <div className="grid max-w-lg gap-2">
+        <UI.Stack gap="2" className="max-w-lg">
           <UI.Progress value={40} aria-label="Upload progress" />
-          <span className="text-xs text-muted-foreground">40% uploaded</span>
-        </div>
+          <UI.Text tone="muted" className="text-xs">
+            40% uploaded
+          </UI.Text>
+        </UI.Stack>
       );
     case "prose":
       return (
         <UI.Prose>
-          <h2>Architecture</h2>
-          <p>
+          <UI.Heading level={2}>Architecture</UI.Heading>
+          <UI.Text>
             The control plane coordinates scheduling, state, and system health
             across the deployment.
-          </p>
-          <p>
+          </UI.Text>
+          <UI.Text>
             <UI.Link href="#">Read the full specification</UI.Link>
-          </p>
+          </UI.Text>
         </UI.Prose>
       );
     case "radio-group":
@@ -706,11 +707,11 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "skeleton":
       return (
-        <div className="grid max-w-md gap-3">
+        <UI.Stack gap="3" className="max-w-md">
           <UI.Skeleton label="Loading title" className="h-8 w-2/3" />
           <UI.Skeleton label="Loading line" />
           <UI.Skeleton label="Loading line" className="w-5/6" />
-        </div>
+        </UI.Stack>
       );
     case "skip-link":
       return (
@@ -730,16 +731,20 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "spinner":
       return (
-        <div className="flex items-center gap-3">
+        <UI.Stack direction="horizontal" gap="3">
           <UI.Spinner label="Loading systems" />
-          <span className="text-sm">Loading systems</span>
-        </div>
+          <UI.Text as="span">Loading systems</UI.Text>
+        </UI.Stack>
       );
     case "stack":
       return (
         <UI.Stack gap="4">
-          <div className="rounded-md border bg-card p-4">First</div>
-          <div className="rounded-md border bg-card p-4">Second</div>
+          <UI.Card className="p-4 shadow-none">
+            <UI.Text>First</UI.Text>
+          </UI.Card>
+          <UI.Card className="p-4 shadow-none">
+            <UI.Text>Second</UI.Text>
+          </UI.Card>
         </UI.Stack>
       );
     case "stat":
@@ -752,13 +757,13 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "status-indicator":
       return (
-        <div className="flex flex-wrap gap-6">
+        <UI.Stack direction="horizontal" gap="6" className="flex-wrap">
           <UI.StatusIndicator status="operational">
             Operational
           </UI.StatusIndicator>
           <UI.StatusIndicator status="warning">Degraded</UI.StatusIndicator>
           <UI.StatusIndicator status="critical">Offline</UI.StatusIndicator>
-        </div>
+        </UI.Stack>
       );
     case "stepper":
       return (
@@ -766,10 +771,9 @@ function ComponentExample({ id }: { id: string }) {
       );
     case "switch":
       return (
-        <label className="flex items-center gap-3 text-sm">
-          <UI.Switch defaultChecked aria-label="Public endpoint" />
-          Public endpoint
-        </label>
+        <UI.FormField id="public-endpoint" label="Public endpoint">
+          <UI.Switch defaultChecked />
+        </UI.FormField>
       );
     case "table":
       return (
@@ -884,69 +888,102 @@ export function ComponentPage({ id }: { id: string }) {
   const copy = getCopy(entry);
 
   return (
-    <>
+    <UI.Stack gap="12">
       <PageHeader
         chapter="Component / Stable"
         title={entry.name}
         description={`${entry.description}. ${copy.guidance}`}
         eyebrow="React / Shadcn"
       />
-      <section className="py-14 sm:py-20">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Preview</h2>
-          <span className="rounded-full border bg-card px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span className="mr-2 inline-block size-1.5 rounded-full bg-status-green" />
+
+      <UI.Stack gap="6" className="py-6 sm:py-10">
+        <UI.Stack direction="horizontal" className="justify-between">
+          <UI.Heading level={2}>Preview</UI.Heading>
+          <UI.Badge variant="outline" className="gap-2">
+            <UI.StatusIndicator status="operational" aria-hidden />
             Light + dark ready
-          </span>
-        </div>
-        <div
+          </UI.Badge>
+        </UI.Stack>
+        <UI.Card
           aria-label={`${entry.name} component examples`}
-          className="catalogue-grid min-h-64 rounded-lg border p-6 shadow-sm sm:grid sm:place-items-center sm:p-12"
+          className="catalogue-grid min-h-64 justify-center p-6 sm:p-12"
         >
-          <div className="w-full rounded-md border bg-background p-6 sm:p-8">
+          <UI.CardContent className="w-full rounded-md border bg-card p-6 sm:p-8">
             <ComponentExample id={entry.id} />
-          </div>
-        </div>
-      </section>
-      <section className="grid gap-8 border-t py-14 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1fr)]">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
-            Start here
-          </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight">Usage</h2>
-          <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
-            Import from the package entry point. Compose with standard React
-            props and use Tailwind utilities only for layout adjustments
-            specific to the consuming screen.
-          </p>
-        </div>
-        <CodeBlock>{copy.code}</CodeBlock>
-      </section>
-      <section className="grid gap-5 sm:grid-cols-2">
-        <article className="rounded-lg border bg-card p-7 shadow-sm">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span className="mr-2 inline-block size-2 rounded-full bg-status-green" />
-            Do
-          </p>
-          <p className="mt-8 text-sm leading-6">{copy.doThis}</p>
-        </article>
-        <article className="rounded-lg border bg-card p-7 shadow-sm">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span className="mr-2 inline-block size-2 rounded-full bg-alert-coral" />
-            Avoid
-          </p>
-          <p className="mt-8 text-sm leading-6">{copy.avoid}</p>
-        </article>
-      </section>
-      <section className="py-14">
-        <h2 className="text-xl font-semibold">Accessibility checklist</h2>
-        <ul className="mt-5 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-          <li>• Works with keyboard input</li>
-          <li>• Keeps a visible focus indicator</li>
-          <li>• Uses labels that describe intent</li>
-          <li>• Does not rely on color alone</li>
-        </ul>
-      </section>
-    </>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Stack>
+
+      <UI.Stack gap="6" className="border-t py-10">
+        <UI.Heading level={2}>Usage</UI.Heading>
+        <UI.Grid
+          columns={2}
+          gap="8"
+          className="lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1fr)]"
+        >
+          <UI.Card className="h-fit border-l-4 border-l-primary shadow-none">
+            <UI.CardHeader>
+              <UI.Badge variant="outline" className="w-fit">
+                Start here
+              </UI.Badge>
+            </UI.CardHeader>
+            <UI.CardContent>
+              <UI.Text tone="muted">
+                Import from the package entry point. Compose with standard React
+                props and use Tailwind utilities only for layout adjustments
+                specific to the consuming screen.
+              </UI.Text>
+            </UI.CardContent>
+          </UI.Card>
+          <CodeBlock>{copy.code}</CodeBlock>
+        </UI.Grid>
+      </UI.Stack>
+
+      <UI.Grid columns={2} gap="6">
+        <UI.Card className="border-t-4 border-t-status-green">
+          <UI.CardHeader>
+            <UI.Badge variant="outline" className="w-fit">
+              Do
+            </UI.Badge>
+          </UI.CardHeader>
+          <UI.CardContent>
+            <UI.Text>{copy.doThis}</UI.Text>
+          </UI.CardContent>
+        </UI.Card>
+        <UI.Card className="border-t-4 border-t-alert-coral">
+          <UI.CardHeader>
+            <UI.Badge variant="outline" className="w-fit">
+              Avoid
+            </UI.Badge>
+          </UI.CardHeader>
+          <UI.CardContent>
+            <UI.Text>{copy.avoid}</UI.Text>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Grid>
+
+      <UI.Stack gap="6" className="py-10">
+        <UI.Heading level={2}>Accessibility checklist</UI.Heading>
+        <UI.Card className="shadow-none">
+          <UI.CardContent>
+            <UI.List className="grid list-none gap-3 pl-0 text-muted-foreground sm:grid-cols-2">
+              {[
+                "Works with keyboard input",
+                "Keeps a visible focus indicator",
+                "Uses labels that describe intent",
+                "Does not rely on color alone",
+              ].map((item) => (
+                <UI.ListItem key={item} className="flex items-center gap-3">
+                  <UI.StatusIndicator status="operational" aria-hidden />
+                  <UI.Text as="span" tone="muted">
+                    {item}
+                  </UI.Text>
+                </UI.ListItem>
+              ))}
+            </UI.List>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Stack>
+    </UI.Stack>
   );
 }

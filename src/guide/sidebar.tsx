@@ -1,5 +1,6 @@
 import { Search, X } from "lucide-react";
 
+import * as UI from "@/components";
 import { cn } from "@/lib/utils";
 import type { GuideEntry } from "./registry";
 
@@ -26,36 +27,42 @@ function NavigationGroup({
   listLabel?: string;
 }) {
   return (
-    <section className="mt-8">
-      <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
+    <UI.Stack gap="3" className="mt-8">
+      <UI.Text className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
         {label}
-      </p>
-      <ul className="grid gap-px" aria-label={listLabel}>
+      </UI.Text>
+      <UI.List className="grid list-none gap-px pl-0" aria-label={listLabel}>
         {entries.map((entry, index) => (
-          <li key={entry.id}>
-            <a
+          <UI.ListItem key={entry.id}>
+            <UI.Link
               href={`#${entry.id}`}
               onClick={() => onNavigate(entry.id)}
+              aria-current={activeId === entry.id ? "page" : undefined}
               className={cn(
-                "group grid min-h-11 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2 text-sm font-medium transition-colors hover:border-border hover:bg-muted",
+                "group grid min-h-11 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2 text-sm font-medium no-underline transition-colors hover:border-border hover:bg-muted",
                 activeId === entry.id &&
                   "border-primary bg-primary text-primary-foreground",
               )}
             >
-              <span className="font-mono text-[10px] opacity-65">
+              <UI.Text as="span" className="font-mono text-[10px] opacity-65">
                 {String(index + 1).padStart(2, "0")}
-              </span>
-              <span>{entry.name}</span>
+              </UI.Text>
+              <UI.Text as="span" className="font-medium">
+                {entry.name}
+              </UI.Text>
               {entry.status && (
-                <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+                <UI.Badge
+                  variant={activeId === entry.id ? "secondary" : "outline"}
+                  className="text-[9px]"
+                >
                   {entry.status}
-                </span>
+                </UI.Badge>
               )}
-            </a>
-          </li>
+            </UI.Link>
+          </UI.ListItem>
         ))}
-      </ul>
-    </section>
+      </UI.List>
+    </UI.Stack>
   );
 }
 
@@ -68,47 +75,62 @@ export function Sidebar({
   onNavigate,
 }: SidebarProps) {
   return (
-    <aside className="border-b bg-card text-card-foreground lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r">
-      <div className="flex h-full flex-col p-5 lg:p-6">
-        <a
+    <UI.Sidebar className="border-b bg-card p-0 text-card-foreground lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r">
+      <UI.Stack className="h-full p-5 lg:p-6">
+        <UI.Link
           href="#introduction"
           onClick={() => onNavigate("introduction")}
-          className="flex items-center gap-3"
+          className="flex items-center gap-3 no-underline"
         >
-          <span className="grid size-10 place-items-center rounded-md border bg-primary font-mono text-xs font-bold text-primary-foreground">
+          <UI.Badge className="grid size-10 place-items-center rounded-md p-0 font-mono text-xs font-bold">
             DL
-          </span>
-          <span>
-            <strong className="block text-sm">Design language</strong>
-            <span className="font-mono text-[10px] uppercase tracking-wider opacity-65">
+          </UI.Badge>
+          <UI.Stack gap="1">
+            <UI.Text as="span" className="font-semibold">
+              Design language
+            </UI.Text>
+            <UI.Text
+              as="span"
+              tone="muted"
+              className="font-mono text-[10px] uppercase tracking-wider"
+            >
               Reference / v0.2
-            </span>
-          </span>
-        </a>
+            </UI.Text>
+          </UI.Stack>
+        </UI.Link>
 
-        <nav aria-label="Guide navigation" className="mt-6 lg:mt-10">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-            <input
+        <UI.Stack
+          role="navigation"
+          aria-label="Guide navigation"
+          className="mt-6 lg:mt-10"
+        >
+          <UI.Stack className="relative">
+            <UI.Icon className="pointer-events-none absolute left-3 top-3 z-10 size-4">
+              <Search />
+            </UI.Icon>
+            <UI.Input
               type="search"
               aria-label="Filter components"
               placeholder="Filter components"
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
-              className="h-11 w-full rounded-md border bg-background pl-9 pr-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/25"
+              className="pl-9 pr-9"
             />
             {query && (
-              <button
+              <UI.Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 aria-label="Clear filter"
                 onClick={() => onQueryChange("")}
-                className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
+                className="absolute right-1 top-1 size-8"
               >
                 <X className="size-3.5" />
-              </button>
+              </UI.Button>
             )}
-          </div>
-          <div className="hidden lg:block">
+          </UI.Stack>
+
+          <UI.Stack className="hidden lg:flex">
             <NavigationGroup
               label="Foundations"
               entries={foundations}
@@ -122,34 +144,48 @@ export function Sidebar({
               onNavigate={onNavigate}
               listLabel="Component catalogue"
             />
-          </div>
-          <div
-            className="mt-4 flex gap-2 overflow-x-auto pb-1 lg:hidden"
+          </UI.Stack>
+
+          <UI.Stack
+            direction="horizontal"
+            className="mt-4 overflow-x-auto pb-1 lg:hidden"
             aria-label="Component catalogue"
           >
             {[...foundations, ...components].map((entry) => (
-              <a
+              <UI.Link
                 key={entry.id}
                 href={`#${entry.id}`}
                 onClick={() => onNavigate(entry.id)}
+                aria-current={activeId === entry.id ? "page" : undefined}
                 className={cn(
-                  "shrink-0 rounded-md border bg-background px-3 py-2 text-xs font-medium text-foreground",
+                  "shrink-0 rounded-md border bg-background px-3 py-2 text-xs font-medium text-foreground no-underline",
                   activeId === entry.id &&
                     "border-primary bg-primary text-primary-foreground",
                 )}
               >
                 {entry.name}
-              </a>
+              </UI.Link>
             ))}
-          </div>
-        </nav>
+          </UI.Stack>
+        </UI.Stack>
 
-        <div className="mt-auto hidden border-t pt-5 font-mono text-[10px] uppercase leading-5 tracking-wider text-muted-foreground lg:block">
-          React / Shadcn / Tailwind
-          <br />
-          Built as inspectable code.
-        </div>
-      </div>
-    </aside>
+        <UI.Card className="mt-auto hidden gap-2 py-4 shadow-none lg:flex">
+          <UI.CardContent>
+            <UI.Text
+              tone="muted"
+              className="font-mono text-[10px] uppercase leading-5 tracking-wider"
+            >
+              React / Shadcn / Tailwind
+            </UI.Text>
+            <UI.Text
+              tone="muted"
+              className="font-mono text-[10px] uppercase leading-5 tracking-wider"
+            >
+              Built as inspectable code.
+            </UI.Text>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Stack>
+    </UI.Sidebar>
   );
 }

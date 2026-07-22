@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Code2, Moon, Sun } from "lucide-react";
 
-import { Button } from "@/components";
+import * as UI from "@/components";
 import { ComponentPage } from "@/guide/component-page";
 import { FoundationPage } from "@/guide/foundation-page";
 import {
@@ -52,7 +52,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen text-foreground lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
+    <UI.Page className="bg-transparent lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
       <Sidebar
         activeId={activeId}
         foundations={foundationEntries}
@@ -62,50 +62,71 @@ function App() {
         onNavigate={navigate}
       />
 
-      <div className="min-w-0">
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-card px-5 text-card-foreground sm:px-8">
-          <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
-            <span className="hidden sm:inline">Catalogue</span>
-            <span className="hidden sm:inline">/</span>
-            <span>{activeId}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Button asChild variant="ghost" size="sm">
-              <a
+      <UI.Stack gap="1" className="min-w-0">
+        <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-between px-5 py-0 sm:px-8">
+          <UI.Stack direction="horizontal" gap="2">
+            <UI.Badge variant="outline" className="hidden sm:inline-flex">
+              Catalogue
+            </UI.Badge>
+            <UI.Badge variant="secondary">{activeId}</UI.Badge>
+          </UI.Stack>
+          <UI.Stack direction="horizontal" gap="1">
+            <UI.Button asChild variant="ghost" size="sm">
+              <UI.Link
                 href="https://github.com/shanduur/design-language"
                 aria-label="Open repository"
+                className="no-underline"
               >
-                <Code2 /> <span className="hidden sm:inline">Source</span>
-              </a>
-            </Button>
-            <Button
+                <Code2 />
+                <UI.Text as="span" className="hidden sm:inline">
+                  Source
+                </UI.Text>
+              </UI.Link>
+            </UI.Button>
+            <UI.Button
               variant="ghost"
               size="icon"
               aria-label={dark ? "Use light theme" : "Use dark theme"}
               onClick={() => setDark((value) => !value)}
             >
               {dark ? <Sun /> : <Moon />}
-            </Button>
-          </div>
-        </header>
+            </UI.Button>
+          </UI.Stack>
+        </UI.Header>
 
-        <main
-          id="content"
-          className="mx-auto max-w-[84rem] px-5 sm:px-8 lg:px-12 xl:px-16"
-        >
-          {isComponent ? (
-            <ComponentPage id={activeId} />
-          ) : (
-            <FoundationPage id={activeId} />
-          )}
-        </main>
+        <UI.Main id="content" className="py-0">
+          <UI.Container
+            size="lg"
+            className="max-w-[84rem] px-5 sm:px-8 lg:px-12 xl:px-16"
+          >
+            {isComponent ? (
+              <ComponentPage id={activeId} />
+            ) : (
+              <FoundationPage id={activeId} />
+            )}
+          </UI.Container>
+        </UI.Main>
 
-        <footer className="mt-16 grid gap-6 border-t bg-card px-5 py-10 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-2 sm:px-8 lg:px-12 xl:px-16">
-          <span>React / Shadcn / Tailwind CSS</span>
-          <span className="sm:text-right">Inspectable. Extensible. Owned.</span>
-        </footer>
-      </div>
-    </div>
+        <UI.Card className="mt-16 rounded-none border-x-0 border-b-0 shadow-none">
+          <UI.CardContent>
+            <UI.Grid columns={2} gap="6">
+              <UI.Text
+                tone="muted"
+                className="font-mono text-[10px] uppercase tracking-[0.16em]"
+              >
+                React / Shadcn / Tailwind CSS
+              </UI.Text>
+              <UI.Text
+                tone="muted"
+                className="font-mono text-[10px] uppercase tracking-[0.16em] sm:text-right"
+              >
+                Inspectable. Extensible. Owned.
+              </UI.Text>
+            </UI.Grid>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Stack>
+    </UI.Page>
   );
 }
 

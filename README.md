@@ -4,7 +4,9 @@ A React component library and browsable design-language guide built with Shadcn 
 
 The visual system combines Tenstorrent-inspired editorial neo-industrial structure with restrained neo-brutalist accents: technical-catalogue clarity, a page-wide drafting grid, warm paper-and-ink foundations, categorical saturated color, quiet borders, and confident typography.
 
-Color is categorical rather than ambient: utility blue carries navigation and primary action, signal yellow marks selected or high-attention moments, alert coral marks urgency, status green communicates healthy state, and lavender is reserved for rare expressive moments. Most surfaces remain neutral so those colors keep their meaning. Components preserve visible focus, semantic intent, and readable light/dark contrast.
+Color is categorical rather than ambient: utility blue carries primary actions, active navigation, information, and links; signal yellow marks selected or high-attention moments; alert coral identifies warnings, destructive actions, and errors; status green communicates success and healthy state; and lavender is reserved for rare expressive moments. Most surfaces remain neutral so those colors keep their meaning. Components preserve visible focus, semantic intent, and readable light/dark contrast.
+
+The guide dogfoods the public library for its own shell and documentation layout. Only large headings sit directly on the drafting-grid canvas; supporting copy and metadata live on owned component surfaces.
 
 ## Run the guide
 

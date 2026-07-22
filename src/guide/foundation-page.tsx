@@ -1,5 +1,6 @@
 import { ArrowRight, Check } from "lucide-react";
 
+import * as UI from "@/components";
 import { CodeBlock } from "./code-block";
 import { PageHeader } from "./page-header";
 
@@ -27,31 +28,41 @@ const principles = [
 ];
 
 const colors = [
-  ["Paper", "--background", "bg-background", "Warm technical canvas"],
-  ["Ink", "--foreground", "bg-foreground", "Text, structure, and hard shadows"],
+  [
+    "Paper",
+    "--background",
+    "bg-background",
+    "Drafting canvas and default page background",
+  ],
+  [
+    "Ink",
+    "--foreground",
+    "bg-foreground",
+    "Primary text and high-contrast structure",
+  ],
   [
     "Signal yellow",
     "--signal-yellow",
     "bg-signal-yellow",
-    "Primary action and selected state",
+    "Selected and high-attention moments",
   ],
   [
     "Utility blue",
     "--utility-blue",
     "bg-utility-blue",
-    "Navigation, information, and links",
+    "Primary actions, active navigation, information, and links",
   ],
   [
     "Alert coral",
     "--alert-coral",
     "bg-alert-coral",
-    "Warnings and urgent editorial emphasis",
+    "Warnings, destructive actions, and error states",
   ],
   [
     "Status green",
     "--status-green",
     "bg-status-green",
-    "Success and healthy system state",
+    "Success, operational, and healthy system states",
   ],
   [
     "Play lavender",
@@ -59,7 +70,12 @@ const colors = [
     "bg-play-lavender",
     "Rare expressive or experimental moments",
   ],
-  ["Muted", "--muted", "bg-muted", "Supporting surfaces and disabled state"],
+  [
+    "Muted",
+    "--muted",
+    "bg-muted",
+    "Subordinate surfaces, quiet fills, and disabled states",
+  ],
 ];
 
 function SectionHeading({
@@ -72,241 +88,265 @@ function SectionHeading({
   description: string;
 }) {
   return (
-    <div className="grid gap-5 border-b pb-8 lg:grid-cols-[8rem_1fr_1fr]">
-      <span className="font-mono text-xs text-muted-foreground">{index}</span>
-      <h2 className="text-3xl font-semibold tracking-[-0.035em]">{title}</h2>
-      <p className="max-w-md text-sm leading-6 text-muted-foreground">
-        {description}
-      </p>
-    </div>
+    <UI.Grid
+      columns={2}
+      gap="8"
+      className="items-end border-b pb-8 lg:grid-cols-[minmax(0,1fr)_24rem]"
+    >
+      <UI.Heading level={2} className="tracking-[-0.035em]">
+        {title}
+      </UI.Heading>
+      <UI.Card className="gap-3 border-l-4 border-l-primary py-4 shadow-none">
+        <UI.CardHeader className="px-4">
+          <UI.Badge variant="outline" className="w-fit">
+            {index}
+          </UI.Badge>
+        </UI.CardHeader>
+        <UI.CardContent className="px-4">
+          <UI.Text tone="muted">{description}</UI.Text>
+        </UI.CardContent>
+      </UI.Card>
+    </UI.Grid>
   );
 }
 
 function IntroductionPage() {
+  const postures = [
+    [
+      "Industrial, not corporate",
+      "Show systems as things people configure, inspect, and own.",
+      "border-t-utility-blue",
+    ],
+    [
+      "Editorial, not templated",
+      "Let content change the rhythm. Not every idea belongs in an equal card.",
+      "border-t-alert-coral",
+    ],
+    [
+      "Colorful, not decorative",
+      "Give every saturated color a stable role instead of scattering rainbow accents.",
+      "border-t-status-green",
+    ],
+  ];
+
   return (
-    <>
+    <UI.Stack gap="12">
       <PageHeader
         chapter="Foundation / 00"
         title="Design language"
         description="An editorial neo-industrial system for technical products: calm, legible, open, and grounded in how the product actually works."
         eyebrow="Read time / 4 min"
       />
-      <section className="py-16 sm:py-24">
+
+      <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
           index="01"
           title="Editorial neo-industrialism"
           description="Technical-catalogue clarity, disciplined alignment, and confident whitespace lead the system. Neo-brutalist color is an accent, not the default surface."
         />
-        <div className="grid gap-5 py-8 lg:grid-cols-3">
-          {[
-            [
-              "Industrial, not corporate",
-              "Show systems as things people configure, inspect, and own.",
-              "bg-utility-blue",
-            ],
-            [
-              "Editorial, not templated",
-              "Let content change the rhythm. Not every idea belongs in an equal card.",
-              "bg-alert-coral",
-            ],
-            [
-              "Colorful, not decorative",
-              "Give every saturated color a stable role instead of scattering rainbow accents.",
-              "bg-status-green",
-            ],
-          ].map(([title, copy, color], index) => (
-            <article
-              key={title}
-              className="min-h-56 rounded-lg border bg-card p-7 shadow-sm"
-            >
-              <span className={`block h-1.5 w-14 rounded-full ${color}`} />
-              <span className="mt-6 block font-mono text-[10px] text-muted-foreground">
-                0{index + 1}
-              </span>
-              <h3 className="mt-10 text-xl font-semibold tracking-tight">
-                {title}
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                {copy}
-              </p>
-            </article>
+        <UI.Grid columns={3} gap="6">
+          {postures.map(([title, copy, color], index) => (
+            <UI.Card key={title} className={`min-h-56 border-t-4 ${color}`}>
+              <UI.CardHeader>
+                <UI.Badge variant="outline" className="w-fit">
+                  0{index + 1}
+                </UI.Badge>
+                <UI.Heading level={3} className="mt-8 text-xl">
+                  {title}
+                </UI.Heading>
+              </UI.CardHeader>
+              <UI.CardContent>
+                <UI.Text tone="muted">{copy}</UI.Text>
+              </UI.CardContent>
+            </UI.Card>
           ))}
-        </div>
-      </section>
-      <section className="rounded-xl bg-code px-6 py-16 text-code-foreground soft-shadow sm:px-10 sm:py-24">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-code-foreground/55">
-          <span className="mr-3 inline-block size-2 rounded-full bg-signal-yellow" />
-          Core idea
-        </p>
-        <p className="mt-12 max-w-5xl text-balance text-4xl font-medium leading-tight tracking-[-0.04em] sm:text-6xl">
-          The interface should expose how the product works—not hide it behind
-          generic futurism.
-        </p>
-      </section>
-      <section className="py-16 sm:py-24">
+        </UI.Grid>
+      </UI.Stack>
+
+      <UI.Card className="border-0 bg-code px-2 py-10 text-code-foreground soft-shadow sm:px-4 sm:py-16">
+        <UI.CardHeader>
+          <UI.Badge className="w-fit bg-signal-yellow text-foreground">
+            Core idea
+          </UI.Badge>
+        </UI.CardHeader>
+        <UI.CardContent>
+          <UI.Text className="max-w-5xl text-balance text-4xl font-medium leading-tight tracking-[-0.04em] sm:text-6xl">
+            The interface should expose how the product works—not hide it behind
+            generic futurism.
+          </UI.Text>
+        </UI.CardContent>
+      </UI.Card>
+
+      <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
           index="02"
           title="How to use this guide"
           description="Learn the foundations, choose a component by intent, copy the example, and adapt it with semantic tokens rather than hard-coded color values."
         />
-        <ol className="mt-10 grid gap-px border bg-border sm:grid-cols-2">
+        <UI.Grid columns={2} gap="4">
           {[
             "Read the foundations",
             "Browse a component",
             "Copy the smallest example",
             "Test keyboard and screen-reader behavior",
           ].map((step, index) => (
-            <li
-              key={step}
-              className="flex min-h-24 items-center gap-4 bg-background p-5"
-            >
-              <span className="font-mono text-xs text-primary">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="text-sm font-medium">{step}</span>
-              <ArrowRight className="ml-auto size-4 text-muted-foreground" />
-            </li>
+            <UI.Card key={step} className="py-4 shadow-none">
+              <UI.CardContent className="flex items-center gap-4">
+                <UI.Badge variant="outline">
+                  {String(index + 1).padStart(2, "0")}
+                </UI.Badge>
+                <UI.Text className="font-medium">{step}</UI.Text>
+                <UI.Icon className="ml-auto text-muted-foreground" aria-hidden>
+                  <ArrowRight />
+                </UI.Icon>
+              </UI.CardContent>
+            </UI.Card>
           ))}
-        </ol>
-      </section>
-    </>
+        </UI.Grid>
+      </UI.Stack>
+    </UI.Stack>
   );
 }
 
 function PrinciplesPage() {
   return (
-    <>
+    <UI.Stack gap="12">
       <PageHeader
         chapter="Foundation / 01"
         title="Principles"
         description="Principles keep the system coherent when no exact component or pattern exists yet."
       />
-      <section className="divide-y border-x border-b">
+      <UI.Stack gap="4">
         {principles.map(([title, copy], index) => (
-          <article
-            key={title}
-            className="grid gap-5 p-6 sm:grid-cols-[4rem_1fr_1fr] sm:p-8"
-          >
-            <span className="font-mono text-xs text-primary">P{index + 1}</span>
-            <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-            <p className="text-sm leading-6 text-muted-foreground">{copy}</p>
-          </article>
+          <UI.Card key={title} className="shadow-none">
+            <UI.CardContent className="grid gap-5 sm:grid-cols-[4rem_1fr_1fr] sm:items-start">
+              <UI.Badge variant="outline" className="w-fit">
+                P{index + 1}
+              </UI.Badge>
+              <UI.Heading level={2} className="text-xl">
+                {title}
+              </UI.Heading>
+              <UI.Text tone="muted">{copy}</UI.Text>
+            </UI.CardContent>
+          </UI.Card>
         ))}
-      </section>
-      <section className="py-16 sm:py-24">
+      </UI.Stack>
+      <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
           index="Rule"
           title="Avoid generic futurism"
           description="Do not use glowing brains, particle clouds, random gradients, glassmorphism, or abstract AI humanoids. Concrete information is more credible."
         />
-      </section>
-    </>
+      </UI.Stack>
+    </UI.Stack>
   );
 }
 
 function ColorsPage() {
   return (
-    <>
+    <UI.Stack gap="12">
       <PageHeader
         chapter="Foundation / 02"
         title="Color"
         description="A warm paper-and-ink foundation with categorical saturated accents. Color carries meaning; it is never ambient decoration."
       />
-      <section className="py-14">
-        <h2 className="text-3xl font-medium tracking-tight">
-          Color is categorical, not ambient.
-        </h2>
-        <p className="mb-8 mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          Most of the interface stays paper, ink, and muted neutral. Saturated
-          surfaces mark a selected destination, a primary action, or a state
-          that deserves attention.
-        </p>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+      <UI.Stack gap="6" className="py-6">
+        <UI.Heading level={2}>Color is categorical, not ambient.</UI.Heading>
+        <UI.Card className="max-w-3xl border-l-4 border-l-primary py-4 shadow-none">
+          <UI.CardContent>
+            <UI.Text tone="muted">
+              Most of the interface stays paper, ink, and muted neutral.
+              Saturated color identifies an action, selection, warning, or
+              system state; it does not decorate empty space.
+            </UI.Text>
+          </UI.CardContent>
+        </UI.Card>
+        <UI.Grid columns={3} gap="6">
           {colors.map(([name, token, className, purpose], index) => (
-            <article
-              key={token}
-              className="rounded-lg border bg-card p-4 shadow-sm"
-            >
-              <div className={`h-28 rounded-md border ${className}`}>
-                <span className="m-2 inline-block rounded-full border bg-card px-2 py-1 font-mono text-[10px] text-card-foreground">
-                  0{index + 1}
-                </span>
-              </div>
-              <div className="mt-4 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-semibold">{name}</h2>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    {purpose}
-                  </p>
-                </div>
-                <code className="font-mono text-[10px] text-muted-foreground">
+            <UI.Card key={token}>
+              <UI.CardContent>
+                <UI.Badge
+                  aria-hidden
+                  className={`h-28 w-full items-start justify-start rounded-md border p-3 ${className}`}
+                >
+                  <UI.Badge variant="outline" className="bg-card">
+                    0{index + 1}
+                  </UI.Badge>
+                </UI.Badge>
+              </UI.CardContent>
+              <UI.CardHeader>
+                <UI.Heading level={3} className="text-lg">
+                  {name}
+                </UI.Heading>
+                <UI.Badge variant="outline" className="w-fit">
                   {token}
-                </code>
-              </div>
-            </article>
+                </UI.Badge>
+                <UI.Text tone="muted">{purpose}</UI.Text>
+              </UI.CardHeader>
+            </UI.Card>
           ))}
-        </div>
-      </section>
-      <section className="grid gap-8 border-t py-14 lg:grid-cols-2">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Use semantic tokens
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            A semantic class explains intent and automatically follows theme
-            changes. A raw violet utility only explains appearance.
-          </p>
-        </div>
-        <CodeBlock label="Preferred">{`// Good: intent survives a theme change\n<Button className="bg-primary">Deploy</Button>\n\n// Avoid: appearance is hard-coded\n<Button className="bg-violet-600">Deploy</Button>`}</CodeBlock>
-      </section>
-    </>
+        </UI.Grid>
+      </UI.Stack>
+
+      <UI.Stack gap="6" className="border-t py-10">
+        <UI.Heading level={2}>Use semantic tokens</UI.Heading>
+        <UI.Grid columns={2} gap="8">
+          <UI.Card className="h-fit border-l-4 border-l-primary shadow-none">
+            <UI.CardContent>
+              <UI.Text tone="muted">
+                A semantic class explains intent and follows theme changes. A
+                raw color utility only describes appearance. For example,
+                <UI.Badge variant="outline" className="mx-2">
+                  bg-primary
+                </UI.Badge>
+                maps to utility blue because primary actions use blue.
+              </UI.Text>
+            </UI.CardContent>
+          </UI.Card>
+          <CodeBlock label="Preferred">{`// Good: intent survives a theme change\n<Button className="bg-primary">Deploy</Button>\n\n// Avoid: appearance is hard-coded\n<Button className="bg-blue-600">Deploy</Button>`}</CodeBlock>
+        </UI.Grid>
+      </UI.Stack>
+    </UI.Stack>
   );
 }
 
 function TypographyPage() {
+  const specimens = [
+    ["Display / 80", "One system.", "text-6xl sm:text-8xl leading-[0.9]"],
+    ["Heading / 36", "Compute for every scale.", "text-4xl"],
+    [
+      "Body / 16",
+      "Use practical language. Describe the object, its state, and what the person can do next.",
+      "max-w-xl text-base leading-7",
+    ],
+    [
+      "Metadata / 11",
+      "System / Active / Rev. 04",
+      "font-mono text-[11px] uppercase tracking-[0.18em]",
+    ],
+  ];
+
   return (
-    <>
+    <UI.Stack gap="8">
       <PageHeader
         chapter="Foundation / 03"
         title="Typography"
         description="Hierarchy comes from scale, weight, position, and space—not a collection of decorative typefaces."
       />
-      <section className="divide-y border-x border-b">
-        <div className="grid gap-6 p-6 sm:p-10 lg:grid-cols-[9rem_1fr]">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Display / 80
-          </span>
-          <p className="text-6xl font-semibold leading-[0.9] tracking-[-0.055em] sm:text-8xl">
-            One system.
-          </p>
-        </div>
-        <div className="grid gap-6 p-6 sm:p-10 lg:grid-cols-[9rem_1fr]">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Heading / 36
-          </span>
-          <p className="text-4xl font-semibold tracking-[-0.04em]">
-            Compute for every scale.
-          </p>
-        </div>
-        <div className="grid gap-6 p-6 sm:p-10 lg:grid-cols-[9rem_1fr]">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Body / 16
-          </span>
-          <p className="max-w-xl text-base leading-7">
-            Use practical language. Describe the object, its state, and what the
-            person can do next.
-          </p>
-        </div>
-        <div className="grid gap-6 p-6 sm:p-10 lg:grid-cols-[9rem_1fr]">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Metadata / 11
-          </span>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em]">
-            System / Active / Rev. 04
-          </p>
-        </div>
-      </section>
-    </>
+      <UI.Stack gap="4">
+        {specimens.map(([label, sample, className]) => (
+          <UI.Card key={label} className="shadow-none">
+            <UI.CardContent className="grid gap-6 lg:grid-cols-[9rem_1fr]">
+              <UI.Badge variant="outline" className="h-fit w-fit">
+                {label}
+              </UI.Badge>
+              <UI.Text className={className}>{sample}</UI.Text>
+            </UI.CardContent>
+          </UI.Card>
+        ))}
+      </UI.Stack>
+    </UI.Stack>
   );
 }
 
@@ -321,56 +361,73 @@ function SpacingPage() {
     ["12", "48px"],
     ["16", "64px"],
   ];
+  const rules = [
+    "Align to meaningful edges",
+    "Use proximity before borders",
+    "Give one important idea enough empty space",
+    "Do not wrap every section in a card",
+  ];
+
   return (
-    <>
+    <UI.Stack gap="12">
       <PageHeader
         chapter="Foundation / 04"
         title="Spacing"
         description="Use a four-pixel base for local precision and large editorial jumps to separate chapters."
       />
-      <section className="border-x border-b p-6 sm:p-10">
-        <div className="space-y-5">
-          {spaces.map(([token, value]) => (
-            <div
-              key={token}
-              className="grid grid-cols-[3rem_4rem_1fr] items-center gap-4"
-            >
-              <code className="font-mono text-xs text-primary">{token}</code>
-              <span className="font-mono text-[10px] text-muted-foreground">
-                {value}
-              </span>
-              <div
-                className="h-3 bg-foreground"
-                style={{ width: `min(100%, ${Number.parseInt(value) * 5}px)` }}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="grid gap-8 py-16 lg:grid-cols-2">
-        <div>
-          <h2 className="text-2xl font-semibold">Two rhythms</h2>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Components use compact 4–32px steps. Page chapters use 64–128px
-            separation. This creates a technical local rhythm inside an
-            editorial global rhythm.
-          </p>
-        </div>
-        <ul className="space-y-3 text-sm">
-          {[
-            "Align to meaningful edges",
-            "Use proximity before borders",
-            "Give one important idea enough empty space",
-            "Do not wrap every section in a card",
-          ].map((rule) => (
-            <li key={rule} className="flex gap-3">
-              <Check className="mt-0.5 size-4 text-primary" />
-              {rule}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </>
+      <UI.Card className="shadow-none">
+        <UI.CardContent>
+          <UI.Stack gap="6">
+            {spaces.map(([token, value]) => (
+              <UI.Grid
+                key={token}
+                className="grid-cols-[3rem_4rem_1fr] items-center"
+              >
+                <UI.Badge variant="outline">{token}</UI.Badge>
+                <UI.Text as="span" tone="muted" className="font-mono text-xs">
+                  {value}
+                </UI.Text>
+                <UI.Card
+                  aria-hidden
+                  className="h-3 border-0 bg-foreground py-0 shadow-none"
+                  style={{
+                    width: `min(100%, ${Number.parseInt(value) * 5}px)`,
+                  }}
+                />
+              </UI.Grid>
+            ))}
+          </UI.Stack>
+        </UI.CardContent>
+      </UI.Card>
+      <UI.Stack gap="6" className="py-8">
+        <UI.Heading level={2}>Two rhythms</UI.Heading>
+        <UI.Grid columns={2} gap="6">
+          <UI.Card className="border-l-4 border-l-primary shadow-none">
+            <UI.CardContent>
+              <UI.Text tone="muted">
+                Components use compact 4–32px steps. Page chapters use 64–128px
+                separation. This creates a technical local rhythm inside an
+                editorial global rhythm.
+              </UI.Text>
+            </UI.CardContent>
+          </UI.Card>
+          <UI.Card className="shadow-none">
+            <UI.CardContent>
+              <UI.List className="space-y-3">
+                {rules.map((rule) => (
+                  <UI.ListItem key={rule} className="flex gap-3">
+                    <UI.Icon className="mt-0.5 text-primary" aria-hidden>
+                      <Check />
+                    </UI.Icon>
+                    <UI.Text as="span">{rule}</UI.Text>
+                  </UI.ListItem>
+                ))}
+              </UI.List>
+            </UI.CardContent>
+          </UI.Card>
+        </UI.Grid>
+      </UI.Stack>
+    </UI.Stack>
   );
 }
 
