@@ -42,13 +42,13 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[18rem_minmax(0,1fr)]">
+    <div className="min-h-screen bg-background/90 text-foreground lg:grid lg:grid-cols-[20rem_minmax(0,1fr)]">
       <Sidebar activeId={activeId} foundations={foundationEntries} components={filteredComponents} query={query} onQueryChange={setQuery} onNavigate={navigate} />
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background/95 px-5 backdrop-blur-sm sm:px-8">
-          <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            <span className="hidden sm:inline">Catalogue</span><span className="hidden sm:inline">/</span><span className="text-foreground">{activeId}</span>
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b-2 bg-primary px-5 text-primary-foreground sm:px-8">
+          <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
+            <span className="hidden sm:inline">Catalogue</span><span className="hidden sm:inline">/</span><span>{activeId}</span>
           </div>
           <div className="flex items-center gap-1">
             <Button asChild variant="ghost" size="sm"><a href="https://github.com/shanduur/design-language" aria-label="Open repository"><Code2 /> <span className="hidden sm:inline">Source</span></a></Button>
@@ -60,7 +60,7 @@ function App() {
           {isComponent ? <ComponentPage id={activeId} /> : <FoundationPage id={activeId} />}
         </main>
 
-        <footer className="mt-16 grid gap-6 border-t px-5 py-10 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-2 sm:px-8 lg:px-12 xl:px-16">
+        <footer className="mt-16 grid gap-6 border-t-2 bg-foreground px-5 py-10 font-mono text-[10px] uppercase tracking-[0.16em] text-background sm:grid-cols-2 sm:px-8 lg:px-12 xl:px-16">
           <span>React / Shadcn / Tailwind CSS</span><span className="sm:text-right">Inspectable. Extensible. Owned.</span>
         </footer>
       </div>

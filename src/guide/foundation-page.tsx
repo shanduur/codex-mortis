@@ -12,12 +12,14 @@ const principles = [
 ]
 
 const colors = [
-  ["Background", "--background", "bg-background", "Primary canvas"],
-  ["Foreground", "--foreground", "bg-foreground", "Primary text and high-contrast surfaces"],
-  ["Primary", "--primary", "bg-primary", "Actions and selected state"],
-  ["Secondary", "--secondary", "bg-secondary", "Quiet controls and grouped metadata"],
-  ["Muted", "--muted", "bg-muted", "Supporting surfaces"],
-  ["Destructive", "--destructive", "bg-destructive", "Irreversible or dangerous actions"],
+  ["Paper", "--background", "bg-background", "Warm technical canvas"],
+  ["Ink", "--foreground", "bg-foreground", "Text, structure, and hard shadows"],
+  ["Signal yellow", "--signal-yellow", "bg-signal-yellow", "Primary action and selected state"],
+  ["Utility blue", "--utility-blue", "bg-utility-blue", "Navigation, information, and links"],
+  ["Alert coral", "--alert-coral", "bg-alert-coral", "Warnings and urgent editorial emphasis"],
+  ["Status green", "--status-green", "bg-status-green", "Success and healthy system state"],
+  ["Play lavender", "--play-lavender", "bg-play-lavender", "Rare expressive or experimental moments"],
+  ["Muted", "--muted", "bg-muted", "Supporting surfaces and disabled state"],
 ]
 
 function SectionHeading({ index, title, description }: { index: string; title: string; description: string }) {
@@ -33,18 +35,18 @@ function SectionHeading({ index, title, description }: { index: string; title: s
 function IntroductionPage() {
   return (
     <>
-      <PageHeader chapter="Foundation / 00" title="Design language" description="A practical system for building technical products that feel engineered, legible, and open. Start here before choosing components." eyebrow="Read time / 4 min" />
+      <PageHeader chapter="Foundation / 00" title="Design language" description="A colorful neo-brutalist system for technical products: engineered, legible, open, and impossible to mistake for a generic dashboard." eyebrow="Read time / 4 min" />
       <section className="py-16 sm:py-24">
-        <SectionHeading index="01" title="Editorial neo-industrialism" description="Our visual posture combines technical-catalogue clarity with editorial pacing. It is material rather than ethereal, direct rather than promotional." />
-        <div className="grid gap-px border-x border-b bg-border lg:grid-cols-3">
-          {[['Industrial, not corporate','Show systems as things people configure, inspect, and own.'],['Editorial, not templated','Let content change the rhythm. Not every idea belongs in an equal card.'],['Modernist, not sterile','Use alignment and restraint while keeping technical culture visible.']].map(([title, copy], index) => (
-            <article key={title} className="min-h-56 bg-background p-7"><span className="font-mono text-[10px] text-primary">0{index + 1}</span><h3 className="mt-16 text-xl font-semibold tracking-tight">{title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{copy}</p></article>
+        <SectionHeading index="01" title="Colorful editorial neo-industrialism" description="Tenstorrent supplies the technical-catalogue clarity and engineering credibility. Neo-brutalism adds flat color, visible structure, hard shadows, and selective asymmetry." />
+        <div className="grid gap-5 py-8 lg:grid-cols-3">
+          {[['Industrial, not corporate','Show systems as things people configure, inspect, and own.','bg-utility-blue'],['Editorial, not templated','Let content change the rhythm. Not every idea belongs in an equal card.','bg-alert-coral lg:translate-y-8'],['Colorful, not decorative','Give every saturated color a stable role instead of scattering rainbow accents.','bg-status-green']].map(([title, copy, color], index) => (
+            <article key={title} className={`min-h-56 border-2 p-7 shadow-[6px_6px_0_0_var(--shadow-color)] ${color}`}><span className="font-mono text-[10px] font-bold">0{index + 1}</span><h3 className="mt-16 text-xl font-black tracking-tight">{title}</h3><p className="mt-3 text-sm leading-6">{copy}</p></article>
           ))}
         </div>
       </section>
-      <section className="border-y bg-foreground px-6 py-16 text-background sm:px-10 sm:py-24">
+      <section className="border-2 bg-foreground px-6 py-16 text-background shadow-[8px_8px_0_0_var(--primary)] sm:px-10 sm:py-24">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-background/55">Core idea</p>
-        <p className="mt-12 max-w-5xl text-balance text-4xl font-medium leading-tight tracking-[-0.04em] sm:text-6xl">The interface should expose how the product works—not hide it behind generic futurism.</p>
+        <p className="mt-12 max-w-5xl text-balance text-4xl font-black leading-tight tracking-[-0.04em] sm:text-6xl">The interface should expose how the product works—not hide it behind generic futurism.</p>
       </section>
       <section className="py-16 sm:py-24">
         <SectionHeading index="02" title="How to use this guide" description="Learn the foundations, choose a component by intent, copy the example, and adapt it with semantic tokens rather than hard-coded color values." />
@@ -71,10 +73,11 @@ function PrinciplesPage() {
 function ColorsPage() {
   return (
     <>
-      <PageHeader chapter="Foundation / 02" title="Color" description="A restrained industrial palette: near-black, white, cool material neutrals, and one controlled spectral accent." />
+      <PageHeader chapter="Foundation / 02" title="Color" description="A warm paper-and-ink foundation with categorical saturated accents. Color carries meaning; it is never ambient decoration." />
       <section className="py-14">
-        <div className="grid gap-px border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {colors.map(([name, token, className, purpose]) => <article key={token} className="bg-background p-4"><div className={`h-32 border ${className}`} /><div className="mt-4 flex items-start justify-between gap-4"><div><h2 className="font-medium">{name}</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">{purpose}</p></div><code className="font-mono text-[10px] text-primary">{token}</code></div></article>)}
+        <h2 className="mb-8 text-3xl font-black tracking-tight">Color is categorical, not ambient.</h2>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {colors.map(([name, token, className, purpose], index) => <article key={token} className="border-2 bg-card p-4 shadow-[5px_5px_0_0_var(--shadow-color)]"><div className={`h-32 border-2 ${className}`}><span className="m-2 inline-block border-2 bg-card px-2 py-1 font-mono text-[10px] font-bold text-card-foreground">0{index + 1}</span></div><div className="mt-4 flex items-start justify-between gap-4"><div><h2 className="font-black">{name}</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">{purpose}</p></div><code className="font-mono text-[10px]">{token}</code></div></article>)}
         </div>
       </section>
       <section className="grid gap-8 border-t py-14 lg:grid-cols-2">

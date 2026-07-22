@@ -17,7 +17,7 @@ describe("design language guide", () => {
     expect(screen.getByRole("navigation", { name: "Guide navigation" })).toBeInTheDocument()
     const catalogue = screen.getByRole("list", { name: "Component catalogue" })
     expect(within(catalogue).getByRole("link", { name: /Button/ })).toBeInTheDocument()
-    expect(screen.getByText("Editorial neo-industrialism")).toBeInTheDocument()
+    expect(screen.getByText("Colorful editorial neo-industrialism")).toBeInTheDocument()
   })
 
   it("navigates to a component guide with examples and usage code", () => {
@@ -30,6 +30,18 @@ describe("design language guide", () => {
     expect(screen.getByText("Choose a variant by intent, not appearance.", { exact: false })).toBeInTheDocument()
     expect(screen.getByLabelText("Button component examples")).toBeInTheDocument()
     expect(screen.getByText(/import \{ Button \}/)).toBeInTheDocument()
+  })
+
+  it("documents the categorical accent palette", () => {
+    render(<App />)
+
+    fireEvent.click(screen.getAllByRole("link", { name: /Color/ })[0])
+
+    expect(screen.getByText("Color is categorical, not ambient.")).toBeInTheDocument()
+    expect(screen.getByText("Signal yellow")).toBeInTheDocument()
+    expect(screen.getByText("Utility blue")).toBeInTheDocument()
+    expect(screen.getByText("Alert coral")).toBeInTheDocument()
+    expect(screen.getByText("Status green")).toBeInTheDocument()
   })
 
   it("filters the component catalogue by name", () => {

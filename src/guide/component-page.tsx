@@ -83,7 +83,7 @@ function ComponentExample({ id }: { id: string }) {
     case "textarea":
       return <label className="grid max-w-lg gap-2 text-sm font-medium">Change summary<Textarea placeholder="Describe what changed and why…" /><span className="text-xs font-normal text-muted-foreground">Include expected impact and rollback notes.</span></label>
     case "card":
-      return <div className="grid gap-4 sm:grid-cols-2"><Card className="rounded-none"><CardHeader><Server className="size-5 text-primary" /><CardTitle className="mt-8">System status</CardTitle><CardDescription>Rack 04 / eastern zone</CardDescription></CardHeader><CardContent><p className="font-mono text-xs uppercase tracking-wider text-primary">Operational</p></CardContent><CardFooter className="border-t pt-6 text-xs text-muted-foreground">Updated 12 seconds ago</CardFooter></Card><Card className="rounded-none bg-foreground text-background"><CardHeader><Terminal className="size-5 text-primary" /><CardTitle className="mt-8">Compiler</CardTitle><CardDescription className="text-background/60">Toolchain / release</CardDescription></CardHeader><CardContent><code className="font-mono text-sm">forge --version 0.4.1</code></CardContent></Card></div>
+      return <div className="grid gap-6 sm:grid-cols-2"><Card className="rounded-none bg-status-green text-primary-foreground"><CardHeader><Server className="size-5" /><CardTitle className="mt-8">System status</CardTitle><CardDescription className="text-primary-foreground/70">Rack 04 / eastern zone</CardDescription></CardHeader><CardContent><p className="font-mono text-xs font-bold uppercase tracking-wider">Operational</p></CardContent><CardFooter className="border-t-2 pt-6 text-xs">Updated 12 seconds ago</CardFooter></Card><Card className="rounded-none bg-utility-blue text-primary-foreground"><CardHeader><Terminal className="size-5" /><CardTitle className="mt-8">Compiler</CardTitle><CardDescription className="text-primary-foreground/70">Toolchain / release</CardDescription></CardHeader><CardContent><code className="font-mono text-sm">forge --version 0.4.1</code></CardContent></Card></div>
     case "alert":
       return <div className="grid max-w-2xl gap-4"><Alert><Info /><AlertTitle>Restart required</AlertTitle><AlertDescription>Apply the new kernel after the workload finishes.</AlertDescription></Alert><Alert variant="destructive"><CircleAlert /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Inspect the build log before trying again.</AlertDescription></Alert></div>
     case "dialog":
@@ -101,18 +101,18 @@ export function ComponentPage({ id }: { id: string }) {
     <>
       <PageHeader chapter="Component / Stable" title={entry.name} description={`${entry.description}. ${copy.guidance}`} eyebrow="React / Shadcn" />
       <section className="py-14 sm:py-20">
-        <div className="mb-5 flex items-center justify-between"><h2 className="text-lg font-semibold">Preview</h2><span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Light + dark ready</span></div>
-        <div aria-label={`${entry.name} component examples`} className="min-h-64 border bg-[linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] bg-[size:24px_24px] p-6 sm:grid sm:place-items-center sm:p-12">
-          <div className="w-full bg-background p-6 sm:p-8"><ComponentExample id={entry.id} /></div>
+        <div className="mb-5 flex items-center justify-between"><h2 className="text-lg font-black">Preview</h2><span className="border-2 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider">Light + dark ready</span></div>
+        <div aria-label={`${entry.name} component examples`} className="catalogue-grid min-h-64 border-2 p-6 shadow-[7px_7px_0_0_var(--shadow-color)] sm:grid sm:place-items-center sm:p-12">
+          <div className="w-full border-2 bg-background p-6 sm:p-8"><ComponentExample id={entry.id} /></div>
         </div>
       </section>
-      <section className="grid gap-8 border-t py-14 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1fr)]">
+      <section className="grid gap-8 border-t-2 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1fr)]">
         <div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Start here</p><h2 className="mt-4 text-3xl font-semibold tracking-tight">Usage</h2><p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">Import from the package entry point. Compose with standard React props and use Tailwind utilities only for layout adjustments specific to the consuming screen.</p></div>
         <CodeBlock>{copy.code}</CodeBlock>
       </section>
-      <section className="grid gap-px border bg-border sm:grid-cols-2">
-        <article className="bg-background p-7"><p className="font-mono text-[10px] uppercase tracking-wider text-primary">Do</p><p className="mt-8 text-sm leading-6">{copy.doThis}</p></article>
-        <article className="bg-background p-7"><p className="font-mono text-[10px] uppercase tracking-wider text-destructive">Avoid</p><p className="mt-8 text-sm leading-6">{copy.avoid}</p></article>
+      <section className="grid gap-5 sm:grid-cols-2">
+        <article className="border-2 bg-status-green p-7 shadow-[5px_5px_0_0_var(--shadow-color)]"><p className="font-mono text-[10px] font-bold uppercase tracking-wider">Do</p><p className="mt-8 text-sm leading-6">{copy.doThis}</p></article>
+        <article className="border-2 bg-alert-coral p-7 shadow-[5px_5px_0_0_var(--shadow-color)]"><p className="font-mono text-[10px] font-bold uppercase tracking-wider">Avoid</p><p className="mt-8 text-sm leading-6">{copy.avoid}</p></article>
       </section>
       <section className="py-14"><h2 className="text-xl font-semibold">Accessibility checklist</h2><ul className="mt-5 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2"><li>• Works with keyboard input</li><li>• Keeps a visible focus indicator</li><li>• Uses labels that describe intent</li><li>• Does not rely on color alone</li></ul></section>
     </>
