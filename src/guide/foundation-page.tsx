@@ -139,16 +139,35 @@ function IntroductionPage() {
         eyebrow="Read time / 4 min"
       />
 
-      <UI.Card className="overflow-hidden border-foreground/20 bg-white p-2 shadow-none sm:p-3">
-        <UI.Image
-          src={guideHref("/codex-mortis.webp")}
-          alt="The Codex Mortis brand plate"
-          width={1536}
-          height={1024}
-          loading="eager"
-          className="aspect-[3/2] w-full rounded-sm object-cover"
-        />
-      </UI.Card>
+      <UI.Grid
+        gap="4"
+        className="items-stretch lg:grid-cols-[minmax(0,1.8fr)_minmax(17rem,1fr)]"
+      >
+        <UI.Card className="h-full overflow-hidden border-foreground/20 bg-white p-2 shadow-none">
+          <UI.Image
+            src={guideHref("/codex-mortis.webp")}
+            alt="The Codex Mortis brand plate"
+            width={1536}
+            height={1024}
+            loading="eager"
+            className="aspect-[3/2] h-full w-full rounded-sm object-contain lg:aspect-auto"
+          />
+        </UI.Card>
+
+        <UI.Card className="border-0 bg-code px-2 py-6 text-code-foreground soft-shadow sm:px-4">
+          <UI.CardHeader>
+            <UI.Badge className="w-fit bg-signal-yellow text-secondary-foreground">
+              Core idea
+            </UI.Badge>
+          </UI.CardHeader>
+          <UI.CardContent>
+            <UI.Text className="max-w-5xl text-balance text-3xl font-medium leading-tight tracking-[-0.04em]">
+              The interface should expose how the product works—not hide it
+              behind generic futurism.
+            </UI.Text>
+          </UI.CardContent>
+        </UI.Card>
+      </UI.Grid>
 
       <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
@@ -219,20 +238,6 @@ function IntroductionPage() {
           ))}
         </UI.Grid>
       </UI.Stack>
-
-      <UI.Card className="border-0 bg-code px-2 py-10 text-code-foreground soft-shadow sm:px-4 sm:py-16">
-        <UI.CardHeader>
-          <UI.Badge className="w-fit bg-signal-yellow text-secondary-foreground">
-            Core idea
-          </UI.Badge>
-        </UI.CardHeader>
-        <UI.CardContent>
-          <UI.Text className="max-w-5xl text-balance text-4xl font-medium leading-tight tracking-[-0.04em] sm:text-6xl">
-            The interface should expose how the product works—not hide it behind
-            generic futurism.
-          </UI.Text>
-        </UI.CardContent>
-      </UI.Card>
 
       <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading

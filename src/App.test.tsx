@@ -139,6 +139,19 @@ describe("Codex Mortis guide", () => {
     expect(
       screen.getByRole("img", { name: "The Codex Mortis brand plate" }),
     ).toHaveAttribute("src", "/codex-mortis.webp");
+    const homeLink = screen.getByRole("link", { name: /Codex Mortis/ });
+    expect(homeLink.querySelector("img")).toHaveAttribute("src", "/logo.svg");
+
+    const brandPlate = screen
+      .getByRole("img", { name: "The Codex Mortis brand plate" })
+      .closest("[data-slot='card']");
+    const coreIdea = screen
+      .getByText("Core idea")
+      .closest("[data-slot='card']");
+    expect(brandPlate?.nextElementSibling).toBe(coreIdea);
+    expect(
+      screen.getByRole("img", { name: "The Codex Mortis brand plate" }),
+    ).toHaveClass("object-contain", "lg:aspect-auto");
     expect(
       screen.getByRole("navigation", { name: "Guide navigation" }),
     ).toBeInTheDocument();

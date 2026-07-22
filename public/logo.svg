@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  viewBox="210 30 480 480"
+  role="img"
+  aria-labelledby="title desc">
+  <title id="title">Codex Mortis logo</title>
+  <desc id="desc">A black outlined triangle above a three-by-three grid with circular intersection nodes.</desc>
+
+  <rect width="900" height="600" fill="#fff" />
+
+  <g
+    fill="none"
+    stroke="#000"
+    stroke-width="12"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M 300 245 L 450 55 L 600 245 Z" />
+
+    <path d="M 300 290 H 600" />
+    <path d="M 300 380 H 600" />
+    <path d="M 300 470 H 600" />
+
+    <path d="M 340 290 V 500" />
+    <path d="M 450 290 V 500" />
+    <path d="M 560 290 V 500" />
+  </g>
+
+  <g fill="#000">
+    <circle cx="340" cy="290" r="13" />
+    <circle cx="450" cy="290" r="13" />
+    <circle cx="560" cy="290" r="13" />
+
+    <circle cx="340" cy="380" r="13" />
+    <circle cx="450" cy="380" r="13" />
+    <circle cx="560" cy="380" r="13" />
+
+    <circle cx="340" cy="470" r="13" />
+    <circle cx="450" cy="470" r="13" />
+    <circle cx="560" cy="470" r="13" />
+  </g>
+</svg>

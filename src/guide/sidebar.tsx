@@ -129,9 +129,14 @@ export function Sidebar({
           href={guideHref("/")}
           className="flex items-center gap-3 no-underline"
         >
-          <UI.Badge className="grid size-10 place-items-center rounded-md p-0 font-mono text-xs font-bold">
-            CM
-          </UI.Badge>
+          <UI.Image
+            src={guideHref("/logo.svg")}
+            alt=""
+            width={40}
+            height={40}
+            loading="eager"
+            className="size-10 shrink-0 rounded-md border bg-white object-contain"
+          />
           <UI.Stack gap="1">
             <UI.Text as="span" className="font-semibold">
               Codex Mortis
