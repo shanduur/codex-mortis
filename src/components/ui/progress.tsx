@@ -10,7 +10,7 @@ export function Progress({
       data-slot="progress"
       max={max}
       className={cn(
-        "h-2 w-full appearance-none overflow-hidden rounded-full bg-muted [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:bg-primary",
+        "h-3 w-full appearance-none overflow-hidden rounded-none border border-foreground bg-muted [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:bg-primary",
         className,
       )}
       {...props}

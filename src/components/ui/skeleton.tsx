@@ -11,7 +11,7 @@ export function Skeleton({
       data-slot="skeleton"
       role="status"
       aria-label={label}
-      className={cn("h-4 animate-pulse rounded bg-muted", className)}
+      className={cn("h-4 animate-pulse rounded-none bg-muted", className)}
       {...props}
     >
       <span className="sr-only">{label}</span>

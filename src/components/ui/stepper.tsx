@@ -26,7 +26,7 @@ export function Stepper({
           >
             <span
               className={cn(
-                "grid size-7 shrink-0 place-items-center rounded-full border font-mono text-xs",
+                "grid size-7 shrink-0 place-items-center rounded-none border font-mono text-xs shadow-xs",
                 number <= currentStep &&
                   "border-primary bg-primary text-primary-foreground",
               )}

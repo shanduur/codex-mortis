@@ -114,8 +114,8 @@ function SectionHeading({
 function IntroductionPage() {
   const postures = [
     [
-      "Industrial, not corporate",
-      "Show systems as things people configure, inspect, and own.",
+      "Sharp, not softened",
+      "Use square corners, visible structure, and hard offset depth instead of polished softness.",
       "border-t-utility-blue",
     ],
     [
@@ -154,7 +154,7 @@ function IntroductionPage() {
           />
         </UI.Card>
 
-        <UI.Card className="border-0 bg-code px-2 py-6 text-code-foreground soft-shadow sm:px-4">
+        <UI.Card className="border-0 bg-code px-2 py-6 text-code-foreground hard-shadow sm:px-4">
           <UI.CardHeader>
             <UI.Badge className="w-fit bg-signal-yellow text-secondary-foreground">
               Core idea
@@ -172,8 +172,8 @@ function IntroductionPage() {
       <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
           index="01"
-          title="Editorial neo-industrialism"
-          description="Technical-catalogue clarity, disciplined alignment, and confident whitespace lead the system. Neo-brutalist color is an accent, not the default surface."
+          title="Editorial neubrutalism"
+          description="Technical-catalogue clarity and disciplined alignment lead the system. Square geometry, dark outlines, zero-blur offset shadows, and categorical color make structure explicit without sacrificing reading rhythm."
         />
         <UI.Grid columns={3} gap="6">
           {postures.map(([title, copy, color], index) => (

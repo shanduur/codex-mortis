@@ -26,7 +26,7 @@ export function StatusIndicator({
     >
       <span
         aria-hidden="true"
-        className={cn("size-2 rounded-full", colors[status])}
+        className={cn("size-2 rounded-none", colors[status])}
       />
       {children}
     </span>

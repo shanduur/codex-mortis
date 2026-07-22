@@ -11,7 +11,7 @@ export function Switch({
       type="checkbox"
       role="switch"
       className={cn(
-        "h-6 w-11 cursor-pointer appearance-none rounded-full border border-input bg-muted p-[2px] transition-colors before:block before:size-[18px] before:rounded-full before:bg-card before:shadow-sm before:transition-transform checked:border-primary checked:bg-primary checked:before:translate-x-5 focus-visible:ring-3 focus-visible:ring-ring/35 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 dark:before:bg-foreground",
+        "h-6 w-11 cursor-pointer appearance-none rounded-none border-2 border-input bg-muted p-[1px] shadow-xs transition-[color,box-shadow] before:block before:size-[18px] before:rounded-none before:border before:border-foreground before:bg-card before:transition-transform checked:border-foreground checked:bg-primary checked:before:translate-x-5 focus-visible:ring-3 focus-visible:ring-ring/35 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 dark:before:bg-foreground",
         className,
       )}
       onKeyDown={(event) => {

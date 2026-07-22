@@ -155,10 +155,11 @@ describe("Codex Mortis guide", () => {
     expect(
       screen.getByRole("navigation", { name: "Guide navigation" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Editorial neo-industrialism")).toBeInTheDocument();
+    expect(screen.getByText("Editorial neubrutalism")).toBeInTheDocument();
+    expect(screen.getByText("Sharp, not softened")).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Neo-brutalist color is an accent, not the default surface/,
+        /Square geometry, dark outlines, zero-blur offset shadows/,
       ),
     ).toBeInTheDocument();
     expect(
@@ -217,7 +218,7 @@ describe("Codex Mortis guide", () => {
     ).not.toBeNull();
     expect(
       screen
-        .getByText(/Technical-catalogue clarity, disciplined alignment/)
+        .getByText(/Technical-catalogue clarity and disciplined alignment/)
         .closest("[data-slot='card']"),
     ).not.toBeNull();
   });

@@ -33,8 +33,9 @@ function NavigationItem({
         href={guideHref(entry.path)}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "group grid min-h-10 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium no-underline transition-colors hover:border-border hover:bg-muted",
-          active && "border-primary bg-primary text-primary-foreground",
+          "group grid min-h-10 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium no-underline transition-[color,background-color,border-color,box-shadow,transform] hover:border-border hover:bg-muted",
+          active &&
+            "border-foreground bg-signal-yellow text-secondary-foreground shadow-sm",
         )}
       >
         <UI.Text as="span" className="font-mono text-[10px] opacity-65">

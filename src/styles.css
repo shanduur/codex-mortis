@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0px;
   --background: oklch(0.982 0.008 88);
   --foreground: oklch(0.18 0.012 68);
   --card: oklch(0.995 0.004 88);
@@ -19,8 +19,8 @@
   --accent: oklch(0.9 0.045 232);
   --accent-foreground: oklch(0.18 0.012 68);
   --destructive: oklch(0.64 0.19 30);
-  --border: oklch(0.76 0.012 82);
-  --input: oklch(0.7 0.015 82);
+  --border: oklch(0.3 0.012 68);
+  --input: oklch(0.3 0.012 68);
   --ring: oklch(0.6 0.17 236);
   --signal-yellow: oklch(0.88 0.18 96);
   --utility-blue: oklch(0.75 0.14 232);
@@ -28,7 +28,7 @@
   --status-green: oklch(0.72 0.15 149);
   --play-lavender: oklch(0.76 0.14 303);
   --grid-line: oklch(0.18 0.012 68 / 8%);
-  --shadow-color: oklch(0.12 0.01 68 / 16%);
+  --shadow-color: oklch(0.12 0.01 68 / 88%);
   --code: oklch(0.17 0.012 68);
   --code-foreground: oklch(0.95 0.01 88);
 }
@@ -49,8 +49,8 @@
   --accent: oklch(0.27 0.035 232);
   --accent-foreground: oklch(0.94 0.012 88);
   --destructive: oklch(0.67 0.18 30);
-  --border: oklch(0.34 0.014 255);
-  --input: oklch(0.38 0.016 255);
+  --border: oklch(0.72 0.015 88);
+  --input: oklch(0.72 0.015 88);
   --ring: oklch(0.72 0.13 232);
   --signal-yellow: oklch(0.84 0.16 96);
   --utility-blue: oklch(0.72 0.13 232);
@@ -58,7 +58,7 @@
   --status-green: oklch(0.69 0.14 149);
   --play-lavender: oklch(0.72 0.13 303);
   --grid-line: oklch(0.94 0.012 88 / 7%);
-  --shadow-color: oklch(0.04 0.01 255 / 55%);
+  --shadow-color: oklch(0.04 0.01 255 / 92%);
   --code: oklch(0.105 0.01 255);
   --code-foreground: oklch(0.92 0.012 88);
 }
@@ -97,10 +97,17 @@
   --color-play-lavender: var(--play-lavender);
   --color-code: var(--code);
   --color-code-foreground: var(--code-foreground);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 4px);
-  --radius-xl: calc(var(--radius) + 8px);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-2xs: 2px 2px 0 0 var(--shadow-color);
+  --shadow-xs: 2px 2px 0 0 var(--shadow-color);
+  --shadow-sm: 3px 3px 0 0 var(--shadow-color);
+  --shadow-md: 5px 5px 0 0 var(--shadow-color);
+  --shadow-lg: 6px 6px 0 0 var(--shadow-color);
+  --shadow-xl: 8px 8px 0 0 var(--shadow-color);
+  --shadow-2xl: 10px 10px 0 0 var(--shadow-color);
 }
 
 @layer base {
@@ -148,8 +155,8 @@
 }
 
 @layer utilities {
-  .soft-shadow {
-    box-shadow: 0 12px 32px var(--shadow-color);
+  .hard-shadow {
+    box-shadow: 6px 6px 0 0 var(--shadow-color);
   }
   .catalogue-grid {
     background-color: var(--card);

@@ -177,21 +177,21 @@ export const articleGuidance: Record<string, ArticleGuidance> = {
   },
   elevation: {
     overview:
-      "Elevation communicates containment and temporary layering. In this system, borders, neutral surface shifts, and restrained shadows establish hierarchy before depth effects.",
+      "Elevation communicates physical stacking through square geometry, assertive outlines, and hard offset shadows. Shadows use zero blur and a predictable down-right direction; size communicates hierarchy rather than simulated light.",
     principles: [
-      "Use elevation to explain overlap or modality.",
-      "Keep permanent page structure visually quieter than transient overlays.",
-      "Avoid stacking several elevated surfaces without clear ownership.",
+      "Use a small hard offset for controls and labels, a medium offset for cards, and a large offset only for overlays or editorial emphasis.",
+      "Keep the shadow direction consistent so interaction depth remains predictable.",
+      "Use flat surface and accent colors; never substitute gradients or atmospheric blur for structure.",
     ],
     practice: [
-      "Use cards for owned content surfaces.",
-      "Use overlay and popover tokens for floating content.",
-      "Verify shadows and borders separately in dark mode.",
+      "Lift interactive controls up and left on hover, then press them into the shadow on activation.",
+      "Use overlays and popovers for the largest offset tier.",
+      "Keep shadow color physically dark in both themes and verify borders independently.",
     ],
     checklist: [
-      "Layer order matches keyboard and reading order.",
-      "Modal content remains distinguishable without shadows.",
-      "Nested surfaces do not create accidental visual noise.",
+      "Every shadow has zero blur and a deliberate hierarchy tier.",
+      "Modal content remains distinguishable without relying on shadow alone.",
+      "Nested surfaces do not create competing offsets or accidental visual noise.",
     ],
   },
   "design-tokens": {

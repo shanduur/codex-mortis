@@ -11,6 +11,19 @@ describe("Button", () => {
     ).toBeInTheDocument();
   });
 
+  it("uses sharp corners and physical hard-shadow interaction states", () => {
+    render(<Button>Deploy</Button>);
+    expect(screen.getByRole("button", { name: "Deploy" })).toHaveClass(
+      "rounded-none",
+      "shadow-sm",
+      "hover:-translate-x-px",
+      "hover:-translate-y-px",
+      "active:translate-x-[3px]",
+      "active:translate-y-[3px]",
+      "active:shadow-none",
+    );
+  });
+
   it("supports semantic variants and disabled state", () => {
     render(
       <Button variant="destructive" disabled>

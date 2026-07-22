@@ -24,7 +24,7 @@ export function Avatar({
     <span
       data-slot="avatar"
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-medium",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-none border bg-muted font-medium shadow-xs",
         sizes[size],
         className,
       )}

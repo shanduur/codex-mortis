@@ -7,7 +7,7 @@ type CodeBlockProps = {
 
 export function CodeBlock({ children, label = "Example" }: CodeBlockProps) {
   return (
-    <UI.Card className="min-w-0 max-w-full gap-0 overflow-hidden border-0 bg-code py-0 text-code-foreground soft-shadow">
+    <UI.Card className="min-w-0 max-w-full gap-0 overflow-hidden border-0 bg-code py-0 text-code-foreground hard-shadow">
       <UI.CardHeader className="border-b border-white/15 px-4 py-2">
         <UI.Stack direction="horizontal" className="justify-between">
           <UI.Text
