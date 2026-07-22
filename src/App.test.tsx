@@ -168,11 +168,16 @@ describe("Codex Mortis guide", () => {
     expect(
       within(navigation).queryByRole("link", { name: "Showcase" }),
     ).not.toBeInTheDocument();
-    expect(
-      within(screen.getByRole("banner")).getByRole("link", {
-        name: "Showcase",
-      }),
-    ).toHaveAttribute("href", "/showcase/");
+    const showcaseLink = within(screen.getByRole("banner")).getByRole("link", {
+      name: "Showcase",
+    });
+    expect(showcaseLink).toHaveAttribute("href", "/showcase/");
+    expect(showcaseLink).toHaveClass(
+      "bg-primary",
+      "border-foreground",
+      "text-primary-foreground",
+    );
+    expect(showcaseLink.closest("[data-slot='stack']")).toHaveClass("ml-auto");
   });
 
   it("collapses guide navigation into a mobile overlay", () => {

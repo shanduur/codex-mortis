@@ -91,8 +91,8 @@ function App() {
           >
             <Menu />
           </UI.Button>
-          <UI.Stack direction="horizontal" gap="1">
-            <UI.Button asChild variant="ghost" size="sm">
+          <UI.Stack direction="horizontal" gap="1" className="ml-auto">
+            <UI.Button asChild variant="default" size="sm">
               <UI.Link
                 href={guideHref("/showcase/")}
                 aria-current={activeId === "showcase" ? "page" : undefined}
