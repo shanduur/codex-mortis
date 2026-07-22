@@ -2,7 +2,7 @@
 
 ## Project purpose
 
-This repository contains a small React component library and its design-language guide. The guide is the primary development surface: every public component should be browsable, explained, and demonstrated there.
+This repository contains a React component library and its design-language guide. The guide is the primary development surface: every public component should be browsable, explained, and demonstrated there.
 
 The visual direction is **editorial neo-industrialism**: technical-catalogue clarity, editorial pacing, restrained color, strong alignment, and visible engineering detail.
 
@@ -43,6 +43,7 @@ src/
 │   └── ui/                   # Shadcn-style owned primitives
 ├── guide/
 │   ├── component-page.tsx    # Component previews and guidance
+│   ├── component-page.test.tsx # Guide coverage for every public component
 │   ├── foundation-page.tsx   # Color, type, spacing, principles
 │   ├── registry.ts           # Navigation and component catalogue data
 │   ├── sidebar.tsx           # Guide navigation and filtering

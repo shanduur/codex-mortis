@@ -64,9 +64,14 @@
 }
 
 @theme inline {
-  --font-sans: "Helvetica Neue", "Nimbus Sans L", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Helvetica Neue", "Nimbus Sans L", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "Berkeley Mono", "SFMono-Regular", Consolas, monospace;
+  --font-sans:
+    "Helvetica Neue", "Nimbus Sans L", Arial, ui-sans-serif, system-ui,
+    sans-serif;
+  --font-body:
+    "Helvetica Neue", "Nimbus Sans L", Arial, ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono:
+    "IBM Plex Mono", "Berkeley Mono", "SFMono-Regular", Consolas, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -99,8 +104,12 @@
 }
 
 @layer base {
-  * { @apply border-border outline-ring/60; }
-  html { @apply scroll-smooth bg-background; }
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    @apply scroll-smooth bg-background;
+  }
   body {
     @apply m-0 min-w-80 bg-background font-body text-foreground antialiased;
     background-image:
@@ -109,13 +118,28 @@
     background-size: 24px 24px;
     background-attachment: fixed;
   }
-  h1, h2, h3, h4, strong { @apply font-sans; }
-  button:not(:disabled), [role="button"]:not(:disabled), a { cursor: pointer; }
-  ::selection { background: var(--signal-yellow); color: var(--foreground); }
+  h1,
+  h2,
+  h3,
+  h4,
+  strong {
+    @apply font-sans;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--signal-yellow);
+    color: var(--foreground);
+  }
 }
 
 @layer utilities {
-  .soft-shadow { box-shadow: 0 12px 32px var(--shadow-color); }
+  .soft-shadow {
+    box-shadow: 0 12px 32px var(--shadow-color);
+  }
   .catalogue-grid {
     background-color: var(--card);
     background-image:
@@ -126,5 +150,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
