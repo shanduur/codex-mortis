@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { componentEntries } from "./registry";
+import { componentEntries, showcaseEntries } from "./registry";
 
 const requiredComponents = [
   "Accordion",
@@ -119,6 +119,7 @@ describe("component catalogue", () => {
       "Accessibility",
       "Icons",
       "Contributing",
+      "Showcase",
     ]);
     expect(
       guideEntries.some((entry) => entry.path === "/patterns/forms/"),
@@ -150,5 +151,23 @@ describe("component catalogue", () => {
         (entry) => entry.path === "/guidelines/inclusive-language/",
       ),
     ).toBe(true);
+  });
+
+  it("registers the complete static product showcase", async () => {
+    const { guideEntries } = await import("./registry");
+
+    expect(showcaseEntries.map((entry) => entry.path)).toEqual([
+      "/showcase/",
+      "/showcase/landing/",
+      "/showcase/login/",
+      "/showcase/dashboard/",
+      "/showcase/cloud/",
+      "/showcase/cloud/virtual-machines/",
+      "/showcase/cloud/containers/",
+      "/showcase/billing/",
+      "/showcase/settings/",
+      "/showcase/markets/",
+    ]);
+    expect(guideEntries).toHaveLength(159);
   });
 });

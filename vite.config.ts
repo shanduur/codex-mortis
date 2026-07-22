@@ -17,6 +17,7 @@ const pageRoots = [
   "accessibility",
   "icons",
   "contributing",
+  "showcase",
 ];
 
 function collectHtmlEntries(directory: string): string[] {

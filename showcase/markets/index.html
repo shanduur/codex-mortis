@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fictional trading workspace" />
+    <meta name="theme-color" content="#0b0b10" />
+    <title>Markets · Codex Mortis</title>
+    <style>
+      html, body {
+        background-color: #f7f3ea;
+        color-scheme: light;
+      }
+      html.dark, html.dark body {
+        background-color: #0b0b10;
+        color-scheme: dark;
+      }
+    </style>
+    <script>
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.getItem("theme") === "dark",
+      );
+    </script>
+  </head>
+  <body data-page-id="showcase-markets">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

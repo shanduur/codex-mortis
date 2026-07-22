@@ -77,6 +77,35 @@ describe("Codex Mortis guide", () => {
     ).toHaveAttribute("href", "/patterns/");
   });
 
+  it("renders the showcase index inside Codex Mortis", () => {
+    window.history.replaceState({}, "", "/showcase/");
+    render(<App />);
+
+    expect(
+      screen.getByRole("heading", {
+        name: "One system. Nine product contexts.",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("navigation", { name: "Guide navigation" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders immersive showcase demos as direct website documents", () => {
+    window.history.replaceState({}, "", "/showcase/dashboard/");
+    render(<App />);
+
+    expect(
+      screen.getByRole("heading", { name: "Operations dashboard" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("searchbox", { name: "Search documentation" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Back to Codex Mortis" }),
+    ).toHaveAttribute("href", "/showcase/");
+  });
+
   it("renders a complete pattern article from its pathname", () => {
     window.history.replaceState({}, "", "/patterns/forms/");
 

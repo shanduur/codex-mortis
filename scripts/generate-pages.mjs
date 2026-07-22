@@ -64,6 +64,16 @@ function pageTemplate(entry) {
     <meta name="description" content="${description}" />
     <meta name="theme-color" content="#0b0b10" />
     <title>${title}</title>
+    <style>
+      html, body {
+        background-color: #f7f3ea;
+        color-scheme: light;
+      }
+      html.dark, html.dark body {
+        background-color: #0b0b10;
+        color-scheme: dark;
+      }
+    </style>
     <script>
       document.documentElement.classList.toggle(
         "dark",

@@ -8,7 +8,8 @@ export type GuideGroup =
   | "Components"
   | "Accessibility"
   | "Icons"
-  | "Contributing";
+  | "Contributing"
+  | "Showcase";
 
 export type GuideEntry = {
   id: string;
@@ -987,6 +988,58 @@ export const componentOverviewEntries = createDocumentationEntries(
   ],
 );
 
+export const showcaseEntries = createDocumentationEntries(
+  "Showcase",
+  "showcase",
+  [
+    [
+      "showcase",
+      "Showcase",
+      "Explore Codex Mortis in complete product contexts",
+      "",
+    ],
+    [
+      "showcase-landing",
+      "Landing page",
+      "Public cloud product marketing",
+      "landing",
+    ],
+    ["showcase-login", "Login", "Secure cloud console authentication", "login"],
+    [
+      "showcase-dashboard",
+      "Dashboard",
+      "Account operations overview",
+      "dashboard",
+    ],
+    [
+      "showcase-cloud",
+      "Cloud console",
+      "Infrastructure control plane",
+      "cloud",
+    ],
+    [
+      "showcase-virtual-machines",
+      "Virtual machines",
+      "Compute fleet and machine configuration",
+      "cloud/virtual-machines",
+    ],
+    [
+      "showcase-containers",
+      "Containers",
+      "Workload health and rollout status",
+      "cloud/containers",
+    ],
+    ["showcase-billing", "Billing", "Usage, budgets, and invoices", "billing"],
+    [
+      "showcase-settings",
+      "Settings",
+      "Organization administration",
+      "settings",
+    ],
+    ["showcase-markets", "Markets", "Fictional trading workspace", "markets"],
+  ],
+);
+
 const introductionEntry = foundationEntries.find(
   (entry) => entry.id === "introduction",
 )!;
@@ -1014,6 +1067,7 @@ export const navigationSections = [
   { label: "Accessibility", entries: accessibilityEntries },
   { label: "Icons", entries: iconEntries },
   { label: "Contributing", entries: contributingEntries },
+  { label: "Showcase", entries: showcaseEntries },
 ] satisfies { label: GuideGroup; entries: GuideEntry[] }[];
 
 export const documentationEntries = [
@@ -1027,6 +1081,7 @@ export const documentationEntries = [
   ...iconEntries,
   ...contributingEntries,
   ...componentOverviewEntries,
+  ...showcaseEntries,
 ];
 
 export const guideEntries = [

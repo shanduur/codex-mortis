@@ -11,8 +11,10 @@ import {
   foundationEntries,
   guideEntries,
   navigationSections,
+  showcaseEntries,
 } from "@/guide/registry";
 import { Sidebar } from "@/guide/sidebar";
+import { ShowcaseIndex, ShowcasePage } from "@/showcase/showcase-page";
 
 function getInitialPage() {
   const pathname = guidePathname(window.location.pathname);
@@ -50,6 +52,18 @@ function App() {
 
   const isComponent = componentEntries.some((entry) => entry.id === activeId);
   const isFoundation = foundationEntries.some((entry) => entry.id === activeId);
+  const isShowcase = showcaseEntries.some((entry) => entry.id === activeId);
+
+  if (isShowcase && activeId !== "showcase") {
+    return (
+      <ShowcasePage
+        id={activeId}
+        dark={dark}
+        onThemeChange={() => setDark((value) => !value)}
+      />
+    );
+  }
+
   return (
     <UI.Page className="bg-transparent lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
       <UI.SkipLink href="#content">Skip to content</UI.SkipLink>
@@ -91,7 +105,9 @@ function App() {
             size="lg"
             className="max-w-[84rem] px-5 sm:px-8 lg:px-12 xl:px-16"
           >
-            {isComponent ? (
+            {activeId === "showcase" ? (
+              <ShowcaseIndex />
+            ) : isComponent ? (
               <ComponentPage id={activeId} />
             ) : isFoundation ? (
               <FoundationPage id={activeId} />
