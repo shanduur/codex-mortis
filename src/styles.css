@@ -130,6 +130,17 @@
   a {
     cursor: pointer;
   }
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
   ::selection {
     background: var(--signal-yellow);
     color: var(--foreground);

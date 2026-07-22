@@ -28,6 +28,7 @@ The guide includes:
 - minimal TypeScript examples;
 - do/avoid guidance;
 - keyboard, focus, screen-reader, contrast, and motion accessibility guidance;
+- keyboard-only guide navigation: the first `Tab` reveals “Skip to content”, `/` focuses documentation search, and `Escape` clears it while preserving focus;
 - design, code, documentation, and release contribution guidance.
 
 See [`docs/information-architecture.md`](./docs/information-architecture.md) for the route contract and content architecture.

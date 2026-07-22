@@ -11,6 +11,26 @@ describe("design language guide", () => {
     document.documentElement.classList.remove("dark");
   });
 
+  it("provides keyboard-only access to navigation and page content", () => {
+    render(<App />);
+
+    const skipLink = screen.getByRole("link", { name: "Skip to content" });
+    expect(skipLink).toHaveAttribute("href", "#content");
+    expect(screen.getByRole("main")).toHaveAttribute("id", "content");
+    expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+
+    fireEvent.keyDown(document, { key: "/" });
+    const search = screen.getByRole("searchbox", {
+      name: "Search documentation",
+    });
+    expect(search).toHaveFocus();
+
+    fireEvent.change(search, { target: { value: "switch" } });
+    fireEvent.keyDown(search, { key: "Escape" });
+    expect(search).toHaveValue("");
+    expect(search).toHaveFocus();
+  });
+
   it("uses standard document links instead of hash navigation", () => {
     window.history.replaceState({}, "", "/components/");
     render(<App />);

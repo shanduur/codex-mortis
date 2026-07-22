@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 
 import * as UI from "@/components";
@@ -87,6 +88,7 @@ export function Sidebar({
   query,
   onQueryChange,
 }: SidebarProps) {
+  const searchRef = useRef<HTMLInputElement>(null);
   const activeGroup =
     sections.find((section) =>
       section.entries.some((entry) => entry.id === activeId),
@@ -94,6 +96,30 @@ export function Sidebar({
   const visibleSections = query
     ? sections.filter((section) => section.entries.length > 0)
     : sections.filter((section) => section.label === activeGroup);
+
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      const target = event.target;
+      const isEditing =
+        target instanceof Element &&
+        target.matches("input, textarea, select, [contenteditable='true']");
+      if (
+        event.key !== "/" ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        isEditing
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      searchRef.current?.focus();
+    };
+
+    document.addEventListener("keydown", focusSearch);
+    return () => document.removeEventListener("keydown", focusSearch);
+  }, []);
 
   return (
     <UI.Sidebar className="p-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
@@ -130,10 +156,18 @@ export function Sidebar({
               <Search />
             </UI.Icon>
             <UI.Input
+              ref={searchRef}
               type="search"
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape" && query) {
+                  event.preventDefault();
+                  onQueryChange("");
+                }
+              }}
               aria-label="Search documentation"
+              aria-keyshortcuts="/"
               placeholder="Search documentation"
               className="pl-9 pr-9"
             />

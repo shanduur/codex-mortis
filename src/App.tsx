@@ -53,6 +53,7 @@ function App() {
 
   return (
     <UI.Page className="bg-transparent lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
+      <UI.SkipLink href="#content">Skip to content</UI.SkipLink>
       <Sidebar
         activeId={activeId}
         sections={filteredSections}
@@ -101,7 +102,7 @@ function App() {
           </UI.Stack>
         </UI.Header>
 
-        <UI.Main id="content" className="py-0">
+        <UI.Main id="content" tabIndex={-1} className="py-0">
           <UI.Container
             size="lg"
             className="max-w-[84rem] px-5 sm:px-8 lg:px-12 xl:px-16"
