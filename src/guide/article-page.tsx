@@ -2,6 +2,7 @@ import { ArrowRight, Check } from "lucide-react";
 
 import * as UI from "@/components";
 import { articleGuidance, defaultArticleGuidance } from "./article-content";
+import { IconCatalog } from "./icon-catalog";
 import { PageHeader } from "./page-header";
 import { guideEntries, navigationSections } from "./registry";
 
@@ -31,6 +32,9 @@ export function ArticlePage({ id }: { id: string }) {
   const practiceTitle = guidance.practiceTitle ?? "Application";
   const tocItems = [
     { href: "#overview", label: "Overview" },
+    ...(id === "icon-catalog"
+      ? [{ href: "#catalog", label: "Available icons" }]
+      : []),
     { href: "#principles", label: principlesTitle },
     { href: "#application", label: practiceTitle },
     { href: "#checklist", label: "Checklist" },
@@ -60,6 +64,8 @@ export function ArticlePage({ id }: { id: string }) {
               </UI.CardContent>
             </UI.Card>
           </UI.Stack>
+
+          {id === "icon-catalog" && <IconCatalog />}
 
           <GuidanceSection
             id="principles"

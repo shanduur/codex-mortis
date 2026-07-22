@@ -111,11 +111,13 @@ describe("component catalogue", () => {
     expect(navigationSections.map((section) => section.label)).toEqual([
       "Getting started",
       "Foundations",
+      "Primitives",
       "Guidelines",
       "UI patterns",
       "Scenario patterns",
       "Components",
       "Accessibility",
+      "Icons",
       "Contributing",
     ]);
     expect(
@@ -131,6 +133,22 @@ describe("component catalogue", () => {
     ).toBe(true);
     expect(
       guideEntries.some((entry) => entry.path === "/contributing/code/"),
+    ).toBe(true);
+    expect(
+      guideEntries.some((entry) => entry.path === "/primitives/themes/"),
+    ).toBe(true);
+    expect(guideEntries.some((entry) => entry.path === "/icons/catalog/")).toBe(
+      true,
+    );
+    expect(
+      guideEntries.some(
+        (entry) => entry.path === "/accessibility/semantic-html/",
+      ),
+    ).toBe(true);
+    expect(
+      guideEntries.some(
+        (entry) => entry.path === "/guidelines/inclusive-language/",
+      ),
     ).toBe(true);
   });
 });

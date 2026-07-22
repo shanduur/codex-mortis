@@ -16,36 +16,36 @@ The route registry is the source of truth for page metadata, navigation, generat
 ## Information architecture
 
 1. **Getting started**
-   - Introduction
-   - Getting started
-   - Installation
-   - Component status
-   - Design resources
+   - Introduction, installation, and component status
+   - Design resources, React setup, TypeScript, browser support, testing, and migration
 2. **Foundations**
-   - Principles, color, typography, spacing
-   - Layout, iconography, motion, elevation, design tokens
-3. **Guidelines**
-   - Voice and tone
-   - Writing
-   - UI text
-   - Grammar and mechanics
-   - Formatting data
-4. **UI patterns**
-   - Data display, degraded experiences, empty states
-   - Feature onboarding, forms, loading, navigation
-   - Notification messaging, progressive disclosure, saving
-5. **Scenario patterns**
-   - Create and edit, copy, delete, filter, search
-6. **Components**
+   - Principles, color, typography, spacing, layout, and responsive design
+   - Iconography, motion, elevation, and design-token concepts
+3. **Primitives**
+   - Color, size and space, typography, and motion tokens
+   - Token naming, themes, and migration
+4. **Guidelines**
+   - Voice and tone, writing, UI text, grammar, and formatting data
+   - Form content, errors, notifications, localization, and inclusive language
+5. **UI patterns**
+   - Data display, degraded experiences, empty states, and feature onboarding
+   - Forms, loading, navigation, notifications, errors and recovery
+   - Progressive disclosure and saving
+6. **Scenario patterns**
+   - Create and edit, copy, delete, filter, and search
+7. **Components**
    - Component overview
    - All 66 stable component reference pages
-7. **Accessibility**
-   - Keyboard navigation, focus management, screen readers
-   - Color contrast, accessible motion, review checklists
-8. **Contributing**
-   - Design, code, documentation, and release process
+8. **Accessibility**
+   - Keyboard navigation, focus management, screen readers, and semantic HTML
+   - Color contrast, text resizing, alternative text, announcements, and motion
+   - Testing, tools and resources, and review checklists
+9. **Icons**
+   - Searchable catalog, usage guidance, and accessibility
+10. **Contributing**
+    - Design, code, documentation, component proposals, quality, and releases
 
-This mirrors Primer's distinction between foundations, reusable UI patterns, scenario-level guidance, component references, and accessibility without reproducing Primer's branded language or visual styling.
+This mirrors Primer's distinction between foundations, installable primitives, reusable UI patterns, scenario-level guidance, component references, icons, and accessibility without reproducing Primer's branded language or visual styling.
 
 ## Route contract
 

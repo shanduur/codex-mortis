@@ -1,11 +1,13 @@
 export type GuideGroup =
   | "Getting started"
   | "Foundations"
+  | "Primitives"
   | "Guidelines"
   | "UI patterns"
   | "Scenario patterns"
   | "Components"
   | "Accessibility"
+  | "Icons"
   | "Contributing";
 
 export type GuideEntry = {
@@ -574,6 +576,23 @@ export const gettingStartedEntries = createDocumentationEntries(
       "Design resources",
       "Move between design files and production code",
     ],
+    ["react-setup", "React setup", "Configure imports, styles, and providers"],
+    ["typescript", "TypeScript", "Use component and token types safely"],
+    [
+      "browser-support",
+      "Browser support",
+      "Define supported platform behavior",
+    ],
+    [
+      "testing",
+      "Testing",
+      "Verify semantics, interaction, and visual behavior",
+    ],
+    [
+      "migration",
+      "Migration",
+      "Adopt system changes without breaking products",
+    ],
   ],
 );
 
@@ -588,6 +607,11 @@ export const additionalFoundationEntries = createDocumentationEntries(
       "",
     ],
     ["layout", "Layout", "Responsive containers, grids, and composition"],
+    [
+      "responsive-design",
+      "Responsive design",
+      "Adapt hierarchy and interaction across available space",
+    ],
     ["iconography", "Iconography", "Symbols, sizing, and accessible labels"],
     ["motion", "Motion", "Purposeful transitions and reduced-motion behavior"],
     ["elevation", "Elevation", "Surface hierarchy without decorative depth"],
@@ -595,6 +619,43 @@ export const additionalFoundationEntries = createDocumentationEntries(
       "design-tokens",
       "Design tokens",
       "Semantic contracts for visual decisions",
+    ],
+  ],
+);
+
+export const primitiveEntries = createDocumentationEntries(
+  "Primitives",
+  "primitives",
+  [
+    [
+      "primitives",
+      "Primitives",
+      "Use installable tokens as system contracts",
+      "",
+    ],
+    ["color-tokens", "Color tokens", "Map raw values to semantic color roles"],
+    [
+      "size-and-space",
+      "Size and space",
+      "Apply shared dimensions and spacing scales",
+    ],
+    [
+      "typography-tokens",
+      "Typography tokens",
+      "Encode type families, sizes, weights, and leading",
+    ],
+    ["motion-tokens", "Motion tokens", "Standardize duration and easing"],
+    [
+      "token-naming",
+      "Token naming",
+      "Name decisions by purpose instead of appearance",
+    ],
+    ["themes", "Themes", "Resolve semantic tokens across color modes"],
+    [
+      "token-migration",
+      "Token migration",
+      "Replace deprecated values predictably",
+      "migration",
     ],
   ],
 );
@@ -625,6 +686,33 @@ export const guidelineEntries = createDocumentationEntries(
       "formatting-data",
       "Formatting data",
       "Present dates, numbers, units, and code",
+    ],
+    [
+      "form-content",
+      "Form content",
+      "Write labels, help, requirements, and validation",
+    ],
+    [
+      "error-content",
+      "Errors",
+      "Explain failure and provide a recoverable next step",
+      "errors",
+    ],
+    [
+      "notification-content",
+      "Notifications",
+      "Write timely feedback at the right level of urgency",
+      "notifications",
+    ],
+    [
+      "localization",
+      "Localization",
+      "Design language that survives translation",
+    ],
+    [
+      "inclusive-language",
+      "Inclusive language",
+      "Use respectful language without hidden assumptions",
     ],
   ],
 );
@@ -673,6 +761,11 @@ export const patternEntries = createDocumentationEntries(
       "notification-messaging",
       "Notification messaging",
       "Match feedback prominence to consequence",
+    ],
+    [
+      "errors-and-recovery",
+      "Errors and recovery",
+      "Keep failures understandable, reversible, and actionable",
     ],
     [
       "progressive-disclosure",
@@ -766,6 +859,39 @@ export const accessibilityEntries = createDocumentationEntries(
       "Respect vestibular and attention needs",
     ],
     [
+      "semantic-html",
+      "Semantic HTML",
+      "Start with native roles, names, and behavior",
+    ],
+    [
+      "text-resizing",
+      "Text resizing",
+      "Preserve content and operation through reflow",
+    ],
+    [
+      "images-alt-text",
+      "Images and alternative text",
+      "Describe purpose without duplicating nearby content",
+      "images-and-alt-text",
+    ],
+    [
+      "announcements",
+      "Announcements",
+      "Communicate asynchronous updates without moving focus",
+    ],
+    [
+      "accessibility-testing",
+      "Accessibility testing",
+      "Combine automated checks with manual assistive-technology review",
+      "testing",
+    ],
+    [
+      "accessibility-tools",
+      "Tools and resources",
+      "Use annotations, browser tools, and CI scanning responsibly",
+      "tools-and-resources",
+    ],
+    [
       "accessibility-checklists",
       "Accessibility checklists",
       "Review design, code, content, and testing",
@@ -773,6 +899,33 @@ export const accessibilityEntries = createDocumentationEntries(
     ],
   ],
 );
+
+export const iconEntries = createDocumentationEntries("Icons", "icons", [
+  [
+    "icons",
+    "Icon library",
+    "Find and apply a consistent symbol vocabulary",
+    "",
+  ],
+  [
+    "icon-catalog",
+    "Icon catalog",
+    "Browse symbols by concept and product intent",
+    "catalog",
+  ],
+  [
+    "icon-usage",
+    "Icon usage",
+    "Choose, size, align, and pair symbols with text",
+    "usage",
+  ],
+  [
+    "icon-accessibility",
+    "Icon accessibility",
+    "Hide decoration and label meaningful controls",
+    "accessibility",
+  ],
+]);
 
 export const contributingEntries = createDocumentationEntries(
   "Contributing",
@@ -801,6 +954,17 @@ export const contributingEntries = createDocumentationEntries(
       "Documentation contributions",
       "Keep guidance practical and verifiable",
       "documentation",
+    ],
+    [
+      "propose-component",
+      "Propose a component",
+      "Demonstrate a reusable need before expanding the system",
+      "propose-a-component",
+    ],
+    [
+      "quality-checklist",
+      "Quality checklist",
+      "Verify design, behavior, accessibility, and documentation",
     ],
     [
       "release-process",
@@ -839,6 +1003,7 @@ export const navigationSections = [
     label: "Foundations",
     entries: [...additionalFoundationEntries, ...coreFoundationEntries],
   },
+  { label: "Primitives", entries: primitiveEntries },
   { label: "Guidelines", entries: guidelineEntries },
   { label: "UI patterns", entries: patternEntries },
   { label: "Scenario patterns", entries: scenarioEntries },
@@ -847,16 +1012,19 @@ export const navigationSections = [
     entries: [...componentOverviewEntries, ...componentEntries],
   },
   { label: "Accessibility", entries: accessibilityEntries },
+  { label: "Icons", entries: iconEntries },
   { label: "Contributing", entries: contributingEntries },
 ] satisfies { label: GuideGroup; entries: GuideEntry[] }[];
 
 export const documentationEntries = [
   ...gettingStartedEntries,
   ...additionalFoundationEntries,
+  ...primitiveEntries,
   ...guidelineEntries,
   ...patternEntries,
   ...scenarioEntries,
   ...accessibilityEntries,
+  ...iconEntries,
   ...contributingEntries,
   ...componentOverviewEntries,
 ];

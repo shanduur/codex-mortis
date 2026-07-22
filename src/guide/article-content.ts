@@ -13,6 +13,27 @@ const sharedChecklist = [
   "Language, states, and responsive behavior are documented before release.",
 ];
 
+function createArticleGuidance(
+  overview: string,
+  principle: string,
+  practice: string,
+): ArticleGuidance {
+  return {
+    overview,
+    principles: [
+      principle,
+      "Prefer semantic system contracts over local values or one-off behavior.",
+      "Document ownership, exceptions, and expected behavior before adoption.",
+    ],
+    practice: [
+      practice,
+      "Verify the result in both themes, at narrow widths, and without a pointer.",
+      "Connect the decision to related foundations, components, and patterns.",
+    ],
+    checklist: sharedChecklist,
+  };
+}
+
 export const articleGuidance: Record<string, ArticleGuidance> = {
   "getting-started": {
     overview:
@@ -727,6 +748,166 @@ export const articleGuidance: Record<string, ArticleGuidance> = {
     ],
     checklist: sharedChecklist,
   },
+  "react-setup": createArticleGuidance(
+    "React setup establishes the package, stylesheet, and provider boundary once so product code can consume components without hidden configuration.",
+    "Keep React runtime, portals, and theme ownership at the application boundary.",
+    "Configure aliases and styles, then render an interactive overlay as the integration check.",
+  ),
+  typescript: createArticleGuidance(
+    "TypeScript turns component APIs and token names into discoverable contracts while preserving normal React composition.",
+    "Expose useful public types without leaking implementation-only dependencies.",
+    "Type representative controlled and uncontrolled examples and verify declaration output.",
+  ),
+  "browser-support": createArticleGuidance(
+    "Browser support defines the platform capabilities consumers can rely on and the degradation policy when a capability is unavailable.",
+    "Base support decisions on user reach and tested behavior rather than novelty.",
+    "Maintain a tested browser matrix and record intentional fallbacks beside affected features.",
+  ),
+  testing: createArticleGuidance(
+    "System testing combines semantics, interaction, rendering, declarations, and package verification instead of treating screenshots as sufficient evidence.",
+    "Test public behavior and user outcomes rather than private component structure.",
+    "Cover keyboard and focus behavior first, then build and inspect the packed artifact.",
+  ),
+  migration: createArticleGuidance(
+    "Migration guidance lets products adopt changed contracts incrementally without silent visual or behavioral forks.",
+    "Deprecate before removal and name the supported replacement.",
+    "Provide before-and-after code, a compatibility window, and a verification checklist.",
+  ),
+  "responsive-design": createArticleGuidance(
+    "Responsive design preserves hierarchy and task completion as available space, input method, and text size change.",
+    "Adapt composition from content pressure instead of targeting named devices.",
+    "Test narrow containers, long translated copy, zoom, and touch targets together.",
+  ),
+  primitives: createArticleGuidance(
+    "Primitives are installable low-level contracts that let themes and components resolve the same visual decisions consistently.",
+    "Consume semantic aliases in product code and reserve raw scales for system construction.",
+    "Start with the semantic token layer and inspect its resolved value in each theme.",
+  ),
+  "color-tokens": createArticleGuidance(
+    "Color tokens separate categorical intent such as action, selection, warning, and success from palette implementation.",
+    "Name color by role and interaction state rather than by hue.",
+    "Map every alias across light and dark themes and verify contrast in context.",
+  ),
+  "size-and-space": createArticleGuidance(
+    "Size and spacing tokens create predictable rhythm while allowing components to respond to density and content.",
+    "Use a constrained scale and let component anatomy determine token choice.",
+    "Measure gaps by relationship, then verify wrapping and target sizes at zoom.",
+  ),
+  "typography-tokens": createArticleGuidance(
+    "Typography tokens encode readable hierarchy through family, size, weight, line height, and tracking contracts.",
+    "Choose a text role before choosing a visual value.",
+    "Apply roles to realistic long and short content across viewport sizes.",
+  ),
+  "motion-tokens": createArticleGuidance(
+    "Motion tokens standardize duration and easing while keeping transitions purposeful and removable.",
+    "Motion must explain change, preserve orientation, or confirm causality.",
+    "Pair every transition with reduced-motion behavior and interruption testing.",
+  ),
+  "token-naming": createArticleGuidance(
+    "Token names describe stable design intent so implementations may evolve without forcing product-level renaming.",
+    "Move from namespace to category, concept, property, variant, and state consistently.",
+    "Review names in real component code and reject aliases tied only to current appearance.",
+  ),
+  themes: createArticleGuidance(
+    "Themes resolve the same semantic contract into mode-appropriate surfaces, text, borders, and categorical accents.",
+    "Treat dark mode as an explicit system instead of mechanically inverting values.",
+    "Audit nested surfaces, focus, code, disabled states, and system preference startup.",
+  ),
+  "token-migration": createArticleGuidance(
+    "Token migration replaces deprecated aliases without changing product meaning or leaving hard-coded fallback values.",
+    "Publish alias replacements and removal timing with the deprecation.",
+    "Search consumers, apply codemods where safe, and visually compare representative workflows.",
+  ),
+  "form-content": createArticleGuidance(
+    "Form content helps people understand what to provide, why it is needed, and how to recover when a value is rejected.",
+    "Use persistent labels and put requirements before submission.",
+    "Write labels, help, examples, and validation together for one realistic task.",
+  ),
+  "error-content": createArticleGuidance(
+    "Error language explains what failed, what remains safe, and the next action without blaming the person.",
+    "Be specific, proportionate, and recovery-oriented.",
+    "Place field guidance near the cause and summarize blocking errors at submission.",
+  ),
+  "notification-content": createArticleGuidance(
+    "Notification content communicates completion, change, or risk at a prominence matching its consequence and urgency.",
+    "Lead with the outcome and avoid redundant status language.",
+    "Choose inline, banner, toast, or dialog delivery before drafting the message.",
+  ),
+  localization: createArticleGuidance(
+    "Localization prepares structure and language for translation, regional formats, bidirectional text, and culturally variable expectations.",
+    "Do not concatenate fragments or encode grammar in layout.",
+    "Test expanded copy, locale-aware data, and right-to-left reading order.",
+  ),
+  "inclusive-language": createArticleGuidance(
+    "Inclusive language respects people, avoids hidden assumptions, and keeps identity relevant only when it serves the task.",
+    "Use person-centered terms and plain language without euphemistic ambiguity.",
+    "Review examples, defaults, names, and demographic choices with affected perspectives.",
+  ),
+  "errors-and-recovery": createArticleGuidance(
+    "Error and recovery patterns preserve context, work, and a clear route forward across validation, permissions, connectivity, and system failure.",
+    "Prevent errors where possible and make destructive consequences reversible.",
+    "Map failure points, retained state, retry behavior, escalation, and offline handling.",
+  ),
+  "semantic-html": createArticleGuidance(
+    "Semantic HTML supplies robust names, roles, relationships, and native interaction before ARIA or custom scripting is considered.",
+    "Use the native element whose behavior matches the interaction.",
+    "Inspect the accessibility tree and operate the complete task with a keyboard.",
+  ),
+  "text-resizing": createArticleGuidance(
+    "Text resizing guidance keeps content readable and controls operable at browser zoom and increased text settings without clipping or loss.",
+    "Allow reflow and avoid fixed dimensions around user-facing text.",
+    "Test at 200 percent zoom, narrow width, and with long localized labels.",
+  ),
+  "images-alt-text": createArticleGuidance(
+    "Alternative text communicates an image’s purpose in context while decorative imagery remains silent to assistive technology.",
+    "Describe the information or action, not the pixels or file type.",
+    "Decide whether the image is informative, functional, complex, or decorative before writing text.",
+  ),
+  announcements: createArticleGuidance(
+    "Announcements expose meaningful asynchronous changes without stealing focus or repeating every visual update.",
+    "Use live regions sparingly and match politeness to urgency.",
+    "Test loading completion, validation, saved state, and new content with a screen reader.",
+  ),
+  "accessibility-testing": createArticleGuidance(
+    "Accessibility testing combines automated rules with keyboard, zoom, contrast, and assistive-technology review of complete workflows.",
+    "Automation finds classes of defects but cannot establish usability.",
+    "Define a repeatable manual script and record browser and assistive-technology coverage.",
+  ),
+  "accessibility-tools": createArticleGuidance(
+    "Accessibility tools support annotation, inspection, scanning, and review but remain evidence sources rather than substitutes for judgment.",
+    "Choose tools for a known question and understand their blind spots.",
+    "Run linting and browser scans, then manually verify semantics and task completion.",
+  ),
+  icons: createArticleGuidance(
+    "The icon library provides a shared symbol vocabulary aligned with component sizing, stroke weight, and product meaning.",
+    "Prefer familiar symbols and pair ambiguity with visible text.",
+    "Search by intent, inspect nearby symbols, and test the choice in its final control.",
+  ),
+  "icon-catalog": createArticleGuidance(
+    "The icon catalog organizes symbols by concept and exposes names that map directly to supported React imports.",
+    "One canonical icon should represent each recurring system concept.",
+    "Browse by task, compare candidates at intended size, and verify package availability.",
+  ),
+  "icon-usage": createArticleGuidance(
+    "Icon usage guidance keeps symbols consistently sized, aligned, spaced, and paired with labels across controls and content.",
+    "Use icons to reinforce meaning rather than replace necessary language.",
+    "Align to the text optical center and use component-owned sizing tokens.",
+  ),
+  "icon-accessibility": createArticleGuidance(
+    "Icon accessibility distinguishes decorative marks from meaningful images and icon-only controls that require accessible names.",
+    "Hide decoration and name the interactive control rather than the glyph.",
+    "Inspect accessible names and test icon-only controls with speech and keyboard input.",
+  ),
+  "propose-component": createArticleGuidance(
+    "A component proposal demonstrates a recurring cross-product need, a coherent contract, and why existing primitives cannot solve it well.",
+    "Expand the system only when reuse and ownership justify long-term support.",
+    "Bring product evidence, anatomy, states, API direction, accessibility, and alternatives.",
+  ),
+  "quality-checklist": createArticleGuidance(
+    "The contribution quality checklist turns design-system acceptance into visible evidence across design, code, content, accessibility, and release readiness.",
+    "A component is complete only when consumers can adopt and verify it.",
+    "Review exports, declarations, examples, interactions, themes, responsive behavior, and migration impact.",
+  ),
   "release-process": {
     overview:
       "A release moves a verified system change into consumer workflows with clear compatibility, migration, and ownership expectations.",

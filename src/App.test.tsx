@@ -41,6 +41,7 @@ describe("design language guide", () => {
       name: "Guide navigation",
     });
     expect(within(navigation).getByText("Guidelines")).toBeInTheDocument();
+    expect(within(navigation).getByText("Primitives")).toBeInTheDocument();
     expect(
       within(navigation).getAllByText("UI patterns").length,
     ).toBeGreaterThan(0);
@@ -50,6 +51,7 @@ describe("design language guide", () => {
     expect(
       within(navigation).getAllByText("Contributing").length,
     ).toBeGreaterThan(0);
+    expect(within(navigation).getByText("Icons")).toBeInTheDocument();
     expect(
       within(navigation).getByRole("link", { name: "UI patterns" }),
     ).toHaveAttribute("href", "/patterns/");
@@ -68,6 +70,20 @@ describe("design language guide", () => {
       screen.getByRole("heading", { name: "Validation" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/one clear task/i)).toBeInTheDocument();
+  });
+
+  it("provides a searchable icon catalog on its own document", () => {
+    window.history.replaceState({}, "", "/icons/catalog/");
+    render(<App />);
+
+    expect(
+      screen.getByRole("heading", { name: "Icon catalog" }),
+    ).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("searchbox", { name: "Search icons" }), {
+      target: { value: "trash" },
+    });
+    expect(screen.getByText("Trash 2")).toBeInTheDocument();
+    expect(screen.queryByText("Search")).not.toBeInTheDocument();
   });
 
   it("provides primary navigation to the major guide sections", () => {

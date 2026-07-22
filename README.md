@@ -8,7 +8,7 @@ Color is categorical rather than ambient: utility blue carries primary actions, 
 
 The guide dogfoods the public library for its own shell and documentation layout. Only large headings sit directly on the drafting-grid canvas; supporting copy and metadata live on owned component surfaces.
 
-The documentation is a true Vite multi-page site rather than an SPA. Its 117 canonical routes build to separate HTML documents and navigate with standard links, so direct loads, reloads, back/forward navigation, open-in-new-tab, and copied URLs use native browser behavior.
+The documentation is a true Vite multi-page site rather than an SPA. Its 149 canonical routes build to separate HTML documents and navigate with standard links, so direct loads, reloads, back/forward navigation, open-in-new-tab, and copied URLs use native browser behavior.
 
 ## Run the guide
 

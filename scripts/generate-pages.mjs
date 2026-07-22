@@ -8,11 +8,13 @@ const registryPath = path.join(root, "src/guide/registry.ts");
 const generatedRoots = [
   "getting-started",
   "foundations",
+  "primitives",
   "guidelines",
   "patterns",
   "scenarios",
   "components",
   "accessibility",
+  "icons",
   "contributing",
 ];
 

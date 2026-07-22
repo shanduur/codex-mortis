@@ -7,6 +7,7 @@ const guideCompositionSources = import.meta.glob<string>(
     "./sidebar.tsx",
     "./foundation-page.tsx",
     "./article-page.tsx",
+    "./icon-catalog.tsx",
     "./component-page.tsx",
   ],
   { eager: true, import: "default", query: "?raw" },

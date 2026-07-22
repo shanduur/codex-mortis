@@ -9,11 +9,13 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const pageRoots = [
   "getting-started",
   "foundations",
+  "primitives",
   "guidelines",
   "patterns",
   "scenarios",
   "components",
   "accessibility",
+  "icons",
   "contributing",
 ];
 
