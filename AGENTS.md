@@ -134,7 +134,9 @@ A component is not complete if it exists in the package but cannot be discovered
 
 - Use hierarchy through scale, space, alignment, and contrast before adding containers.
 - Keep radii small and surfaces material.
-- Use violet only as a controlled system accent.
+- Keep the drafting grid on the page canvas; add local grids only when they explain or frame technical content.
+- Keep most surfaces neutral. Use utility blue for navigation and primary action, yellow for selected or high-attention moments, coral for urgency, green for healthy state, and lavender sparingly.
+- Prefer quiet one-pixel borders and soft elevation. Hard offset shadows are exceptional emphasis, not a component default.
 - Use monospace for metadata, code, identifiers, and technical labels—not body copy.
 - Prefer asymmetrical editorial layouts to repeated equal card grids.
 - Avoid decorative gradients, glassmorphism, glowing AI imagery, fake metrics, and icon-filled feature tiles.

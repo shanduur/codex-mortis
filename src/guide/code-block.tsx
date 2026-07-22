@@ -5,8 +5,8 @@ type CodeBlockProps = {
 
 export function CodeBlock({ children, label = "Example" }: CodeBlockProps) {
   return (
-    <div className="overflow-hidden border-2 bg-foreground text-background shadow-[5px_5px_0_0_var(--primary)]">
-      <div className="flex items-center justify-between border-b-2 border-background/40 bg-primary px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-foreground">
+    <div className="overflow-hidden rounded-md border bg-code text-code-foreground soft-shadow">
+      <div className="flex items-center justify-between border-b border-white/15 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-code-foreground/65">
         <span>{label}</span>
         <span>TSX</span>
       </div>

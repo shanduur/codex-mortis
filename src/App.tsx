@@ -42,11 +42,11 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background/90 text-foreground lg:grid lg:grid-cols-[20rem_minmax(0,1fr)]">
+    <div className="min-h-screen text-foreground lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
       <Sidebar activeId={activeId} foundations={foundationEntries} components={filteredComponents} query={query} onQueryChange={setQuery} onNavigate={navigate} />
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b-2 bg-primary px-5 text-primary-foreground sm:px-8">
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-card px-5 text-card-foreground sm:px-8">
           <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
             <span className="hidden sm:inline">Catalogue</span><span className="hidden sm:inline">/</span><span>{activeId}</span>
           </div>
@@ -56,11 +56,11 @@ function App() {
           </div>
         </header>
 
-        <main id="content" className="mx-auto max-w-[92rem] px-5 sm:px-8 lg:px-12 xl:px-16">
+        <main id="content" className="mx-auto max-w-[84rem] px-5 sm:px-8 lg:px-12 xl:px-16">
           {isComponent ? <ComponentPage id={activeId} /> : <FoundationPage id={activeId} />}
         </main>
 
-        <footer className="mt-16 grid gap-6 border-t-2 bg-foreground px-5 py-10 font-mono text-[10px] uppercase tracking-[0.16em] text-background sm:grid-cols-2 sm:px-8 lg:px-12 xl:px-16">
+        <footer className="mt-16 grid gap-6 border-t bg-card px-5 py-10 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-2 sm:px-8 lg:px-12 xl:px-16">
           <span>React / Shadcn / Tailwind CSS</span><span className="sm:text-right">Inspectable. Extensible. Owned.</span>
         </footer>
       </div>

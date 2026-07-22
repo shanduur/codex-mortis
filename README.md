@@ -2,9 +2,9 @@
 
 A React component library and browsable design-language guide built with Shadcn conventions and Tailwind CSS.
 
-The visual system combines Tenstorrent-inspired editorial neo-industrial structure with colorful neo-brutalist expression: technical-catalogue clarity, warm paper-and-ink foundations, categorical saturated accents, strong borders, hard offset shadows, oversized typography, and selective asymmetry.
+The visual system combines Tenstorrent-inspired editorial neo-industrial structure with restrained neo-brutalist accents: technical-catalogue clarity, a page-wide drafting grid, warm paper-and-ink foundations, categorical saturated color, quiet borders, and confident typography.
 
-Color is categorical rather than ambient: signal yellow marks primary action and selection, utility blue carries navigation and information, alert coral marks urgency, status green communicates healthy state, and lavender is reserved for rare expressive moments. Components preserve visible focus, semantic intent, and readable light/dark contrast.
+Color is categorical rather than ambient: utility blue carries navigation and primary action, signal yellow marks selected or high-attention moments, alert coral marks urgency, status green communicates healthy state, and lavender is reserved for rare expressive moments. Most surfaces remain neutral so those colors keep their meaning. Components preserve visible focus, semantic intent, and readable light/dark contrast.
 
 ## Run the guide
 

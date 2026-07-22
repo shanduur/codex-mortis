@@ -35,18 +35,18 @@ function SectionHeading({ index, title, description }: { index: string; title: s
 function IntroductionPage() {
   return (
     <>
-      <PageHeader chapter="Foundation / 00" title="Design language" description="A colorful neo-brutalist system for technical products: engineered, legible, open, and impossible to mistake for a generic dashboard." eyebrow="Read time / 4 min" />
+      <PageHeader chapter="Foundation / 00" title="Design language" description="An editorial neo-industrial system for technical products: calm, legible, open, and grounded in how the product actually works." eyebrow="Read time / 4 min" />
       <section className="py-16 sm:py-24">
-        <SectionHeading index="01" title="Colorful editorial neo-industrialism" description="Tenstorrent supplies the technical-catalogue clarity and engineering credibility. Neo-brutalism adds flat color, visible structure, hard shadows, and selective asymmetry." />
+        <SectionHeading index="01" title="Editorial neo-industrialism" description="Technical-catalogue clarity, disciplined alignment, and confident whitespace lead the system. Neo-brutalist color is an accent, not the default surface." />
         <div className="grid gap-5 py-8 lg:grid-cols-3">
-          {[['Industrial, not corporate','Show systems as things people configure, inspect, and own.','bg-utility-blue'],['Editorial, not templated','Let content change the rhythm. Not every idea belongs in an equal card.','bg-alert-coral lg:translate-y-8'],['Colorful, not decorative','Give every saturated color a stable role instead of scattering rainbow accents.','bg-status-green']].map(([title, copy, color], index) => (
-            <article key={title} className={`min-h-56 border-2 p-7 shadow-[6px_6px_0_0_var(--shadow-color)] ${color}`}><span className="font-mono text-[10px] font-bold">0{index + 1}</span><h3 className="mt-16 text-xl font-black tracking-tight">{title}</h3><p className="mt-3 text-sm leading-6">{copy}</p></article>
+          {[['Industrial, not corporate','Show systems as things people configure, inspect, and own.','bg-utility-blue'],['Editorial, not templated','Let content change the rhythm. Not every idea belongs in an equal card.','bg-alert-coral'],['Colorful, not decorative','Give every saturated color a stable role instead of scattering rainbow accents.','bg-status-green']].map(([title, copy, color], index) => (
+            <article key={title} className="min-h-56 rounded-lg border bg-card p-7 shadow-sm"><span className={`block h-1.5 w-14 rounded-full ${color}`} /><span className="mt-6 block font-mono text-[10px] text-muted-foreground">0{index + 1}</span><h3 className="mt-10 text-xl font-semibold tracking-tight">{title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{copy}</p></article>
           ))}
         </div>
       </section>
-      <section className="border-2 bg-foreground px-6 py-16 text-background shadow-[8px_8px_0_0_var(--primary)] sm:px-10 sm:py-24">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-background/55">Core idea</p>
-        <p className="mt-12 max-w-5xl text-balance text-4xl font-black leading-tight tracking-[-0.04em] sm:text-6xl">The interface should expose how the product works—not hide it behind generic futurism.</p>
+      <section className="rounded-xl bg-code px-6 py-16 text-code-foreground soft-shadow sm:px-10 sm:py-24">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-code-foreground/55"><span className="mr-3 inline-block size-2 rounded-full bg-signal-yellow" />Core idea</p>
+        <p className="mt-12 max-w-5xl text-balance text-4xl font-medium leading-tight tracking-[-0.04em] sm:text-6xl">The interface should expose how the product works—not hide it behind generic futurism.</p>
       </section>
       <section className="py-16 sm:py-24">
         <SectionHeading index="02" title="How to use this guide" description="Learn the foundations, choose a component by intent, copy the example, and adapt it with semantic tokens rather than hard-coded color values." />
@@ -75,9 +75,10 @@ function ColorsPage() {
     <>
       <PageHeader chapter="Foundation / 02" title="Color" description="A warm paper-and-ink foundation with categorical saturated accents. Color carries meaning; it is never ambient decoration." />
       <section className="py-14">
-        <h2 className="mb-8 text-3xl font-black tracking-tight">Color is categorical, not ambient.</h2>
+        <h2 className="text-3xl font-medium tracking-tight">Color is categorical, not ambient.</h2>
+        <p className="mb-8 mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Most of the interface stays paper, ink, and muted neutral. Saturated surfaces mark a selected destination, a primary action, or a state that deserves attention.</p>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {colors.map(([name, token, className, purpose], index) => <article key={token} className="border-2 bg-card p-4 shadow-[5px_5px_0_0_var(--shadow-color)]"><div className={`h-32 border-2 ${className}`}><span className="m-2 inline-block border-2 bg-card px-2 py-1 font-mono text-[10px] font-bold text-card-foreground">0{index + 1}</span></div><div className="mt-4 flex items-start justify-between gap-4"><div><h2 className="font-black">{name}</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">{purpose}</p></div><code className="font-mono text-[10px]">{token}</code></div></article>)}
+          {colors.map(([name, token, className, purpose], index) => <article key={token} className="rounded-lg border bg-card p-4 shadow-sm"><div className={`h-28 rounded-md border ${className}`}><span className="m-2 inline-block rounded-full border bg-card px-2 py-1 font-mono text-[10px] text-card-foreground">0{index + 1}</span></div><div className="mt-4 flex items-start justify-between gap-4"><div><h2 className="font-semibold">{name}</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">{purpose}</p></div><code className="font-mono text-[10px] text-muted-foreground">{token}</code></div></article>)}
         </div>
       </section>
       <section className="grid gap-8 border-t py-14 lg:grid-cols-2">

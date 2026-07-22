@@ -2,8 +2,8 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const alertVariants = cva("relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-sm border-2 px-4 py-3 text-sm shadow-[4px_4px_0_0_var(--shadow-color)] has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3", {
-  variants: { variant: { default: "bg-secondary text-secondary-foreground", destructive: "bg-destructive text-white [&>svg]:text-current [&_[data-slot=alert-description]]:text-white/85" } },
+const alertVariants = cva("relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-md border px-4 py-3 text-sm shadow-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3", {
+  variants: { variant: { default: "border-primary/45 bg-accent text-accent-foreground", destructive: "border-destructive/55 bg-destructive/12 text-foreground [&>svg]:text-destructive [&_[data-slot=alert-description]]:text-muted-foreground" } },
   defaultVariants: { variant: "default" },
 })
 function Alert({ className, variant, ...props }: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) { return <div role="alert" data-slot="alert" className={cn(alertVariants({ variant }), className)} {...props} /> }
