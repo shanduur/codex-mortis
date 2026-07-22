@@ -50,7 +50,7 @@ console.log(`Generated ${guideEntries.length} independent HTML page entries.`);
 
 function pageTemplate(entry) {
   const title = escapeHtml(
-    entry.path === "/" ? "Design Language" : `${entry.name} · Design Language`,
+    entry.path === "/" ? "Codex Mortis" : `${entry.name} · Codex Mortis`,
   );
   const description = escapeHtml(entry.description);
   const pageId = escapeHtml(entry.id);
@@ -59,7 +59,7 @@ function pageTemplate(entry) {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${description}" />
     <meta name="theme-color" content="#0b0b10" />

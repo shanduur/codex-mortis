@@ -227,7 +227,7 @@ function getCopy(entry: GuideEntry): ComponentCopy {
     guidance:
       custom?.guidance ??
       `Use ${entry.name} when you need to ${entry.description.toLowerCase()}.`,
-    code: `import { ${example.imports ?? componentName} } from "@shanduur/design-language"\n\n${example.example}`,
+    code: `import { ${example.imports ?? componentName} } from "@shanduur/codex-mortis"\n\n${example.example}`,
     doThis:
       custom?.doThis ??
       `Use ${entry.name} for a clear, specific ${entry.description.toLowerCase()} need.`,

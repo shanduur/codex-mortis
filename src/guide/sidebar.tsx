@@ -130,11 +130,11 @@ export function Sidebar({
           className="flex items-center gap-3 no-underline"
         >
           <UI.Badge className="grid size-10 place-items-center rounded-md p-0 font-mono text-xs font-bold">
-            DL
+            CM
           </UI.Badge>
           <UI.Stack gap="1">
             <UI.Text as="span" className="font-semibold">
-              Design language
+              Codex Mortis
             </UI.Text>
             <UI.Text
               as="span"

@@ -1,7 +1,7 @@
 {
-  "name": "@shanduur/design-language",
+  "name": "@shanduur/codex-mortis",
   "version": "0.1.0",
-  "description": "A React component library and browsable design-language guide built with Shadcn and Tailwind CSS.",
+  "description": "Codex Mortis: an editorial React component library and multi-page design-system guide built with Shadcn and Tailwind CSS.",
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -74,6 +74,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shanduur/design-language.git"
+    "url": "git+https://github.com/shanduur/codex-mortis.git"
   }
 }

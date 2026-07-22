@@ -33,7 +33,7 @@ export function PageHeader({
           <UI.CardHeader className="flex-row items-center justify-between gap-3 px-5">
             <UI.Badge variant="outline">{chapter}</UI.Badge>
             <UI.Badge variant="outline">
-              {eyebrow ?? "Design language / 01"}
+              {eyebrow ?? "Codex Mortis / 01"}
             </UI.Badge>
           </UI.CardHeader>
           <UI.CardContent className="px-5">

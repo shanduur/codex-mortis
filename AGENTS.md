@@ -2,7 +2,7 @@
 
 ## Project purpose
 
-This repository contains a React component library and its design-language guide. The guide is the primary development surface: every public component should be browsable, explained, and demonstrated there.
+This repository contains Codex Mortis, a React component library and its design-system guide. The guide is the primary development surface: every public component should be browsable, explained, and demonstrated there.
 
 The visual direction is **editorial neo-industrialism**: technical-catalogue clarity, editorial pacing, restrained color, strong alignment, and visible engineering detail.
 

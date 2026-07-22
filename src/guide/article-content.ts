@@ -59,8 +59,8 @@ export const articleGuidance: Record<string, ArticleGuidance> = {
       "Override semantic tokens rather than component internals.",
     ],
     practice: [
-      "Install @shanduur/design-language and its peer dependencies.",
-      "Import @shanduur/design-language/styles.css in the application entry.",
+      "Install @shanduur/codex-mortis and its peer dependencies.",
+      "Import @shanduur/codex-mortis/styles.css in the application entry.",
       "Render a Button and Dialog to verify CSS, focus behavior, and portals.",
     ],
     checklist: [

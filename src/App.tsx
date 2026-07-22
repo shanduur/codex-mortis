@@ -65,7 +65,7 @@ function App() {
           <UI.Stack direction="horizontal" gap="1">
             <UI.Button asChild variant="ghost" size="sm">
               <UI.Link
-                href="https://github.com/shanduur/design-language"
+                href="https://github.com/shanduur/codex-mortis"
                 aria-label="Open repository"
                 className="no-underline"
               >

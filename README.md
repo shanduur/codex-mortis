@@ -1,6 +1,10 @@
-# Design Language
+# Codex Mortis
 
-A React component library and full multi-page design/style guide built with Shadcn conventions and Tailwind CSS.
+![The Codex Mortis brand plate](./public/codex-mortis.webp)
+
+An editorial React component library and full multi-page design-system codex built with Shadcn conventions and Tailwind CSS.
+
+**Codex Mortis** treats interface design as an enduring body of measured knowledge: the visible component is only the surface; structure, semantics, accessibility, and behavior are its bones.
 
 The visual system combines Tenstorrent-inspired editorial neo-industrial structure with restrained neo-brutalist accents: technical-catalogue clarity, a page-wide drafting grid, warm paper-and-ink foundations, categorical saturated color, quiet borders, and confident typography.
 
@@ -48,8 +52,8 @@ The package currently contains **66 stable components**, each with a searchable 
 ## Use the library
 
 ```tsx
-import { Button, Card, CardContent } from "@shanduur/design-language";
-import "@shanduur/design-language/styles.css";
+import { Button, Card, CardContent } from "@shanduur/codex-mortis";
+import "@shanduur/codex-mortis/styles.css";
 
 export function Example() {
   return (
@@ -76,7 +80,7 @@ This runs Prettier verification, Oxlint, the comprehensive Vitest suite, the gui
 
 GitHub Actions owns both release artifacts:
 
-- [`.github/workflows/publish-package.yml`](./.github/workflows/publish-package.yml) publishes `@shanduur/design-language` to GitHub Packages whenever a GitHub Release is published. The release tag must match `package.json` (for example, tag `v0.1.0` for version `0.1.0`). The workflow authenticates with `GITHUB_TOKEN`; no repository npm token is required.
+- [`.github/workflows/publish-package.yml`](./.github/workflows/publish-package.yml) publishes `@shanduur/codex-mortis` to GitHub Packages whenever a GitHub Release is published. The release tag must match `package.json` (for example, tag `v0.1.0` for version `0.1.0`). The workflow authenticates with `GITHUB_TOKEN`; no repository npm token is required.
 - [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) builds all 149 documents on every push to `main` and deploys `demo-dist/` with GitHub Pages’ artifact-based deployment. `BASE_PATH` makes assets, direct document loads, and guide links work below `/<repository>/`.
 
 In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Published packages are installed from `https://npm.pkg.github.com` using a GitHub token with `read:packages` permission.

@@ -134,10 +134,21 @@ function IntroductionPage() {
     <UI.Stack gap="12">
       <PageHeader
         chapter="Foundation / 00"
-        title="Design language"
-        description="An editorial neo-industrial system for technical products: calm, legible, open, and grounded in how the product actually works."
+        title="Codex Mortis"
+        description="A living codex for technical interfaces: measured, legible, enduring, and explicit about the structures beneath the surface."
         eyebrow="Read time / 4 min"
       />
+
+      <UI.Card className="overflow-hidden border-foreground/20 bg-white p-2 shadow-none sm:p-3">
+        <UI.Image
+          src={guideHref("/codex-mortis.webp")}
+          alt="The Codex Mortis brand plate"
+          width={1536}
+          height={1024}
+          loading="eager"
+          className="aspect-[3/2] w-full rounded-sm object-cover"
+        />
+      </UI.Card>
 
       <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading

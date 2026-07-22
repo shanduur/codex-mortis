@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import App from "./App";
 
-describe("design language guide", () => {
+describe("Codex Mortis guide", () => {
   beforeEach(() => {
     window.location.hash = "";
     window.history.replaceState({}, "", "/");
@@ -134,8 +134,11 @@ describe("design language guide", () => {
     render(<App />);
 
     expect(
-      screen.getByRole("heading", { name: "Design language" }),
+      screen.getByRole("heading", { name: "Codex Mortis" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "The Codex Mortis brand plate" }),
+    ).toHaveAttribute("src", "/codex-mortis.webp");
     expect(
       screen.getByRole("navigation", { name: "Guide navigation" }),
     ).toBeInTheDocument();
@@ -196,7 +199,7 @@ describe("design language guide", () => {
 
     expect(
       screen
-        .getByText(/An editorial neo-industrial system for technical products/)
+        .getByText(/A living codex for technical interfaces/)
         .closest("[data-slot='card']"),
     ).not.toBeNull();
     expect(
