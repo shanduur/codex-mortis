@@ -1,69 +1,80 @@
 # Design Language
 
-A publishable React component library and semantic styling foundation built with Shadcn conventions, Radix UI primitives, Tailwind CSS v4, and TypeScript.
+A React component library and browsable design-language guide built with Shadcn conventions and Tailwind CSS.
 
-## What is included
+The visual system translates editorial neo-industrial principles into an approachable implementation: technical catalogue structure, restrained color, large typographic hierarchy, visible engineering detail, and practical component guidance.
 
-- Semantic OKLCH color tokens with light and dark themes
-- Accessible `Button`, `Badge`, `Input`, `Textarea`, `Card`, `Alert`, and `Dialog` primitives
-- Variant composition with `class-variance-authority`
-- Class merging via `clsx` and `tailwind-merge`
-- A Vite showcase app for visual development
-- ESM library output and generated TypeScript declarations
-- Vitest + Testing Library checks and GitHub Actions CI
-- `components.json` aliases compatible with the Shadcn CLI
-
-## Development
+## Run the guide
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local Vite URL to browse the component showcase.
+The guide includes:
+
+- design principles;
+- semantic color tokens;
+- typography and spacing foundations;
+- searchable component navigation;
+- live light/dark previews;
+- minimal TypeScript examples;
+- do/avoid guidance;
+- accessibility checklists.
+
+## Components
+
+- Alert
+- Badge
+- Button
+- Card
+- Dialog
+- Input
+- Textarea
+
+## Use the library
+
+```tsx
+import { Button, Card, CardContent } from "@shanduur/design-language"
+import "@shanduur/design-language/styles.css"
+
+export function Example() {
+  return (
+    <Card>
+      <CardContent>
+        <Button>Deploy system</Button>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+Add the `dark` class to an ancestor—normally `<html>`—to activate dark mode.
+
+## Quality checks
 
 ```bash
 npm run check
 ```
 
-`check` runs linting, unit tests, the showcase build, and the distributable library build.
+This runs Oxlint, Vitest, the guide build, and the distributable library build.
 
-## Consuming the library
-
-```tsx
-import { Button, Card, CardContent } from "@shanduur/design-language"
-import "@shanduur/design-language/styles.css"
-```
-
-```tsx
-<Card>
-  <CardContent>
-    <Button>Continue</Button>
-  </CardContent>
-</Card>
-```
-
-Add the `dark` class to an ancestor (usually `<html>`) to activate dark mode. All public colors are semantic CSS custom properties, so a product can override the palette without changing component code.
-
-## Adding Shadcn components
-
-The repository is configured for the Shadcn CLI:
+## Add a Shadcn component
 
 ```bash
 npx shadcn@latest add tooltip
 ```
 
-Review generated files before committing so they preserve this library's exports and token vocabulary, then export the component from `src/components/index.ts`.
+Then export it from `src/components/index.ts`, document it in the guide registry and component page, and add behavior tests. See [`AGENTS.md`](./AGENTS.md) for the complete contribution workflow and coding standards.
 
-## Structure
+## Project structure
 
 ```text
-src/
-├── components/ui/   # Public React primitives
-├── lib/utils.ts     # Shared class-name utility
-├── styles.css       # Design tokens and Tailwind theme bridge
-├── index.ts         # Package entry point
-└── App.tsx          # Development showcase
+src/components/ui/  # Public owned components
+src/guide/          # Browsable design guide
+src/styles.css      # Semantic tokens and Tailwind theme
+src/index.ts        # Package entry point
+src/App.tsx         # Guide application shell
 ```
 
 ## License
