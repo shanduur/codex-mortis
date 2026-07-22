@@ -39,12 +39,20 @@ for (const directory of generatedRoots) {
   await rm(path.join(root, directory), { recursive: true, force: true });
 }
 
+const generatedFiles = [];
 for (const entry of guideEntries) {
   const directory =
     entry.path === "/" ? root : path.join(root, entry.path.replace(/^\//, ""));
   await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, "index.html"), pageTemplate(entry));
+  const outputPath = path.join(directory, "index.html");
+  await writeFile(outputPath, pageTemplate(entry));
+  generatedFiles.push(outputPath);
 }
+execFileSync(
+  path.join(root, "node_modules/.bin/prettier"),
+  ["--write", ...generatedFiles],
+  { stdio: "ignore" },
+);
 
 console.log(`Generated ${guideEntries.length} independent HTML page entries.`);
 
@@ -65,11 +73,13 @@ function pageTemplate(entry) {
     <meta name="theme-color" content="#0b0b10" />
     <title>${title}</title>
     <style>
-      html, body {
+      html,
+      body {
         background-color: #f7f3ea;
         color-scheme: light;
       }
-      html.dark, html.dark body {
+      html.dark,
+      html.dark body {
         background-color: #0b0b10;
         color-scheme: dark;
       }
