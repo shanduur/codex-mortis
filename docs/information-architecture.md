@@ -73,6 +73,8 @@ This mirrors Primer's distinction between foundations, installable primitives, r
 
 `scripts/generate-pages.mjs` compiles the route registry and generates all HTML source entries before development and guide builds. `vite.config.ts` discovers every generated entry and passes them to Vite's multi-page build.
 
+Root-hosted builds use `/` as their base. GitHub Pages sets `BASE_PATH=/<repository>/`; Vite prefixes assets and `src/guide/paths.ts` prefixes document links while stripping that deployment prefix before registry lookup. Canonical registry paths therefore remain host-independent, and every project-site deep link still resolves to its physical HTML document.
+
 Tests enforce:
 
 - unique canonical pathname routes;

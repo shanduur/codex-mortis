@@ -4,6 +4,7 @@ import * as UI from "@/components";
 import { articleGuidance, defaultArticleGuidance } from "./article-content";
 import { IconCatalog } from "./icon-catalog";
 import { PageHeader } from "./page-header";
+import { guideHref } from "./paths";
 import { guideEntries, navigationSections } from "./registry";
 
 export function ArticlePage({ id }: { id: string }) {
@@ -101,7 +102,7 @@ export function ArticlePage({ id }: { id: string }) {
                     </UI.CardContent>
                     <UI.CardFooter>
                       <UI.Link
-                        href={relatedEntry.path}
+                        href={guideHref(relatedEntry.path)}
                         className="inline-flex items-center gap-2 font-semibold no-underline"
                       >
                         Read guidance
@@ -194,7 +195,7 @@ function AdjacentPage({
           {direction}
         </UI.Text>
         <UI.Link
-          href={entry.path}
+          href={guideHref(entry.path)}
           className="mt-2 block text-base font-semibold no-underline"
         >
           {entry.name}

@@ -5,6 +5,7 @@ import * as UI from "@/components";
 import { ArticlePage } from "@/guide/article-page";
 import { ComponentPage } from "@/guide/component-page";
 import { FoundationPage } from "@/guide/foundation-page";
+import { guidePathname } from "@/guide/paths";
 import {
   componentEntries,
   foundationEntries,
@@ -14,7 +15,7 @@ import {
 import { Sidebar } from "@/guide/sidebar";
 
 function getInitialPage() {
-  const pathname = window.location.pathname.replace(/index\.html$/, "");
+  const pathname = guidePathname(window.location.pathname);
   return (
     guideEntries.find((entry) => entry.path === pathname)?.id ?? "introduction"
   );

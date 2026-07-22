@@ -37,6 +37,7 @@ const htmlEntries = [
 ];
 
 export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(root, "./src") } },
   build: {

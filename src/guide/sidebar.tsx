@@ -3,6 +3,7 @@ import { Search, X } from "lucide-react";
 
 import * as UI from "@/components";
 import { cn } from "@/lib/utils";
+import { guideHref } from "./paths";
 import type { GuideEntry, GuideGroup } from "./registry";
 
 type NavigationSection = {
@@ -29,7 +30,7 @@ function NavigationItem({
   return (
     <UI.ListItem>
       <UI.Link
-        href={entry.path}
+        href={guideHref(entry.path)}
         aria-current={active ? "page" : undefined}
         className={cn(
           "group grid min-h-10 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium no-underline transition-colors hover:border-border hover:bg-muted",
@@ -124,7 +125,10 @@ export function Sidebar({
   return (
     <UI.Sidebar className="p-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
       <UI.Stack gap="4" className="h-full p-5 lg:p-6">
-        <UI.Link href="/" className="flex items-center gap-3 no-underline">
+        <UI.Link
+          href={guideHref("/")}
+          className="flex items-center gap-3 no-underline"
+        >
           <UI.Badge className="grid size-10 place-items-center rounded-md p-0 font-mono text-xs font-bold">
             DL
           </UI.Badge>
@@ -196,7 +200,7 @@ export function Sidebar({
                   return entry ? (
                     <UI.ListItem key={section.label}>
                       <UI.Link
-                        href={entry.path}
+                        href={guideHref(entry.path)}
                         aria-current={
                           section.label === activeGroup ? "location" : undefined
                         }

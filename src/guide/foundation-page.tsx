@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import * as UI from "@/components";
 import { CodeBlock } from "./code-block";
 import { PageHeader } from "./page-header";
+import { guideHref } from "./paths";
 
 const principles = [
   [
@@ -197,7 +198,7 @@ function IntroductionPage() {
               <UI.CardContent className="flex flex-1 flex-col gap-6">
                 <UI.Text tone="muted">{item.copy}</UI.Text>
                 <UI.Button asChild variant="outline" className="mt-auto w-fit">
-                  <UI.Link href={item.href} className="no-underline">
+                  <UI.Link href={guideHref(item.href)} className="no-underline">
                     {item.action}
                     <ArrowRight />
                   </UI.Link>
@@ -256,7 +257,7 @@ function IntroductionPage() {
               <UI.CardContent className="flex flex-1 flex-col gap-6">
                 <UI.Text tone="muted">{item.copy}</UI.Text>
                 <UI.Link
-                  href={item.href}
+                  href={guideHref(item.href)}
                   className="mt-auto inline-flex items-center gap-2"
                 >
                   {item.action}

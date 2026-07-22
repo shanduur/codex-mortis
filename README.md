@@ -72,6 +72,15 @@ npm run check
 
 This runs Prettier verification, Oxlint, the comprehensive Vitest suite, the guide build, declaration generation, and the distributable ESM library build.
 
+## Publishing and deployment
+
+GitHub Actions owns both release artifacts:
+
+- [`.github/workflows/publish-package.yml`](./.github/workflows/publish-package.yml) publishes `@shanduur/design-language` to GitHub Packages whenever a GitHub Release is published. The release tag must match `package.json` (for example, tag `v0.1.0` for version `0.1.0`). The workflow authenticates with `GITHUB_TOKEN`; no repository npm token is required.
+- [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) builds all 149 documents on every push to `main` and deploys `demo-dist/` with GitHub Pages’ artifact-based deployment. `BASE_PATH` makes assets, direct document loads, and guide links work below `/<repository>/`.
+
+In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Published packages are installed from `https://npm.pkg.github.com` using a GitHub token with `read:packages` permission.
+
 ## Add a Shadcn component
 
 ```bash
