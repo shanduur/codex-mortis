@@ -106,11 +106,15 @@ describe("design language guide", () => {
     expect(screen.queryByText("Search")).not.toBeInTheDocument();
   });
 
-  it("provides primary navigation to the major guide sections", () => {
+  it("uses the sidebar as the single guide navigation", () => {
     render(<App />);
 
+    expect(
+      screen.queryByRole("navigation", { name: "Primary guide sections" }),
+    ).not.toBeInTheDocument();
+
     const navigation = screen.getByRole("navigation", {
-      name: "Primary guide sections",
+      name: "Guide navigation",
     });
     expect(
       within(navigation).getByRole("link", { name: "Foundations" }),
@@ -119,7 +123,7 @@ describe("design language guide", () => {
       within(navigation).getByRole("link", { name: "Components" }),
     ).toHaveAttribute("href", "/components/");
     expect(
-      within(navigation).getByRole("link", { name: "Patterns" }),
+      within(navigation).getByRole("link", { name: "UI patterns" }),
     ).toHaveAttribute("href", "/patterns/");
     expect(
       within(navigation).getByRole("link", { name: "Accessibility" }),

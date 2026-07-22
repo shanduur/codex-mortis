@@ -49,8 +49,6 @@ function App() {
 
   const isComponent = componentEntries.some((entry) => entry.id === activeId);
   const isFoundation = foundationEntries.some((entry) => entry.id === activeId);
-  const activeEntry = guideEntries.find((entry) => entry.id === activeId);
-
   return (
     <UI.Page className="bg-transparent lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
       <UI.SkipLink href="#content">Skip to content</UI.SkipLink>
@@ -62,22 +60,7 @@ function App() {
       />
 
       <UI.Stack gap="1" className="min-w-0">
-        <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-between px-5 py-0 sm:px-8">
-          <UI.Stack direction="horizontal" gap="2">
-            <UI.Badge variant="secondary" className="hidden sm:inline-flex">
-              {activeEntry?.group ?? "Guide"}
-            </UI.Badge>
-            <UI.NavigationMenu
-              aria-label="Primary guide sections"
-              className="hidden xl:flex"
-              items={[
-                { label: "Foundations", href: "/foundations/" },
-                { label: "Components", href: "/components/" },
-                { label: "Patterns", href: "/patterns/" },
-                { label: "Accessibility", href: "/accessibility/" },
-              ]}
-            />
-          </UI.Stack>
+        <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-end px-5 py-0 sm:px-8">
           <UI.Stack direction="horizontal" gap="1">
             <UI.Button asChild variant="ghost" size="sm">
               <UI.Link
