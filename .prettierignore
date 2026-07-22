@@ -1,0 +1,13 @@
+coverage/
+demo-dist/
+dist/
+
+# Deterministically generated multi-page HTML entries
+accessibility/
+components/
+contributing/
+foundations/
+getting-started/
+guidelines/
+patterns/
+scenarios/

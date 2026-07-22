@@ -4,14 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="A browsable React, Shadcn, and Tailwind CSS design-language guide."
-    />
+    <meta name="description" content="Purpose and design posture" />
     <meta name="theme-color" content="#0b0b10" />
-    <title>Design Language Guide</title>
+    <title>Design Language</title>
+    <script>
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.getItem("theme") === "dark",
+      );
+    </script>
   </head>
-  <body>
+  <body data-page-id="introduction">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

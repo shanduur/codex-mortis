@@ -1,12 +1,23 @@
+export type GuideGroup =
+  | "Getting started"
+  | "Foundations"
+  | "Guidelines"
+  | "UI patterns"
+  | "Scenario patterns"
+  | "Components"
+  | "Accessibility"
+  | "Contributing";
+
 export type GuideEntry = {
   id: string;
   name: string;
   description: string;
-  group: "Foundations" | "Components";
+  group: GuideGroup;
+  path: string;
   status?: "Stable" | "Draft";
 };
 
-export const foundationEntries: GuideEntry[] = [
+const foundationDefinitions: Omit<GuideEntry, "path">[] = [
   {
     id: "introduction",
     name: "Introduction",
@@ -39,7 +50,7 @@ export const foundationEntries: GuideEntry[] = [
   },
 ];
 
-export const componentEntries: GuideEntry[] = [
+const componentDefinitions: Omit<GuideEntry, "path">[] = [
   {
     id: "accordion",
     name: "Accordion",
@@ -504,7 +515,357 @@ export const componentEntries: GuideEntry[] = [
   },
 ];
 
-export const guideEntries = [...foundationEntries, ...componentEntries];
+export const foundationEntries: GuideEntry[] = foundationDefinitions.map(
+  (entry) => ({
+    ...entry,
+    path:
+      entry.id === "introduction"
+        ? "/"
+        : `/foundations/${entry.id === "colors" ? "color" : entry.id}/`,
+  }),
+);
+
+export const componentEntries: GuideEntry[] = componentDefinitions.map(
+  (entry) => ({
+    ...entry,
+    path: `/components/${entry.id}/`,
+  }),
+);
+
+type DocumentationDefinition = readonly [
+  id: string,
+  name: string,
+  description: string,
+  slug?: string,
+];
+
+function createDocumentationEntries(
+  group: GuideGroup,
+  base: string,
+  definitions: DocumentationDefinition[],
+): GuideEntry[] {
+  return definitions.map(([id, name, description, slug = id]) => ({
+    id,
+    name,
+    description,
+    group,
+    path: slug ? `/${base}/${slug}/` : `/${base}/`,
+  }));
+}
+
+export const gettingStartedEntries = createDocumentationEntries(
+  "Getting started",
+  "getting-started",
+  [
+    [
+      "getting-started",
+      "Getting started",
+      "Adopt the design system in product work",
+      "",
+    ],
+    ["installation", "Installation", "Install styles, components, and peers"],
+    [
+      "component-status",
+      "Component status",
+      "Understand support, maturity, and ownership",
+    ],
+    [
+      "design-resources",
+      "Design resources",
+      "Move between design files and production code",
+    ],
+  ],
+);
+
+export const additionalFoundationEntries = createDocumentationEntries(
+  "Foundations",
+  "foundations",
+  [
+    [
+      "foundations",
+      "Foundations",
+      "Shared decisions beneath every interface",
+      "",
+    ],
+    ["layout", "Layout", "Responsive containers, grids, and composition"],
+    ["iconography", "Iconography", "Symbols, sizing, and accessible labels"],
+    ["motion", "Motion", "Purposeful transitions and reduced-motion behavior"],
+    ["elevation", "Elevation", "Surface hierarchy without decorative depth"],
+    [
+      "design-tokens",
+      "Design tokens",
+      "Semantic contracts for visual decisions",
+    ],
+  ],
+);
+
+export const guidelineEntries = createDocumentationEntries(
+  "Guidelines",
+  "guidelines",
+  [
+    [
+      "guidelines",
+      "Content guidelines",
+      "Write product language with clarity",
+      "",
+    ],
+    [
+      "voice-and-tone",
+      "Voice and tone",
+      "Stay direct, calm, and technically credible",
+    ],
+    ["writing", "Writing", "Structure useful interface and documentation copy"],
+    ["ui-text", "UI text", "Write labels, actions, help, and errors"],
+    [
+      "grammar",
+      "Grammar and mechanics",
+      "Apply consistent editorial conventions",
+    ],
+    [
+      "formatting-data",
+      "Formatting data",
+      "Present dates, numbers, units, and code",
+    ],
+  ],
+);
+
+export const patternEntries = createDocumentationEntries(
+  "UI patterns",
+  "patterns",
+  [
+    [
+      "patterns",
+      "UI patterns",
+      "Compose components into repeatable experiences",
+      "",
+    ],
+    ["data-display", "Data display", "Make dense information scannable"],
+    [
+      "degraded-experiences",
+      "Degraded experiences",
+      "Preserve understanding when systems fail",
+    ],
+    ["empty-states", "Empty states", "Explain absence and provide a next step"],
+    [
+      "feature-onboarding",
+      "Feature onboarding",
+      "Introduce capability in context",
+    ],
+    [
+      "forms-pattern",
+      "Forms",
+      "Collect information with progressive clarity",
+      "forms",
+    ],
+    [
+      "loading-pattern",
+      "Loading",
+      "Communicate waiting and preserve layout",
+      "loading",
+    ],
+    [
+      "navigation-pattern",
+      "Navigation",
+      "Build predictable wayfinding and orientation",
+      "navigation",
+    ],
+    [
+      "notification-messaging",
+      "Notification messaging",
+      "Match feedback prominence to consequence",
+    ],
+    [
+      "progressive-disclosure",
+      "Progressive disclosure",
+      "Reveal complexity when it becomes relevant",
+    ],
+    [
+      "saving-pattern",
+      "Saving",
+      "Make persistence and recovery explicit",
+      "saving",
+    ],
+  ],
+);
+
+export const scenarioEntries = createDocumentationEntries(
+  "Scenario patterns",
+  "scenarios",
+  [
+    [
+      "scenarios",
+      "Scenario patterns",
+      "Solve common product tasks consistently",
+      "",
+    ],
+    [
+      "create-and-edit",
+      "Create and edit",
+      "Structure reversible authoring workflows",
+    ],
+    [
+      "copy-scenario",
+      "Copy",
+      "Duplicate content without hiding consequences",
+      "copy",
+    ],
+    [
+      "delete-scenario",
+      "Delete",
+      "Confirm destructive intent proportionally",
+      "delete",
+    ],
+    [
+      "filter-scenario",
+      "Filter",
+      "Narrow datasets while preserving context",
+      "filter",
+    ],
+    [
+      "search-scenario",
+      "Search",
+      "Help people find and refine results",
+      "search",
+    ],
+  ],
+);
+
+export const accessibilityEntries = createDocumentationEntries(
+  "Accessibility",
+  "accessibility",
+  [
+    [
+      "accessibility",
+      "Accessibility",
+      "Build equivalent and robust experiences",
+      "",
+    ],
+    [
+      "keyboard-navigation",
+      "Keyboard navigation",
+      "Reach and operate every interaction without a pointer",
+    ],
+    [
+      "focus-management",
+      "Focus management",
+      "Keep focus visible and predictable",
+    ],
+    [
+      "screen-readers",
+      "Screen readers",
+      "Expose useful names, roles, and states",
+    ],
+    [
+      "color-contrast",
+      "Color and contrast",
+      "Preserve meaning without relying on hue",
+    ],
+    [
+      "accessible-motion",
+      "Accessible motion",
+      "Respect vestibular and attention needs",
+    ],
+    [
+      "accessibility-checklists",
+      "Accessibility checklists",
+      "Review design, code, content, and testing",
+      "checklists",
+    ],
+  ],
+);
+
+export const contributingEntries = createDocumentationEntries(
+  "Contributing",
+  "contributing",
+  [
+    [
+      "contributing",
+      "Contributing",
+      "Improve the system through shared ownership",
+      "",
+    ],
+    [
+      "contributing-design",
+      "Design contributions",
+      "Propose coherent visual decisions",
+      "design",
+    ],
+    [
+      "contributing-code",
+      "Code contributions",
+      "Ship tested accessible components",
+      "code",
+    ],
+    [
+      "contributing-documentation",
+      "Documentation contributions",
+      "Keep guidance practical and verifiable",
+      "documentation",
+    ],
+    [
+      "release-process",
+      "Release process",
+      "Move changes from proposal to adoption",
+    ],
+  ],
+);
+
+export const componentOverviewEntries = createDocumentationEntries(
+  "Components",
+  "components",
+  [
+    [
+      "components",
+      "Components",
+      "Reusable building blocks and their contracts",
+      "",
+    ],
+  ],
+);
+
+const introductionEntry = foundationEntries.find(
+  (entry) => entry.id === "introduction",
+)!;
+const coreFoundationEntries = foundationEntries.filter(
+  (entry) => entry.id !== "introduction",
+);
+
+export const navigationSections = [
+  {
+    label: "Getting started",
+    entries: [introductionEntry, ...gettingStartedEntries],
+  },
+  {
+    label: "Foundations",
+    entries: [...additionalFoundationEntries, ...coreFoundationEntries],
+  },
+  { label: "Guidelines", entries: guidelineEntries },
+  { label: "UI patterns", entries: patternEntries },
+  { label: "Scenario patterns", entries: scenarioEntries },
+  {
+    label: "Components",
+    entries: [...componentOverviewEntries, ...componentEntries],
+  },
+  { label: "Accessibility", entries: accessibilityEntries },
+  { label: "Contributing", entries: contributingEntries },
+] satisfies { label: GuideGroup; entries: GuideEntry[] }[];
+
+export const documentationEntries = [
+  ...gettingStartedEntries,
+  ...additionalFoundationEntries,
+  ...guidelineEntries,
+  ...patternEntries,
+  ...scenarioEntries,
+  ...accessibilityEntries,
+  ...contributingEntries,
+  ...componentOverviewEntries,
+];
+
+export const guideEntries = [
+  ...foundationEntries,
+  ...documentationEntries,
+  ...componentEntries,
+];
 
 export function isGuideEntry(id: string): boolean {
   return guideEntries.some((entry) => entry.id === id);

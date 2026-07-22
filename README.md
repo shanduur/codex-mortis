@@ -1,12 +1,14 @@
 # Design Language
 
-A React component library and browsable design-language guide built with Shadcn conventions and Tailwind CSS.
+A React component library and full multi-page design/style guide built with Shadcn conventions and Tailwind CSS.
 
 The visual system combines Tenstorrent-inspired editorial neo-industrial structure with restrained neo-brutalist accents: technical-catalogue clarity, a page-wide drafting grid, warm paper-and-ink foundations, categorical saturated color, quiet borders, and confident typography.
 
 Color is categorical rather than ambient: utility blue carries primary actions, active navigation, information, and links; signal yellow marks selected or high-attention moments; alert coral identifies warnings, destructive actions, and errors; status green communicates success and healthy state; and lavender is reserved for rare expressive moments. Most surfaces remain neutral so those colors keep their meaning. Components preserve visible focus, semantic intent, and readable light/dark contrast.
 
 The guide dogfoods the public library for its own shell and documentation layout. Only large headings sit directly on the drafting-grid canvas; supporting copy and metadata live on owned component surfaces.
+
+The documentation is a true Vite multi-page site rather than an SPA. Its 117 canonical routes build to separate HTML documents and navigate with standard links, so direct loads, reloads, back/forward navigation, open-in-new-tab, and copied URLs use native browser behavior.
 
 ## Run the guide
 
@@ -18,13 +20,17 @@ npm run dev
 The guide includes:
 
 - design principles;
-- semantic color tokens;
-- typography and spacing foundations;
+- color, typography, spacing, layout, iconography, motion, elevation, and design-token foundations;
+- voice, tone, writing, UI text, grammar, and data-formatting guidelines;
+- reusable UI and scenario patterns;
 - searchable component navigation;
 - live light/dark previews;
 - minimal TypeScript examples;
 - do/avoid guidance;
-- accessibility checklists.
+- keyboard, focus, screen-reader, contrast, and motion accessibility guidance;
+- design, code, documentation, and release contribution guidance.
+
+See [`docs/information-architecture.md`](./docs/information-architecture.md) for the route contract and content architecture.
 
 ## Components
 
@@ -77,10 +83,12 @@ Then export it from `src/components/index.ts`, document it in the guide registry
 
 ```text
 src/components/ui/  # Public owned components
-src/guide/          # Browsable design guide
+src/guide/          # Guide registry, articles, patterns, and reference pages
+scripts/            # Deterministic multi-page HTML generation
+docs/               # Architecture and contribution decisions
 src/styles.css      # Semantic tokens and Tailwind theme
 src/index.ts        # Package entry point
-src/App.tsx         # Guide application shell
+src/App.tsx         # Shared shell mounted independently by every document
 ```
 
 ## License

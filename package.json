@@ -21,9 +21,12 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "predev": "npm run pages:generate",
     "build": "npm run build:app && npm run build:lib",
+    "prebuild:app": "npm run pages:generate",
     "build:app": "tsc -b && vite build",
     "build:lib": "vite build --config vite.lib.config.ts",
+    "pages:generate": "node scripts/generate-pages.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "oxlint --deny-warnings .",

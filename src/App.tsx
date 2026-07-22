@@ -2,73 +2,80 @@ import { useEffect, useMemo, useState } from "react";
 import { Code2, Moon, Sun } from "lucide-react";
 
 import * as UI from "@/components";
+import { ArticlePage } from "@/guide/article-page";
 import { ComponentPage } from "@/guide/component-page";
 import { FoundationPage } from "@/guide/foundation-page";
 import {
   componentEntries,
   foundationEntries,
-  isGuideEntry,
+  guideEntries,
+  navigationSections,
 } from "@/guide/registry";
 import { Sidebar } from "@/guide/sidebar";
 
 function getInitialPage() {
-  const id = window.location.hash.slice(1);
-  return isGuideEntry(id) ? id : "introduction";
+  const pathname = window.location.pathname.replace(/index\.html$/, "");
+  return (
+    guideEntries.find((entry) => entry.path === pathname)?.id ?? "introduction"
+  );
 }
 
 function App() {
-  const [activeId, setActiveId] = useState(getInitialPage);
+  const activeId = getInitialPage();
   const [query, setQuery] = useState("");
   const [dark, setDark] = useState(
     () => localStorage.getItem("theme") === "dark",
   );
 
   useEffect(() => {
-    const handleHashChange = () => setActiveId(getInitialPage());
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
 
-  const filteredComponents = useMemo(() => {
+  const filteredSections = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return componentEntries;
-    return componentEntries.filter((entry) =>
-      `${entry.name} ${entry.description}`
-        .toLowerCase()
-        .includes(normalizedQuery),
-    );
+    if (!normalizedQuery) return navigationSections;
+    return navigationSections
+      .map((section) => ({
+        ...section,
+        entries: section.entries.filter((entry) =>
+          `${entry.name} ${entry.description} ${entry.group}`
+            .toLowerCase()
+            .includes(normalizedQuery),
+        ),
+      }))
+      .filter((section) => section.entries.length > 0);
   }, [query]);
 
   const isComponent = componentEntries.some((entry) => entry.id === activeId);
-
-  function navigate(id: string) {
-    setActiveId(id);
-    window.scrollTo?.({ top: 0, behavior: "instant" });
-  }
+  const isFoundation = foundationEntries.some((entry) => entry.id === activeId);
+  const activeEntry = guideEntries.find((entry) => entry.id === activeId);
 
   return (
     <UI.Page className="bg-transparent lg:grid lg:grid-cols-[19rem_minmax(0,1fr)]">
       <Sidebar
         activeId={activeId}
-        foundations={foundationEntries}
-        components={filteredComponents}
+        sections={filteredSections}
         query={query}
         onQueryChange={setQuery}
-        onNavigate={navigate}
       />
 
       <UI.Stack gap="1" className="min-w-0">
         <UI.Header className="sticky top-0 z-40 flex h-16 items-center justify-between px-5 py-0 sm:px-8">
           <UI.Stack direction="horizontal" gap="2">
-            <UI.Badge variant="outline" className="hidden sm:inline-flex">
-              Catalogue
+            <UI.Badge variant="secondary" className="hidden sm:inline-flex">
+              {activeEntry?.group ?? "Guide"}
             </UI.Badge>
-            <UI.Badge variant="secondary">{activeId}</UI.Badge>
+            <UI.NavigationMenu
+              aria-label="Primary guide sections"
+              className="hidden xl:flex"
+              items={[
+                { label: "Foundations", href: "/foundations/" },
+                { label: "Components", href: "/components/" },
+                { label: "Patterns", href: "/patterns/" },
+                { label: "Accessibility", href: "/accessibility/" },
+              ]}
+            />
           </UI.Stack>
           <UI.Stack direction="horizontal" gap="1">
             <UI.Button asChild variant="ghost" size="sm">
@@ -101,8 +108,10 @@ function App() {
           >
             {isComponent ? (
               <ComponentPage id={activeId} />
-            ) : (
+            ) : isFoundation ? (
               <FoundationPage id={activeId} />
+            ) : (
+              <ArticlePage id={activeId} />
             )}
           </UI.Container>
         </UI.Main>

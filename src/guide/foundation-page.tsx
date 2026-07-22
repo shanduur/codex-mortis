@@ -163,6 +163,51 @@ function IntroductionPage() {
         </UI.Grid>
       </UI.Stack>
 
+      <UI.Stack gap="8" className="py-8 sm:py-12">
+        <SectionHeading
+          index="02"
+          title="Build product UI"
+          description="Move from system decisions to complete product experiences with implementation-ready components, reusable interface patterns, and content guidance."
+        />
+        <UI.Grid columns={3} gap="4">
+          {[
+            {
+              title: "Components",
+              copy: "Browse 66 stable building blocks with live examples, usage guidance, accessibility notes, and source code.",
+              href: "/components/",
+              action: "Explore components",
+            },
+            {
+              title: "UI patterns",
+              copy: "Compose components into forms, navigation, loading, messaging, disclosure, onboarding, and resilient data experiences.",
+              href: "/patterns/",
+              action: "Browse UI patterns",
+            },
+            {
+              title: "Content guidelines",
+              copy: "Write clear interface text with shared rules for voice, tone, grammar, labels, instructions, errors, and formatted data.",
+              href: "/guidelines/",
+              action: "Read content guidance",
+            },
+          ].map((item) => (
+            <UI.Card key={item.title} className="min-h-64 shadow-none">
+              <UI.CardHeader>
+                <UI.Heading level={3}>{item.title}</UI.Heading>
+              </UI.CardHeader>
+              <UI.CardContent className="flex flex-1 flex-col gap-6">
+                <UI.Text tone="muted">{item.copy}</UI.Text>
+                <UI.Button asChild variant="outline" className="mt-auto w-fit">
+                  <UI.Link href={item.href} className="no-underline">
+                    {item.action}
+                    <ArrowRight />
+                  </UI.Link>
+                </UI.Button>
+              </UI.CardContent>
+            </UI.Card>
+          ))}
+        </UI.Grid>
+      </UI.Stack>
+
       <UI.Card className="border-0 bg-code px-2 py-10 text-code-foreground soft-shadow sm:px-4 sm:py-16">
         <UI.CardHeader>
           <UI.Badge className="w-fit bg-signal-yellow text-foreground">
@@ -179,26 +224,44 @@ function IntroductionPage() {
 
       <UI.Stack gap="8" className="py-8 sm:py-12">
         <SectionHeading
-          index="02"
-          title="How to use this guide"
-          description="Learn the foundations, choose a component by intent, copy the example, and adapt it with semantic tokens rather than hard-coded color values."
+          index="03"
+          title="Shared foundations"
+          description="Ground every product surface in the same visual language, accessibility expectations, and contribution model before choosing a component."
         />
-        <UI.Grid columns={2} gap="4">
+        <UI.Grid columns={3} gap="4">
           {[
-            "Read the foundations",
-            "Browse a component",
-            "Copy the smallest example",
-            "Test keyboard and screen-reader behavior",
-          ].map((step, index) => (
-            <UI.Card key={step} className="py-4 shadow-none">
-              <UI.CardContent className="flex items-center gap-4">
-                <UI.Badge variant="outline">
-                  {String(index + 1).padStart(2, "0")}
-                </UI.Badge>
-                <UI.Text className="font-medium">{step}</UI.Text>
-                <UI.Icon className="ml-auto text-muted-foreground" aria-hidden>
+            {
+              title: "Foundations",
+              copy: "Principles, tokens, color, typography, spacing, layout, iconography, motion, and elevation.",
+              href: "/foundations/",
+              action: "Explore foundations",
+            },
+            {
+              title: "Accessibility",
+              copy: "Keyboard, focus, screen-reader, contrast, and motion requirements built into planning and review.",
+              href: "/accessibility/",
+              action: "Read accessibility guidance",
+            },
+            {
+              title: "Contributing",
+              copy: "A shared path for proposing, designing, implementing, documenting, and releasing system changes.",
+              href: "/contributing/",
+              action: "Contribute to the system",
+            },
+          ].map((item) => (
+            <UI.Card key={item.title} className="min-h-60 shadow-none">
+              <UI.CardHeader>
+                <UI.Heading level={3}>{item.title}</UI.Heading>
+              </UI.CardHeader>
+              <UI.CardContent className="flex flex-1 flex-col gap-6">
+                <UI.Text tone="muted">{item.copy}</UI.Text>
+                <UI.Link
+                  href={item.href}
+                  className="mt-auto inline-flex items-center gap-2"
+                >
+                  {item.action}
                   <ArrowRight />
-                </UI.Icon>
+                </UI.Link>
               </UI.CardContent>
             </UI.Card>
           ))}

@@ -90,4 +90,47 @@ describe("component catalogue", () => {
     expect(ids).toContain("form-error-summary");
     expect(ids).toContain("table-of-contents");
   });
+
+  it("assigns every component a real multi-page URL", () => {
+    expect(componentEntries.find((entry) => entry.id === "button")?.path).toBe(
+      "/components/button/",
+    );
+    expect(
+      componentEntries.every(
+        (entry) =>
+          entry.path.startsWith("/components/") &&
+          entry.path.endsWith("/") &&
+          !entry.path.includes("#"),
+      ),
+    ).toBe(true);
+  });
+
+  it("covers a full design-system information architecture", async () => {
+    const { guideEntries, navigationSections } = await import("./registry");
+
+    expect(navigationSections.map((section) => section.label)).toEqual([
+      "Getting started",
+      "Foundations",
+      "Guidelines",
+      "UI patterns",
+      "Scenario patterns",
+      "Components",
+      "Accessibility",
+      "Contributing",
+    ]);
+    expect(
+      guideEntries.some((entry) => entry.path === "/patterns/forms/"),
+    ).toBe(true);
+    expect(
+      guideEntries.some((entry) => entry.path === "/guidelines/ui-text/"),
+    ).toBe(true);
+    expect(
+      guideEntries.some(
+        (entry) => entry.path === "/accessibility/keyboard-navigation/",
+      ),
+    ).toBe(true);
+    expect(
+      guideEntries.some((entry) => entry.path === "/contributing/code/"),
+    ).toBe(true);
+  });
 });

@@ -2,64 +2,79 @@ import { Search, X } from "lucide-react";
 
 import * as UI from "@/components";
 import { cn } from "@/lib/utils";
-import type { GuideEntry } from "./registry";
+import type { GuideEntry, GuideGroup } from "./registry";
+
+type NavigationSection = {
+  label: GuideGroup;
+  entries: GuideEntry[];
+};
 
 type SidebarProps = {
   activeId: string;
-  foundations: GuideEntry[];
-  components: GuideEntry[];
+  sections: NavigationSection[];
   query: string;
   onQueryChange: (query: string) => void;
-  onNavigate: (id: string) => void;
 };
+
+function NavigationItem({
+  entry,
+  active,
+  index,
+}: {
+  entry: GuideEntry;
+  active: boolean;
+  index: number;
+}) {
+  return (
+    <UI.ListItem>
+      <UI.Link
+        href={entry.path}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "group grid min-h-10 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium no-underline transition-colors hover:border-border hover:bg-muted",
+          active && "border-primary bg-primary text-primary-foreground",
+        )}
+      >
+        <UI.Text as="span" className="font-mono text-[10px] opacity-65">
+          {String(index + 1).padStart(2, "0")}
+        </UI.Text>
+        <UI.Text as="span" className="truncate">
+          {entry.name}
+        </UI.Text>
+        {entry.status ? (
+          <UI.Badge
+            variant={active ? "secondary" : "outline"}
+            className="px-1.5 py-0 text-[8px]"
+          >
+            {entry.status}
+          </UI.Badge>
+        ) : null}
+      </UI.Link>
+    </UI.ListItem>
+  );
+}
 
 function NavigationGroup({
   label,
   entries,
   activeId,
-  onNavigate,
-  listLabel,
-}: {
-  label: string;
-  entries: GuideEntry[];
-  activeId: string;
-  onNavigate: (id: string) => void;
-  listLabel?: string;
-}) {
+}: NavigationSection & { activeId: string }) {
   return (
-    <UI.Stack gap="3" className="mt-8">
+    <UI.Stack gap="3" className="mt-6">
       <UI.Text className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
         {label}
       </UI.Text>
-      <UI.List className="grid list-none gap-px pl-0" aria-label={listLabel}>
+      <UI.List
+        aria-label={label === "Components" ? "Component catalogue" : undefined}
+        className="grid list-none gap-px pl-0"
+      >
         {entries.map((entry, index) => (
-          <UI.ListItem key={entry.id}>
-            <UI.Link
-              href={`#${entry.id}`}
-              onClick={() => onNavigate(entry.id)}
-              aria-current={activeId === entry.id ? "page" : undefined}
-              className={cn(
-                "group grid min-h-11 grid-cols-[1.6rem_1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2 text-sm font-medium no-underline transition-colors hover:border-border hover:bg-muted",
-                activeId === entry.id &&
-                  "border-primary bg-primary text-primary-foreground",
-              )}
-            >
-              <UI.Text as="span" className="font-mono text-[10px] opacity-65">
-                {String(index + 1).padStart(2, "0")}
-              </UI.Text>
-              <UI.Text as="span" className="font-medium">
-                {entry.name}
-              </UI.Text>
-              {entry.status && (
-                <UI.Badge
-                  variant={activeId === entry.id ? "secondary" : "outline"}
-                  className="text-[9px]"
-                >
-                  {entry.status}
-                </UI.Badge>
-              )}
-            </UI.Link>
-          </UI.ListItem>
+          <NavigationItem
+            key={entry.id}
+            entry={entry}
+            active={entry.id === activeId}
+            index={index}
+          />
         ))}
       </UI.List>
     </UI.Stack>
@@ -68,20 +83,22 @@ function NavigationGroup({
 
 export function Sidebar({
   activeId,
-  foundations,
-  components,
+  sections,
   query,
   onQueryChange,
-  onNavigate,
 }: SidebarProps) {
+  const activeGroup =
+    sections.find((section) =>
+      section.entries.some((entry) => entry.id === activeId),
+    )?.label ?? "Getting started";
+  const visibleSections = query
+    ? sections.filter((section) => section.entries.length > 0)
+    : sections.filter((section) => section.label === activeGroup);
+
   return (
-    <UI.Sidebar className="border-b bg-card p-0 text-card-foreground lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-b-0 lg:border-r">
-      <UI.Stack className="h-full p-5 lg:p-6">
-        <UI.Link
-          href="#introduction"
-          onClick={() => onNavigate("introduction")}
-          className="flex items-center gap-3 no-underline"
-        >
+    <UI.Sidebar className="p-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <UI.Stack gap="4" className="h-full p-5 lg:p-6">
+        <UI.Link href="/" className="flex items-center gap-3 no-underline">
           <UI.Badge className="grid size-10 place-items-center rounded-md p-0 font-mono text-xs font-bold">
             DL
           </UI.Badge>
@@ -94,97 +111,96 @@ export function Sidebar({
               tone="muted"
               className="font-mono text-[10px] uppercase tracking-wider"
             >
-              Reference / v0.2
+              System guide / v0.3
             </UI.Text>
           </UI.Stack>
         </UI.Link>
 
         <UI.Stack
+          gap="4"
+          className="mt-6"
           role="navigation"
           aria-label="Guide navigation"
-          className="mt-6 lg:mt-10"
         >
-          <UI.Stack className="relative">
-            <UI.Icon className="pointer-events-none absolute left-3 top-3 z-10 size-4">
+          <UI.Stack gap="4" className="relative">
+            <UI.Icon
+              className="pointer-events-none absolute left-3 top-3 z-10 size-4"
+              aria-hidden
+            >
               <Search />
             </UI.Icon>
             <UI.Input
               type="search"
-              aria-label="Filter components"
-              placeholder="Filter components"
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
+              aria-label="Search documentation"
+              placeholder="Search documentation"
               className="pl-9 pr-9"
             />
-            {query && (
+            {query ? (
               <UI.Button
                 type="button"
-                variant="ghost"
                 size="icon"
-                aria-label="Clear filter"
+                variant="ghost"
+                aria-label="Clear search"
                 onClick={() => onQueryChange("")}
-                className="absolute right-1 top-1 size-8"
+                className="absolute right-1 top-1"
               >
-                <X className="size-3.5" />
+                <X />
               </UI.Button>
-            )}
+            ) : null}
           </UI.Stack>
 
-          <UI.Stack className="hidden lg:flex">
-            <NavigationGroup
-              label="Foundations"
-              entries={foundations}
-              activeId={activeId}
-              onNavigate={onNavigate}
-            />
-            <NavigationGroup
-              label={`Components / ${components.length}`}
-              entries={components}
-              activeId={activeId}
-              onNavigate={onNavigate}
-              listLabel="Component catalogue"
-            />
-          </UI.Stack>
+          {!query ? (
+            <UI.Stack gap="3" className="mt-4">
+              <UI.Text className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
+                Sections
+              </UI.Text>
+              <UI.List className="grid list-none gap-1 pl-0">
+                {sections.map((section) => {
+                  const entry = section.entries[0];
+                  return entry ? (
+                    <UI.ListItem key={section.label}>
+                      <UI.Link
+                        href={entry.path}
+                        aria-current={
+                          section.label === activeGroup ? "location" : undefined
+                        }
+                        className={cn(
+                          "block rounded-md px-2 py-1.5 text-sm no-underline hover:bg-muted",
+                          section.label === activeGroup &&
+                            "bg-muted font-semibold text-primary",
+                        )}
+                      >
+                        {section.label}
+                      </UI.Link>
+                    </UI.ListItem>
+                  ) : null;
+                })}
+              </UI.List>
+            </UI.Stack>
+          ) : null}
 
-          <UI.Stack
-            direction="horizontal"
-            className="mt-4 overflow-x-auto pb-1 lg:hidden"
-            aria-label="Component catalogue"
-          >
-            {[...foundations, ...components].map((entry) => (
-              <UI.Link
-                key={entry.id}
-                href={`#${entry.id}`}
-                onClick={() => onNavigate(entry.id)}
-                aria-current={activeId === entry.id ? "page" : undefined}
-                className={cn(
-                  "shrink-0 rounded-md border bg-background px-3 py-2 text-xs font-medium text-foreground no-underline",
-                  activeId === entry.id &&
-                    "border-primary bg-primary text-primary-foreground",
-                )}
-              >
-                {entry.name}
-              </UI.Link>
+          <UI.Stack gap="4">
+            {visibleSections.map((section) => (
+              <NavigationGroup
+                key={section.label}
+                label={section.label}
+                entries={section.entries}
+                activeId={activeId}
+              />
             ))}
+            {visibleSections.length === 0 ? (
+              <UI.Card className="py-4 shadow-none">
+                <UI.CardContent className="px-4">
+                  <UI.Text tone="muted">
+                    No documentation matches “{query}”.
+                  </UI.Text>
+                </UI.CardContent>
+              </UI.Card>
+            ) : null}
           </UI.Stack>
         </UI.Stack>
-
-        <UI.Card className="mt-auto hidden gap-2 py-4 shadow-none lg:flex">
-          <UI.CardContent>
-            <UI.Text
-              tone="muted"
-              className="font-mono text-[10px] uppercase leading-5 tracking-wider"
-            >
-              React / Shadcn / Tailwind
-            </UI.Text>
-            <UI.Text
-              tone="muted"
-              className="font-mono text-[10px] uppercase leading-5 tracking-wider"
-            >
-              Built as inspectable code.
-            </UI.Text>
-          </UI.CardContent>
-        </UI.Card>
       </UI.Stack>
     </UI.Sidebar>
   );

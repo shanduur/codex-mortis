@@ -6,11 +6,91 @@ import App from "./App";
 describe("design language guide", () => {
   beforeEach(() => {
     window.location.hash = "";
+    window.history.replaceState({}, "", "/");
     localStorage.clear();
     document.documentElement.classList.remove("dark");
   });
 
-  it("opens with foundations and a browsable component catalogue", () => {
+  it("uses standard document links instead of hash navigation", () => {
+    window.history.replaceState({}, "", "/components/");
+    render(<App />);
+
+    const catalogue = screen.getByRole("list", {
+      name: "Component catalogue",
+    });
+    expect(
+      within(catalogue).getByRole("link", { name: /^\d+ButtonStable$/i }),
+    ).toHaveAttribute("href", "/components/button/");
+  });
+
+  it("renders a component from a directly loaded pathname", () => {
+    window.history.replaceState({}, "", "/components/button/");
+
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "Button" })).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Button component examples"),
+    ).toBeInTheDocument();
+  });
+
+  it("exposes the full style-guide navigation as document links", () => {
+    render(<App />);
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Guide navigation",
+    });
+    expect(within(navigation).getByText("Guidelines")).toBeInTheDocument();
+    expect(
+      within(navigation).getAllByText("UI patterns").length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(navigation).getAllByText("Accessibility").length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(navigation).getAllByText("Contributing").length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(navigation).getByRole("link", { name: "UI patterns" }),
+    ).toHaveAttribute("href", "/patterns/");
+  });
+
+  it("renders a complete pattern article from its pathname", () => {
+    window.history.replaceState({}, "", "/patterns/forms/");
+
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "Forms" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Anatomy" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Validation" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/one clear task/i)).toBeInTheDocument();
+  });
+
+  it("provides primary navigation to the major guide sections", () => {
+    render(<App />);
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Primary guide sections",
+    });
+    expect(
+      within(navigation).getByRole("link", { name: "Foundations" }),
+    ).toHaveAttribute("href", "/foundations/");
+    expect(
+      within(navigation).getByRole("link", { name: "Components" }),
+    ).toHaveAttribute("href", "/components/");
+    expect(
+      within(navigation).getByRole("link", { name: "Patterns" }),
+    ).toHaveAttribute("href", "/patterns/");
+    expect(
+      within(navigation).getByRole("link", { name: "Accessibility" }),
+    ).toHaveAttribute("href", "/accessibility/");
+  });
+
+  it("opens with foundations and routes into the complete guide", () => {
     render(<App />);
 
     expect(
@@ -19,25 +99,29 @@ describe("design language guide", () => {
     expect(
       screen.getByRole("navigation", { name: "Guide navigation" }),
     ).toBeInTheDocument();
-    const catalogue = screen.getByRole("list", { name: "Component catalogue" });
-    expect(
-      within(catalogue).getByRole("link", { name: /^\d+ButtonStable$/i }),
-    ).toBeInTheDocument();
     expect(screen.getByText("Editorial neo-industrialism")).toBeInTheDocument();
     expect(
       screen.getByText(
         /Neo-brutalist color is an accent, not the default surface/,
       ),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Build product UI" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Shared foundations" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Explore components" }),
+    ).toHaveAttribute("href", "/components/");
+    expect(
+      screen.getByRole("link", { name: "Read accessibility guidance" }),
+    ).toHaveAttribute("href", "/accessibility/");
   });
 
-  it("navigates to a component guide with examples and usage code", () => {
+  it("loads a component guide with examples and usage code", () => {
+    window.history.replaceState({}, "", "/components/button/");
     render(<App />);
-
-    const catalogue = screen.getByRole("list", { name: "Component catalogue" });
-    fireEvent.click(
-      within(catalogue).getByRole("link", { name: /^\d+ButtonStable$/i }),
-    );
 
     expect(screen.getByRole("heading", { name: "Button" })).toBeInTheDocument();
     expect(
@@ -52,12 +136,8 @@ describe("design language guide", () => {
   });
 
   it("documents a newly added interactive component with a live example", () => {
+    window.history.replaceState({}, "", "/components/accordion/");
     render(<App />);
-
-    const catalogue = screen.getByRole("list", { name: "Component catalogue" });
-    fireEvent.click(
-      within(catalogue).getByRole("link", { name: /^\d+AccordionStable$/i }),
-    );
 
     expect(
       screen.getByRole("heading", { name: "Accordion" }),
@@ -87,9 +167,8 @@ describe("design language guide", () => {
   });
 
   it("documents the actual semantic color roles", () => {
+    window.history.replaceState({}, "", "/foundations/color/");
     render(<App />);
-
-    fireEvent.click(screen.getAllByRole("link", { name: /Color/ })[0]);
 
     expect(
       screen.getByText("Color is categorical, not ambient."),
@@ -122,7 +201,7 @@ describe("design language guide", () => {
     render(<App />);
 
     fireEvent.change(
-      screen.getByRole("searchbox", { name: "Filter components" }),
+      screen.getByRole("searchbox", { name: "Search documentation" }),
       {
         target: { value: "dialog" },
       },
