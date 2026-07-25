@@ -30,7 +30,7 @@ function collectHtmlEntries(directory: string): string[] {
   });
 }
 
-const htmlEntries = [
+export const htmlEntries = [
   path.join(root, "index.html"),
   ...pageRoots.flatMap((directory) =>
     collectHtmlEntries(path.join(root, directory)),

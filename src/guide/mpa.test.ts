@@ -1,5 +1,7 @@
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { htmlEntries } from "../../vite.config";
 import viteConfig from "../../vite.config.ts?raw";
 
 import { guideEntries } from "./registry";
@@ -29,6 +31,23 @@ describe("multi-page guide entries", () => {
       expect(source, path).toContain('src="/src/main.tsx"');
       expect(source, path).not.toContain("location.hash");
     }
+  });
+
+  it("includes every registered document in the production MPA inputs", () => {
+    const productionPaths = htmlEntries
+      .map(
+        (entry) =>
+          `/${path.relative(process.cwd(), entry).split(path.sep).join("/")}`,
+      )
+      .sort();
+    const registeredPaths = guideEntries
+      .map((entry) =>
+        entry.path === "/" ? "/index.html" : `${entry.path}index.html`,
+      )
+      .sort();
+
+    expect(productionPaths).toEqual(registeredPaths);
+    expect(productionPaths).toHaveLength(159);
   });
 
   it("includes showcase documents in the production MPA inputs", () => {
