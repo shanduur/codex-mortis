@@ -34,6 +34,8 @@ export const codexMortisClerkAppearance = {
     headerSubtitle: "text-muted-foreground",
     socialButtonsBlockButton:
       "rounded-none border-border bg-background text-foreground shadow-none hover:bg-accent hover:text-accent-foreground",
+    socialButtonsProviderIcon__apple: "dark:invert",
+    socialButtonsProviderIcon__github: "dark:invert",
     socialButtonsBlockButtonText: "font-medium",
     dividerLine: "bg-border",
     dividerText:

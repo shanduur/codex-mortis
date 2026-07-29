@@ -36,4 +36,11 @@ describe("codexMortisClerkAppearance", () => {
       userButtonPopoverActionButton: expect.stringContaining("hover:bg-accent"),
     });
   });
+
+  it("keeps monochrome social provider icons legible in dark mode", () => {
+    expect(codexMortisClerkAppearance.elements).toMatchObject({
+      socialButtonsProviderIcon__apple: expect.stringContaining("dark:invert"),
+      socialButtonsProviderIcon__github: expect.stringContaining("dark:invert"),
+    });
+  });
 });
