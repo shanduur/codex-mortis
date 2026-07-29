@@ -13,8 +13,13 @@ export default defineConfig({
     tailwindcss(),
     dts({
       tsconfigPath: "./tsconfig.app.json",
-      include: ["src/index.ts", "src/components", "src/lib"],
-      exclude: ["src/**/*.test.tsx", "src/test"],
+      include: [
+        "src/index.ts",
+        "src/components",
+        "src/integrations",
+        "src/lib",
+      ],
+      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test"],
     }),
   ],
   resolve: { alias: { "@": path.resolve(root, "./src") } },

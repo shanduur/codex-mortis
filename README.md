@@ -68,6 +68,42 @@ export function Example() {
 
 Add the `dark` class to an ancestor—normally `<html>`—to activate dark mode.
 
+### Style Clerk with Codex Mortis
+
+Use the exported appearance preset at the provider boundary. It maps Clerk's forms,
+buttons, cards, account menus, focus rings, and status colors to the same semantic
+tokens as the component library, so the `dark` class updates Clerk automatically.
+The preset has no Clerk runtime dependency.
+
+```tsx
+import { ClerkProvider } from "@clerk/clerk-react";
+import { codexMortisClerkAppearance } from "@shanduur/codex-mortis";
+import type { ReactNode } from "react";
+import "@shanduur/codex-mortis/styles.css";
+
+export function Providers({ children }: { children: ReactNode }) {
+  return (
+    <ClerkProvider appearance={codexMortisClerkAppearance} publishableKey="...">
+      {children}
+    </ClerkProvider>
+  );
+}
+```
+
+Keep product-specific sizing local by merging only the element being changed:
+
+```tsx
+<SignIn
+  appearance={{
+    ...codexMortisClerkAppearance,
+    elements: {
+      ...codexMortisClerkAppearance.elements,
+      rootBox: `${codexMortisClerkAppearance.elements.rootBox} max-w-md`,
+    },
+  }}
+/>
+```
+
 ## Quality checks
 
 ```bash
