@@ -33,6 +33,26 @@ describe("multi-page guide entries", () => {
     }
   });
 
+  it("keeps generated document metadata synchronized with the registry", () => {
+    for (const entry of guideEntries) {
+      const path =
+        entry.path === "/" ? "/index.html" : `${entry.path}index.html`;
+      const source = pageSources[path];
+      const document = new DOMParser().parseFromString(source, "text/html");
+      const title =
+        entry.path === "/" ? "Codex Mortis" : `${entry.name} · Codex Mortis`;
+
+      expect(document.title, path).toBe(title);
+      expect(
+        document
+          .querySelector('meta[name="description"]')
+          ?.getAttribute("content"),
+        path,
+      ).toBe(entry.description);
+      expect(document.body.dataset.pageId, path).toBe(entry.id);
+    }
+  });
+
   it("includes every registered document in the production MPA inputs", () => {
     const productionPaths = htmlEntries
       .map(
