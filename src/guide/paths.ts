@@ -7,7 +7,7 @@ export function guideHref(
   pathname: string,
   base = import.meta.env.BASE_URL,
 ): string {
-  if (!pathname.startsWith("/")) return pathname;
+  if (!pathname.startsWith("/") || pathname.startsWith("//")) return pathname;
 
   const normalizedBase = normalizeBase(base);
   if (normalizedBase === "/") return pathname;
