@@ -22,4 +22,14 @@ describe("guide deployment paths", () => {
       ),
     ).toBe("/components/button/");
   });
+
+  it("leaves external and in-page links outside the project base", () => {
+    expect(guideHref("https://example.com/docs", "/codex-mortis/")).toBe(
+      "https://example.com/docs",
+    );
+    expect(guideHref("//cdn.example.com/logo.svg", "/codex-mortis/")).toBe(
+      "//cdn.example.com/logo.svg",
+    );
+    expect(guideHref("#content", "/codex-mortis/")).toBe("#content");
+  });
 });
