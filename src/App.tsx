@@ -34,6 +34,9 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", dark ? "#0b0b10" : "#f7f3ea");
   }, [dark]);
 
   const filteredSections = useMemo(() => {

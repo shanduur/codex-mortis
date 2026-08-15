@@ -20,10 +20,10 @@
       }
     </style>
     <script>
-      document.documentElement.classList.toggle(
-        "dark",
-        localStorage.getItem("theme") === "dark",
-      );
+      const dark = localStorage.getItem("theme") === "dark";
+      document.documentElement.classList.toggle("dark", dark);
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      themeColor?.setAttribute("content", dark ? "#0b0b10" : "#f7f3ea");
     </script>
   </head>
   <body data-page-id="color-tokens">
