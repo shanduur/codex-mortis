@@ -361,12 +361,20 @@ describe("Codex Mortis guide", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("persists the selected color mode", () => {
+  it("persists the selected color mode and updates browser chrome", () => {
+    const themeColor = document.createElement("meta");
+    themeColor.setAttribute("name", "theme-color");
+    themeColor.setAttribute("content", "#f7f3ea");
+    document.head.append(themeColor);
+
     render(<App />);
 
     fireEvent.click(screen.getByRole("button", { name: "Use dark theme" }));
 
     expect(document.documentElement).toHaveClass("dark");
     expect(localStorage.getItem("theme")).toBe("dark");
+    expect(themeColor).toHaveAttribute("content", "#0b0b10");
+
+    themeColor.remove();
   });
 });
