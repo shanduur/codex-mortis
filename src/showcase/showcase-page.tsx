@@ -583,25 +583,22 @@ function ToastItem({
   onDismiss,
 }: {
   toast: DemoToastEntry;
-  onDismiss: () => void;
+  onDismiss: (id: number) => void;
 }) {
   const [remaining, setRemaining] = useState(100);
-  const dismissRef = useRef(onDismiss);
-  dismissRef.current = onDismiss;
 
   useEffect(() => {
     const startedAt = Date.now();
-    setRemaining(100);
     const interval = window.setInterval(() => {
       const elapsed = Date.now() - startedAt;
       setRemaining(Math.max(0, 100 - (elapsed / 4500) * 100));
     }, 100);
-    const timeout = window.setTimeout(() => dismissRef.current(), 4500);
+    const timeout = window.setTimeout(() => onDismiss(toast.id), 4500);
     return () => {
       window.clearInterval(interval);
       window.clearTimeout(timeout);
     };
-  }, [toast]);
+  }, [onDismiss, toast.id]);
 
   return (
     <UI.Toast
@@ -617,7 +614,7 @@ function ToastItem({
         </>
       }
       role={toast.tone === "info" ? "status" : "alert"}
-      onDismiss={onDismiss}
+      onDismiss={() => onDismiss(toast.id)}
       className={cn(
         "border-2 bg-card/95 shadow-lg backdrop-blur-xl",
         toast.tone === "info" && "border-primary",
@@ -642,11 +639,7 @@ function ToastRegion({
       className="fixed bottom-5 right-5 z-[70] flex w-[calc(100%-2.5rem)] max-w-sm flex-col gap-3"
     >
       {toasts.map((toast) => (
-        <ToastItem
-          key={toast.id}
-          toast={toast}
-          onDismiss={() => onDismiss(toast.id)}
-        />
+        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
       ))}
     </div>
   );

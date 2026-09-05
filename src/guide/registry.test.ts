@@ -76,6 +76,7 @@ describe("component catalogue", () => {
     const names = componentEntries.map((entry) => entry.name);
 
     expect(names).toEqual(requiredComponents);
+    expect(names).toHaveLength(66);
     expect(new Set(names).size).toBe(requiredComponents.length);
   });
 
@@ -169,5 +170,14 @@ describe("component catalogue", () => {
       "/showcase/markets/",
     ]);
     expect(guideEntries).toHaveLength(159);
+  });
+
+  it("keeps every generated document route and page id unique", async () => {
+    const { guideEntries } = await import("./registry");
+    const paths = guideEntries.map((entry) => entry.path);
+    const ids = guideEntries.map((entry) => entry.id);
+
+    expect(new Set(paths).size).toBe(paths.length);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
