@@ -174,6 +174,31 @@ describe("Codex Mortis showcase", () => {
     vi.useRealTimers();
   });
 
+  it("keeps each toast on its original autoclose schedule", () => {
+    vi.useFakeTimers();
+    render(
+      <ShowcasePage
+        id="showcase-virtual-machines"
+        dark={false}
+        onThemeChange={vi.fn()}
+      />,
+    );
+
+    const refresh = screen.getByRole("button", { name: "Refresh" });
+    fireEvent.click(refresh);
+    act(() => vi.advanceTimersByTime(2000));
+    fireEvent.click(refresh);
+
+    expect(
+      screen.getAllByRole("status", { name: /Fleet refreshed/i }),
+    ).toHaveLength(2);
+    act(() => vi.advanceTimersByTime(2600));
+    expect(
+      screen.getAllByRole("status", { name: /Fleet refreshed/i }),
+    ).toHaveLength(1);
+    vi.useRealTimers();
+  });
+
   it("stacks at most five toasts and lets each one dismiss independently", () => {
     render(
       <ShowcasePage
