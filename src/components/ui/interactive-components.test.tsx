@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -69,7 +75,7 @@ describe("interactive and feedback components", () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("Copy identifier");
   });
 
-  it("opens a drawer and switches tabs", () => {
+  it("opens a drawer, restores trigger focus, and switches tabs", async () => {
     render(
       <>
         <Drawer>
@@ -91,11 +97,13 @@ describe("interactive and feedback components", () => {
       </>,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Open filters" }));
+    const drawerTrigger = screen.getByRole("button", { name: "Open filters" });
+    fireEvent.click(drawerTrigger);
     const drawer = screen.getByRole("dialog", { name: "Filters" });
     expect(drawer).toBeVisible();
     expect(drawer).toHaveClass("content-start");
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    await waitFor(() => expect(drawerTrigger).toHaveFocus());
     fireEvent.click(screen.getByRole("tab", { name: "Events" }));
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Events panel");
   });
