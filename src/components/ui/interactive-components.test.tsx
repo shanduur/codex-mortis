@@ -15,6 +15,11 @@ import {
   Button,
   ButtonGroup,
   Collapsible,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
   Drawer,
   DrawerContent,
   DrawerDescription,
@@ -106,6 +111,32 @@ describe("interactive and feedback components", () => {
     await waitFor(() => expect(drawerTrigger).toHaveFocus());
     fireEvent.click(screen.getByRole("tab", { name: "Events" }));
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Events panel");
+  });
+
+  it("preserves consumer and generated dialog descriptions", () => {
+    render(
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Review deployment</Button>
+        </DialogTrigger>
+        <DialogContent aria-describedby="deployment-warning">
+          <DialogTitle>Review deployment</DialogTitle>
+          <DialogDescription>
+            Confirm the production configuration.
+          </DialogDescription>
+          <p id="deployment-warning">This action restarts the service.</p>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Review deployment" }));
+
+    const dialog = screen.getByRole("dialog", { name: "Review deployment" });
+    const descriptionIds = dialog.getAttribute("aria-describedby")?.split(" ");
+    expect(descriptionIds).toContain("deployment-warning");
+    expect(descriptionIds).toContain(
+      screen.getByText("Confirm the production configuration.").id,
+    );
   });
 
   it("supports keyboard navigation for composite controls", () => {
