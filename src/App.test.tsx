@@ -204,10 +204,10 @@ describe("Codex Mortis guide", () => {
     expect(screen.queryByText("Foundation / 00")).not.toBeInTheDocument();
     expect(screen.queryByText("Read time / 4 min")).not.toBeInTheDocument();
     expect(
-      screen
-        .getByText(/A living codex for technical interfaces/)
-        .closest("[data-slot='card']"),
-    ).not.toBeNull();
+      within(screen.getByRole("region", { name: "Codex Mortis" })).getByText(
+        /A living codex for technical interfaces/,
+      ),
+    ).toBeInTheDocument();
   });
 
   it("opens with foundations and routes into the complete guide", () => {
@@ -222,16 +222,12 @@ describe("Codex Mortis guide", () => {
     const homeLink = screen.getByRole("link", { name: /Codex Mortis/ });
     expect(homeLink.querySelector("img")).toHaveAttribute("src", "/logo.svg");
 
-    const brandPlate = screen
-      .getByRole("img", { name: "The Codex Mortis brand plate" })
-      .closest("[data-slot='card']");
-    const coreIdea = screen
-      .getByText("Core idea")
-      .closest("[data-slot='card']");
-    expect(brandPlate?.nextElementSibling).toBe(coreIdea);
+    const introduction = screen.getByRole("region", { name: "Codex Mortis" });
     expect(
-      screen.getByRole("img", { name: "The Codex Mortis brand plate" }),
-    ).toHaveClass("object-contain", "lg:aspect-auto");
+      within(introduction).getByRole("img", {
+        name: "The Codex Mortis brand plate",
+      }),
+    ).toHaveClass("object-contain", "aspect-[3/2]");
     expect(
       screen.getByRole("navigation", { name: "Guide navigation" }),
     ).toBeInTheDocument();
@@ -239,7 +235,7 @@ describe("Codex Mortis guide", () => {
     expect(screen.getByText("Sharp, not softened")).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Square geometry, dark outlines, zero-blur offset shadows/,
+        /Square corners, visible structure, and hard offset depth/,
       ),
     ).toBeInTheDocument();
     expect(
@@ -252,7 +248,9 @@ describe("Codex Mortis guide", () => {
       screen.getByRole("link", { name: "Explore components" }),
     ).toHaveAttribute("href", "/components/");
     expect(
-      screen.getByRole("link", { name: "Read accessibility guidance" }),
+      within(
+        screen.getByRole("navigation", { name: "Shared foundations" }),
+      ).getByRole("link", { name: /Accessibility/ }),
     ).toHaveAttribute("href", "/accessibility/");
   });
 
@@ -288,27 +286,35 @@ describe("Codex Mortis guide", () => {
     expect(screen.getByText(/import \{ Accordion \}/)).toBeInTheDocument();
   });
 
-  it("keeps supporting copy on owned surfaces", () => {
+  it("keeps supporting introduction copy on owned surfaces", () => {
     render(<App />);
-
     expect(
       screen
         .getByText(/A living codex for technical interfaces/)
         .closest("[data-slot='card']"),
     ).not.toBeNull();
+    for (const copy of [
+      /The interface should expose how the product works/,
+      /Square corners, visible structure/,
+      /Keyboard, focus, screen-reader, contrast/,
+    ]) {
+      expect(
+        screen.getByText(copy).closest("[data-slot='card']"),
+      ).not.toBeNull();
+    }
     expect(
       screen
-        .getByText(/Technical-catalogue clarity and disciplined alignment/)
-        .closest("[data-slot='card']"),
-    ).not.toBeNull();
+        .getByText(/The interface should expose how the product works/)
+        .closest("[role='region']"),
+    ).toHaveAttribute("aria-labelledby", "postures-title");
   });
 
-  it("keeps the Core idea label readable on the dark editorial surface", () => {
+  it("keeps the illustration intact without an inverted editorial panel", () => {
     render(<App />);
-
-    expect(screen.getByText("Core idea")).toHaveClass(
-      "text-secondary-foreground",
-    );
+    expect(
+      screen.getByRole("img", { name: "The Codex Mortis brand plate" }),
+    ).toHaveClass("bg-white");
+    expect(screen.queryByText("Core idea")).not.toBeInTheDocument();
   });
 
   it("documents the actual semantic color roles", () => {

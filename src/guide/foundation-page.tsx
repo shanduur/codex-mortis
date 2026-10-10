@@ -112,176 +112,196 @@ function SectionHeading({
 }
 
 function IntroductionPage() {
-  const postures = [
-    [
-      "Sharp, not softened",
-      "Use square corners, visible structure, and hard offset depth instead of polished softness.",
-      "border-t-utility-blue",
-    ],
-    [
-      "Editorial, not templated",
-      "Let content change the rhythm. Not every idea belongs in an equal card.",
-      "border-t-alert-coral",
-    ],
-    [
-      "Colorful, not decorative",
-      "Give every saturated color a stable role instead of scattering rainbow accents.",
-      "border-t-status-green",
-    ],
+  const productPaths = [
+    {
+      title: "Components",
+      copy: "66 stable building blocks with live examples, usage guidance, accessibility notes, and source code.",
+      href: "/components/",
+    },
+    {
+      title: "UI patterns",
+      copy: "Compose components into forms, navigation, loading, messaging, disclosure, onboarding, and resilient data experiences.",
+      href: "/patterns/",
+    },
+    {
+      title: "Content guidelines",
+      copy: "Shared rules for voice, tone, labels, instructions, errors, and formatted data.",
+      href: "/guidelines/",
+    },
   ];
-
+  const sharedPaths = [
+    {
+      title: "Foundations",
+      copy: "Principles, tokens, color, typography, spacing, layout, iconography, motion, and elevation.",
+      href: "/foundations/",
+    },
+    {
+      title: "Accessibility",
+      copy: "Keyboard, focus, screen-reader, contrast, and motion requirements built into planning and review.",
+      href: "/accessibility/",
+    },
+    {
+      title: "Contributing",
+      copy: "Propose, design, implement, document, and release system changes.",
+      href: "/contributing/",
+    },
+  ];
   return (
-    <UI.Stack gap="12">
-      <PageHeader
-        title="Codex Mortis"
-        description="A living codex for technical interfaces: measured, legible, enduring, and explicit about the structures beneath the surface."
-      />
-
+    <UI.Stack gap="12" className="pb-8">
       <UI.Grid
-        gap="4"
-        className="items-stretch lg:grid-cols-[minmax(0,1.8fr)_minmax(17rem,1fr)]"
+        role="region"
+        aria-labelledby="introduction-title"
+        className="grid items-center gap-8 border-b py-10 sm:py-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"
       >
-        <UI.Card className="h-full overflow-hidden border-foreground/20 bg-white p-2 shadow-none">
-          <UI.Image
-            src={guideHref("/codex-mortis.webp")}
-            alt="The Codex Mortis brand plate"
-            width={1536}
-            height={1024}
-            loading="eager"
-            className="aspect-[3/2] h-full w-full rounded-sm object-contain lg:aspect-auto"
-          />
+        <UI.Card className="gap-6 border-0 p-6 shadow-none">
+          <UI.Heading
+            id="introduction-title"
+            level={1}
+            className="text-4xl leading-[1.05] tracking-[-0.05em] sm:text-5xl 2xl:text-6xl"
+          >
+            Codex Mortis
+          </UI.Heading>
+          <UI.Text
+            tone="muted"
+            className="max-w-[38ch] text-lg leading-relaxed"
+          >
+            A living codex for technical interfaces. Square geometry, clear
+            structure, and components you own.
+          </UI.Text>
+          <UI.Button asChild className="w-fit">
+            <UI.Link href={guideHref("/components/")} className="no-underline">
+              Explore components <ArrowRight />
+            </UI.Link>
+          </UI.Button>
         </UI.Card>
-
-        <UI.Card className="border-0 bg-code px-2 py-6 text-code-foreground hard-shadow sm:px-4">
-          <UI.CardHeader>
-            <UI.Badge className="w-fit bg-signal-yellow text-secondary-foreground">
-              Core idea
-            </UI.Badge>
-          </UI.CardHeader>
-          <UI.CardContent>
-            <UI.Text className="max-w-5xl text-balance text-3xl font-medium leading-tight tracking-[-0.04em]">
-              The interface should expose how the product works—not hide it
-              behind generic futurism.
-            </UI.Text>
-          </UI.CardContent>
+        <UI.Image
+          src={guideHref("/codex-mortis.webp")}
+          srcSet={`${guideHref("/codex-mortis-640.webp")} 640w, ${guideHref("/codex-mortis-960.webp")} 960w, ${guideHref("/codex-mortis.webp")} 1536w`}
+          sizes="(min-width: 1536px) 580px, (min-width: 1280px) calc((100vw - 464px) * 0.535), (min-width: 1024px) calc(100vw - 400px), (min-width: 640px) calc(100vw - 64px), calc(100vw - 40px)"
+          fetchPriority="high"
+          alt="The Codex Mortis brand plate"
+          width={1536}
+          height={1024}
+          loading="eager"
+          className="aspect-[3/2] w-full border border-foreground/20 bg-white p-3 object-contain"
+        />
+      </UI.Grid>
+      <UI.Card
+        role="region"
+        aria-labelledby="postures-title"
+        className="grid gap-8 border-0 p-6 shadow-none lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]"
+      >
+        <UI.Stack gap="4">
+          <UI.Heading id="postures-title" level={2}>
+            Editorial neubrutalism
+          </UI.Heading>
+          <UI.Text tone="muted" className="max-w-[45ch]">
+            The interface should expose how the product works, not hide it
+            behind generic futurism.
+          </UI.Text>
+        </UI.Stack>
+        <UI.List className="ml-0 list-none gap-6 border-l-4 border-primary pl-6">
+          {[
+            [
+              "Sharp, not softened",
+              "Square corners, visible structure, and hard offset depth instead of polished softness.",
+            ],
+            [
+              "Editorial, not templated",
+              "Let content change the rhythm. Not every idea belongs in an equal card.",
+            ],
+            [
+              "Colorful, not decorative",
+              "Give every saturated color a stable role instead of scattering rainbow accents.",
+            ],
+          ].map(([title, copy]) => (
+            <UI.ListItem key={title} className="grid gap-2">
+              <UI.Text className="text-lg font-medium">{title}</UI.Text>
+              <UI.Text
+                tone="muted"
+                className="max-w-[55ch] text-sm leading-relaxed"
+              >
+                {copy}
+              </UI.Text>
+            </UI.ListItem>
+          ))}
+        </UI.List>
+      </UI.Card>
+      <UI.Grid
+        role="region"
+        aria-labelledby="product-paths-title"
+        className="grid gap-6 border-t pt-10"
+      >
+        <UI.Heading id="product-paths-title" level={2}>
+          Build product UI
+        </UI.Heading>
+        <UI.Grid
+          role="navigation"
+          aria-labelledby="product-paths-title"
+          className="grid gap-4 md:grid-cols-2"
+        >
+          {productPaths.map((item, index) => (
+            <UI.Link
+              key={item.title}
+              href={guideHref(item.href)}
+              className={`group grid content-start gap-4 border p-6 text-foreground no-underline transition-colors hover:bg-accent focus-visible:bg-accent ${index === 0 ? "bg-accent md:row-span-2 md:justify-between md:p-8" : "bg-card"}`}
+            >
+              <UI.Text
+                as="span"
+                className="flex items-center justify-between gap-4 text-xl font-medium"
+              >
+                {item.title}
+                <ArrowRight
+                  aria-hidden="true"
+                  className="size-5 shrink-0 transition-transform group-hover:translate-x-1"
+                />
+              </UI.Text>
+              <UI.Text
+                as="span"
+                className="max-w-[45ch] text-sm leading-relaxed text-muted-foreground"
+              >
+                {item.copy}
+              </UI.Text>
+            </UI.Link>
+          ))}
+        </UI.Grid>
+      </UI.Grid>
+      <UI.Grid
+        role="region"
+        aria-labelledby="shared-foundations-title"
+        className="grid gap-6 border-t pt-10"
+      >
+        <UI.Heading id="shared-foundations-title" level={2}>
+          Shared foundations
+        </UI.Heading>
+        <UI.Card
+          role="navigation"
+          aria-labelledby="shared-foundations-title"
+          className="gap-0 divide-y border-x-0 py-0 shadow-none"
+        >
+          {sharedPaths.map((item) => (
+            <UI.Link
+              key={item.title}
+              href={guideHref(item.href)}
+              className="grid items-start gap-3 px-2 py-6 text-foreground no-underline transition-colors hover:bg-accent focus-visible:bg-accent sm:grid-cols-[10rem_minmax(0,1fr)_auto]"
+            >
+              <UI.Text as="span" className="text-lg font-medium">
+                {item.title}
+              </UI.Text>
+              <UI.Text
+                as="span"
+                className="max-w-[55ch] text-sm leading-relaxed text-muted-foreground"
+              >
+                {item.copy}
+              </UI.Text>
+              <ArrowRight
+                aria-hidden="true"
+                className="hidden size-5 sm:block"
+              />
+            </UI.Link>
+          ))}
         </UI.Card>
       </UI.Grid>
-
-      <UI.Stack gap="8" className="py-8 sm:py-12">
-        <SectionHeading
-          index="01"
-          title="Editorial neubrutalism"
-          description="Technical-catalogue clarity and disciplined alignment lead the system. Square geometry, dark outlines, zero-blur offset shadows, and categorical color make structure explicit without sacrificing reading rhythm."
-        />
-        <UI.Grid columns={3} gap="6">
-          {postures.map(([title, copy, color], index) => (
-            <UI.Card key={title} className={`min-h-56 border-t-4 ${color}`}>
-              <UI.CardHeader>
-                <UI.Badge variant="outline" className="w-fit">
-                  0{index + 1}
-                </UI.Badge>
-                <UI.Heading level={3} className="mt-8 text-xl">
-                  {title}
-                </UI.Heading>
-              </UI.CardHeader>
-              <UI.CardContent>
-                <UI.Text tone="muted">{copy}</UI.Text>
-              </UI.CardContent>
-            </UI.Card>
-          ))}
-        </UI.Grid>
-      </UI.Stack>
-
-      <UI.Stack gap="8" className="py-8 sm:py-12">
-        <SectionHeading
-          index="02"
-          title="Build product UI"
-          description="Move from system decisions to complete product experiences with implementation-ready components, reusable interface patterns, and content guidance."
-        />
-        <UI.Grid columns={3} gap="4">
-          {[
-            {
-              title: "Components",
-              copy: "Browse 66 stable building blocks with live examples, usage guidance, accessibility notes, and source code.",
-              href: "/components/",
-              action: "Explore components",
-            },
-            {
-              title: "UI patterns",
-              copy: "Compose components into forms, navigation, loading, messaging, disclosure, onboarding, and resilient data experiences.",
-              href: "/patterns/",
-              action: "Browse UI patterns",
-            },
-            {
-              title: "Content guidelines",
-              copy: "Write clear interface text with shared rules for voice, tone, grammar, labels, instructions, errors, and formatted data.",
-              href: "/guidelines/",
-              action: "Read content guidance",
-            },
-          ].map((item) => (
-            <UI.Card key={item.title} className="min-h-64 shadow-none">
-              <UI.CardHeader>
-                <UI.Heading level={3}>{item.title}</UI.Heading>
-              </UI.CardHeader>
-              <UI.CardContent className="flex flex-1 flex-col gap-6">
-                <UI.Text tone="muted">{item.copy}</UI.Text>
-                <UI.Button asChild variant="outline" className="mt-auto w-fit">
-                  <UI.Link href={guideHref(item.href)} className="no-underline">
-                    {item.action}
-                    <ArrowRight />
-                  </UI.Link>
-                </UI.Button>
-              </UI.CardContent>
-            </UI.Card>
-          ))}
-        </UI.Grid>
-      </UI.Stack>
-
-      <UI.Stack gap="8" className="py-8 sm:py-12">
-        <SectionHeading
-          index="03"
-          title="Shared foundations"
-          description="Ground every product surface in the same visual language, accessibility expectations, and contribution model before choosing a component."
-        />
-        <UI.Grid columns={3} gap="4">
-          {[
-            {
-              title: "Foundations",
-              copy: "Principles, tokens, color, typography, spacing, layout, iconography, motion, and elevation.",
-              href: "/foundations/",
-              action: "Explore foundations",
-            },
-            {
-              title: "Accessibility",
-              copy: "Keyboard, focus, screen-reader, contrast, and motion requirements built into planning and review.",
-              href: "/accessibility/",
-              action: "Read accessibility guidance",
-            },
-            {
-              title: "Contributing",
-              copy: "A shared path for proposing, designing, implementing, documenting, and releasing system changes.",
-              href: "/contributing/",
-              action: "Contribute to the system",
-            },
-          ].map((item) => (
-            <UI.Card key={item.title} className="min-h-60 shadow-none">
-              <UI.CardHeader>
-                <UI.Heading level={3}>{item.title}</UI.Heading>
-              </UI.CardHeader>
-              <UI.CardContent className="flex flex-1 flex-col gap-6">
-                <UI.Text tone="muted">{item.copy}</UI.Text>
-                <UI.Link
-                  href={guideHref(item.href)}
-                  className="mt-auto inline-flex items-center gap-2"
-                >
-                  {item.action}
-                  <ArrowRight />
-                </UI.Link>
-              </UI.CardContent>
-            </UI.Card>
-          ))}
-        </UI.Grid>
-      </UI.Stack>
     </UI.Stack>
   );
 }
