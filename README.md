@@ -12,7 +12,7 @@ Color is categorical rather than ambient: utility blue carries primary actions, 
 
 The guide dogfoods the public library for its own shell and documentation layout. Only large headings sit directly on the drafting-grid canvas; supporting copy and metadata live on owned component surfaces.
 
-The documentation is a true Vite multi-page site rather than an SPA. Its 149 canonical routes build to separate HTML documents and navigate with standard links, so direct loads, reloads, back/forward navigation, open-in-new-tab, and copied URLs use native browser behavior.
+The documentation is a true Vite multi-page site rather than an SPA. Its 159 canonical routes build to separate HTML documents and navigate with standard links, so direct loads, reloads, back/forward navigation, open-in-new-tab, and copied URLs use native browser behavior.
 
 ## Run the guide
 
@@ -117,7 +117,7 @@ This runs Prettier verification, Oxlint, the comprehensive Vitest suite, the gui
 GitHub Actions owns both release artifacts:
 
 - [`.github/workflows/publish-package.yml`](./.github/workflows/publish-package.yml) publishes `@shanduur/codex-mortis` to GitHub Packages whenever a GitHub Release is published. The release tag must match `package.json` (for example, tag `v0.1.0` for version `0.1.0`). The workflow authenticates with `GITHUB_TOKEN`; no repository npm token is required.
-- [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) builds all 149 documents on every push to `main` and deploys `demo-dist/` with GitHub Pages’ artifact-based deployment. `BASE_PATH` makes assets, direct document loads, and guide links work below `/<repository>/`.
+- [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) builds all 159 documents on every push to `main` and deploys `demo-dist/` with GitHub Pages’ artifact-based deployment. `BASE_PATH` makes assets, direct document loads, and guide links work below `/<repository>/`.
 
 In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Published packages are installed from `https://npm.pkg.github.com` using a GitHub token with `read:packages` permission.
 

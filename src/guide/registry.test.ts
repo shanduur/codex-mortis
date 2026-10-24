@@ -1,6 +1,10 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { componentEntries, showcaseEntries } from "./registry";
+import { componentEntries, guideEntries, showcaseEntries } from "./registry";
+
+const readme = readFileSync(path.resolve(process.cwd(), "README.md"), "utf8");
 
 const requiredComponents = [
   "Accordion",
@@ -78,6 +82,12 @@ describe("component catalogue", () => {
     expect(names).toEqual(requiredComponents);
     expect(names).toHaveLength(66);
     expect(new Set(names).size).toBe(requiredComponents.length);
+  });
+
+  it("keeps the public route count synchronized with the generated guide", () => {
+    expect(guideEntries).toHaveLength(159);
+    expect(readme).toContain(`${guideEntries.length} canonical routes`);
+    expect(readme).toContain(`builds all ${guideEntries.length} documents`);
   });
 
   it("assigns a stable unique URL id to every component", () => {
