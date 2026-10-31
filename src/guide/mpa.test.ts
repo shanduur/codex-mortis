@@ -83,6 +83,10 @@ describe("multi-page guide entries", () => {
       expect(source, path).toContain("background-color: #0b0b10");
       expect(source, path).toContain("background-color: #f7f3ea");
       expect(source, path).not.toContain("background: #0b0b10");
+      expect(source, path).toContain('localStorage.getItem("theme")');
+      expect(source, path).toContain(
+        'window.matchMedia?.("(prefers-color-scheme: dark)")',
+      );
       expect(source, path).toMatch(
         /themeColor\?\.setAttribute\([\s\S]*"content",[\s\S]*dark \? "#0b0b10" : "#f7f3ea"/,
       );

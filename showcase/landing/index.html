@@ -20,7 +20,12 @@
       }
     </style>
     <script>
-      const dark = localStorage.getItem("theme") === "dark";
+      const storedTheme = localStorage.getItem("theme");
+      const dark =
+        storedTheme === "dark" ||
+        (storedTheme === null &&
+          (window.matchMedia?.("(prefers-color-scheme: dark)").matches ??
+            false));
       document.documentElement.classList.toggle("dark", dark);
       const themeColor = document.querySelector('meta[name="theme-color"]');
       themeColor?.setAttribute("content", dark ? "#0b0b10" : "#f7f3ea");

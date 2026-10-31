@@ -23,13 +23,18 @@ function getInitialPage() {
   );
 }
 
+function getInitialDarkMode() {
+  const storedTheme = localStorage.getItem("theme");
+  if (storedTheme === "dark") return true;
+  if (storedTheme === "light") return false;
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+}
+
 function App() {
   const activeId = getInitialPage();
   const [query, setQuery] = useState("");
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") === "dark",
-  );
+  const [dark, setDark] = useState(getInitialDarkMode);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
