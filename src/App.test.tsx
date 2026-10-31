@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "./App";
 
@@ -9,6 +9,10 @@ describe("Codex Mortis guide", () => {
     window.history.replaceState({}, "", "/");
     localStorage.clear();
     document.documentElement.classList.remove("dark");
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("provides keyboard-only access to navigation and page content", () => {
@@ -382,5 +386,20 @@ describe("Codex Mortis guide", () => {
     expect(themeColor).toHaveAttribute("content", "#0b0b10");
 
     themeColor.remove();
+  });
+
+  it("honors the system color preference when no theme is stored", () => {
+    vi.stubGlobal("matchMedia", vi.fn().mockReturnValue({ matches: true }));
+
+    render(<App />);
+
+    expect(window.matchMedia).toHaveBeenCalledWith(
+      "(prefers-color-scheme: dark)",
+    );
+    expect(document.documentElement).toHaveClass("dark");
+    expect(localStorage.getItem("theme")).toBe("dark");
+    expect(
+      screen.getByRole("button", { name: "Use light theme" }),
+    ).toBeInTheDocument();
   });
 });
