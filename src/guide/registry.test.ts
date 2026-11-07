@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import * as publicComponents from "../components";
 import { componentEntries, showcaseEntries } from "./registry";
 
 const requiredComponents = [
@@ -78,6 +79,17 @@ describe("component catalogue", () => {
     expect(names).toEqual(requiredComponents);
     expect(names).toHaveLength(66);
     expect(new Set(names).size).toBe(requiredComponents.length);
+  });
+
+  it("keeps every catalogued component available from the public barrel", () => {
+    for (const entry of componentEntries) {
+      const exportName = entry.id
+        .split("-")
+        .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
+        .join("");
+
+      expect(publicComponents, entry.name).toHaveProperty(exportName);
+    }
   });
 
   it("assigns a stable unique URL id to every component", () => {
